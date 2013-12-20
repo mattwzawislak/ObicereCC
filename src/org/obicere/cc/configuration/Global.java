@@ -56,7 +56,7 @@ public class Global {
         ANIMATION_IMAGE = load(URLs.ANIMATION);
     }
 
-    private static Image load(final String url){
+    private static Image load(final String url) {
         try {
             final Toolkit tk = Toolkit.getDefaultToolkit();
             final URL path = Global.class.getResource(url);
@@ -82,6 +82,7 @@ public class Global {
         public static final String SOURCE = HOME + File.separator + "src";
         public static final String SETTINGS = HOME + File.separator + "data";
         public static final String JAVA = SETTINGS + File.separator + "java";
+        public static final String LAYOUT_SAVE_FILE = SETTINGS + File.separator + "layout.properties";
         public static final String[] PATHS = new String[]{APP_DATA, HOME, SOURCE, SETTINGS, JAVA};
 
         /**

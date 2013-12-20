@@ -74,13 +74,7 @@ public class Boot {
             public void run() {
                 try {
                     UIManager.setLookAndFeel(new WebLookAndFeel());
-                    final JFrame frame = new JFrame("Obicere Computing Challenges v" + Updater.clientVersion());
-                    GUI.buildGUI(frame);
-                    frame.pack();
-                    frame.setMinimumSize(frame.getSize());
-                    frame.setLocationRelativeTo(null);
-                    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                    frame.setIconImage(Global.ICON_IMAGE);
+                    GUI.buildGUI();
                     Splash.getInstance().shouldDispose(true);
                     Splash.getInstance().getFrame().dispose();
                 } catch (final Exception e) {

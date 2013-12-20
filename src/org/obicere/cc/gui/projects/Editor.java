@@ -17,19 +17,25 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.obicere.cc.gui.projects;
 
+import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.configuration.Language;
 import org.obicere.cc.executor.Executor;
 import org.obicere.cc.gui.CodePane;
+import org.obicere.cc.gui.GUI;
 import org.obicere.cc.methods.IOUtils;
 import org.obicere.cc.tasks.projects.Project;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Properties;
 
 /**
  * The main panel for editing the runner's code, displaying instructions and
@@ -46,8 +52,12 @@ public class Editor extends JPanel {
     private final ResultsTable resultsTable;
     private final JTextArea instructions;
     private final Project project;
+    private final JSplitPane mainSplit;
+    private final JSplitPane textSplit;
     private static final Font CONSOLOAS_12 = new Font("Consolas", Font.PLAIN, 12);
     private final Font defaultInstructionFont;
+    private static int mainSplitDividerLocation = -1;
+    private static int textSplitDividerLocation = -1;
 
     /**
      * Constructs a new editor based off of the project. Will load code and
@@ -69,8 +79,11 @@ public class Editor extends JPanel {
         final JButton clear = new JButton("Clear Project");
         final JPanel rightSide = new JPanel(new BorderLayout());
         final JPanel buttons = new JPanel();
-        final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsTable, rightSide);
-        final JSplitPane textSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(instructions), split);
+        final File file = new File(Paths.LAYOUT_SAVE_FILE);
+        final Properties properties = new Properties();
+
+        this.mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsTable, rightSide);
+        this.textSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(instructions), mainSplit);
 
         run.setHorizontalTextPosition(SwingConstants.CENTER);
         run.setPreferredSize(new Dimension(200, run.getPreferredSize().height));
@@ -109,7 +122,6 @@ public class Editor extends JPanel {
             }
         });
 
-
         clear.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -117,9 +129,42 @@ public class Editor extends JPanel {
             }
         });
 
-        textSplit.setDividerLocation(100);
+        textSplit.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(final PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("dividerLocation")) {
+                    GUI.setTextSplitLocation((int) evt.getNewValue());
+                }
+            }
+        });
 
-        split.setDividerLocation(300);
+        mainSplit.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(final PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("dividerLocation")) {
+                    GUI.setMainSplitLocation((int) evt.getNewValue());
+                }
+            }
+        });
+
+        try {
+            if (file.exists()) {
+                if (mainSplitDividerLocation == -1) {
+                    properties.load(new FileInputStream(file));
+                    mainSplitDividerLocation = Integer.parseInt(properties.getProperty("mainsplit.divider.location"));
+                    textSplitDividerLocation = Integer.parseInt(properties.getProperty("textsplit.divider.location"));
+                }
+                mainSplit.setDividerLocation(mainSplitDividerLocation);
+                textSplit.setDividerLocation(textSplitDividerLocation);
+            } else {
+                textSplit.setDividerLocation(100);
+                mainSplit.setDividerLocation(300);
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+            textSplit.setDividerLocation(100);
+            mainSplit.setDividerLocation(300);
+        }
 
         buttons.add(clear);
         buttons.add(run);
@@ -200,6 +245,14 @@ public class Editor extends JPanel {
             return;
         }
         resultsTable.setResults(Executor.runAndGetResults(project));
+    }
+
+    public int getMainSplitDividerLocation() {
+        return mainSplit.getDividerLocation();
+    }
+
+    public int getTextSplitDividerLocation() {
+        return textSplit.getDividerLocation();
     }
 
 }

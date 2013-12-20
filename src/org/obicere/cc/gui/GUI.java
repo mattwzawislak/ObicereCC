@@ -17,14 +17,23 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.obicere.cc.gui;
 
+import org.obicere.cc.configuration.Global;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.gui.projects.ProjectTabPanel;
+import org.obicere.cc.methods.Updater;
+import org.obicere.cc.shutdown.SaveLayoutHook;
+import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.tasks.projects.Project;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.LinkedList;
+import java.util.Properties;
 
 /**
  * Only for use in the boot and the setting and getting of Projects.
@@ -38,7 +47,8 @@ public class GUI {
 
     public static final LinkedList<WindowListener> WINDOW_CLOSING_HOOKS = new LinkedList<>();
     private static JTabbedPane tabs;
-
+    private static int mainSplitLocation;
+    private static int textSplitLocation;
     private static final Dimension TAB_SIZE = new Dimension(170, 30);
 
     /**
@@ -48,8 +58,11 @@ public class GUI {
      *
      * @since 1.0
      */
-    public static void buildGUI(final Window parent) {
+    public static void buildGUI() {
+        final JFrame frame = new JFrame("Obicere Computing Challenges v" + Updater.clientVersion());
         final JPanel main = new JPanel(new BorderLayout());
+        final File file = new File(Global.Paths.LAYOUT_SAVE_FILE);
+        final Properties properties = new Properties();
         tabs = new JTabbedPane(SwingConstants.LEFT);
         tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
@@ -73,14 +86,49 @@ public class GUI {
             tabs.setTabComponentAt(i, mainPane);
         }
 
-        for(final WindowListener listener : WINDOW_CLOSING_HOOKS){
-            parent.addWindowListener(listener);
-        }
-
         main.add(tabs);
         main.setPreferredSize(new Dimension(1000, 600));
-        parent.add(main);
-        parent.setVisible(true);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                final Properties properties = new Properties();
+                properties.put("frame.width", String.valueOf(frame.getWidth()));
+                properties.put("frame.height", String.valueOf(frame.getHeight()));
+                properties.put("frame.state", String.valueOf(frame.getExtendedState()));
+                properties.put("mainsplit.divider.location", String.valueOf(mainSplitLocation));
+                properties.put("textsplit.divider.location", String.valueOf(textSplitLocation));
+                final SaveLayoutHook hook = ShutDownHookManager.hookByName(SaveLayoutHook.class, SaveLayoutHook.NAME);
+                hook.provideProperties(properties);
+            }
+        });
+
+        for (final WindowListener listener : WINDOW_CLOSING_HOOKS) {
+            frame.addWindowListener(listener);
+        }
+
+        frame.add(main);
+        frame.setVisible(true);
+        frame.setMinimumSize(new Dimension(900, 600));
+        try {
+            if (file.exists()) {
+                properties.load(new FileInputStream(file));
+                int width = Integer.parseInt(properties.getProperty("frame.width"));
+                int height = Integer.parseInt(properties.getProperty("frame.height"));
+                frame.setSize(width, height);
+                frame.setExtendedState(Integer.parseInt(properties.getProperty("frame.state")));
+            } else {
+                frame.pack();
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+            frame.pack();
+        }
+        if(frame.getExtendedState() != JFrame.MAXIMIZED_BOTH){
+            frame.setLocationRelativeTo(null);
+        }
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setIconImage(Global.ICON_IMAGE);
         Splash.setStatus("Complete");
     }
 
@@ -140,6 +188,14 @@ public class GUI {
             return;
         }
         System.err.println("Failed to close tab " + name);
+    }
+
+    public static void setMainSplitLocation(final int location) {
+        mainSplitLocation = location;
+    }
+
+    public static void setTextSplitLocation(final int location) {
+        textSplitLocation = location;
     }
 
 }

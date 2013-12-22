@@ -96,6 +96,8 @@ public class GUI {
             frame.addWindowListener(listener);
         }
 
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setIconImage(Global.ICON_IMAGE);
         frame.add(main);
         frame.setVisible(true);
         frame.setMinimumSize(new Dimension(900, 600));
@@ -107,8 +109,6 @@ public class GUI {
             frame.setSize(width, height);
             frame.setLocationRelativeTo(null);
         }
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setIconImage(Global.ICON_IMAGE);
         Splash.setStatus("Complete");
     }
 

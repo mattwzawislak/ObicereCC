@@ -54,8 +54,6 @@ public class Editor extends JPanel {
     private final ResultsTable resultsTable;
     private final JTextArea instructions;
     private final Project project;
-    private final JSplitPane mainSplit;
-    private final JSplitPane textSplit;
     private static final Font CONSOLOAS_12 = new Font("Consolas", Font.PLAIN, 12);
     private final Font defaultInstructionFont;
 
@@ -81,8 +79,8 @@ public class Editor extends JPanel {
         final JPanel rightSide = new JPanel(new BorderLayout());
         final JPanel buttons = new JPanel();
 
-        this.mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsTable, rightSide);
-        this.textSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(instructions), mainSplit);
+        final JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsTable, rightSide);
+        final JSplitPane textSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(instructions), mainSplit);
 
         run.setHorizontalTextPosition(SwingConstants.CENTER);
         run.setPreferredSize(new Dimension(200, run.getPreferredSize().height));

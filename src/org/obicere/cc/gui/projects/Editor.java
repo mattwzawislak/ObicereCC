@@ -24,6 +24,8 @@ import org.obicere.cc.executor.Executor;
 import org.obicere.cc.gui.CodePane;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.methods.IOUtils;
+import org.obicere.cc.shutdown.SaveLayoutHook;
+import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.tasks.projects.Project;
 
 import javax.swing.*;
@@ -56,8 +58,6 @@ public class Editor extends JPanel {
     private final JSplitPane textSplit;
     private static final Font CONSOLOAS_12 = new Font("Consolas", Font.PLAIN, 12);
     private final Font defaultInstructionFont;
-    private static int mainSplitDividerLocation = -1;
-    private static int textSplitDividerLocation = -1;
 
     /**
      * Constructs a new editor based off of the project. Will load code and
@@ -75,12 +75,11 @@ public class Editor extends JPanel {
         this.resultsTable = new ResultsTable(project);
         this.defaultInstructionFont = instructions.getFont();
 
+        final SaveLayoutHook hook = ShutDownHookManager.hookByName(SaveLayoutHook.class, SaveLayoutHook.NAME);
         final JButton run = new JButton("Run");
         final JButton clear = new JButton("Clear Project");
         final JPanel rightSide = new JPanel(new BorderLayout());
         final JPanel buttons = new JPanel();
-        final File file = new File(Paths.LAYOUT_SAVE_FILE);
-        final Properties properties = new Properties();
 
         this.mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsTable, rightSide);
         this.textSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(instructions), mainSplit);
@@ -133,7 +132,8 @@ public class Editor extends JPanel {
             @Override
             public void propertyChange(final PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("dividerLocation")) {
-                    GUI.setTextSplitLocation((int) evt.getNewValue());
+
+                    hook.saveProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, evt.getNewValue());
                 }
             }
         });
@@ -142,29 +142,10 @@ public class Editor extends JPanel {
             @Override
             public void propertyChange(final PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("dividerLocation")) {
-                    GUI.setMainSplitLocation((int) evt.getNewValue());
+                    hook.saveProperty(SaveLayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION, evt.getNewValue());
                 }
             }
         });
-
-        try {
-            if (file.exists()) {
-                if (mainSplitDividerLocation == -1) {
-                    properties.load(new FileInputStream(file));
-                    mainSplitDividerLocation = Integer.parseInt(properties.getProperty("mainsplit.divider.location"));
-                    textSplitDividerLocation = Integer.parseInt(properties.getProperty("textsplit.divider.location"));
-                }
-                mainSplit.setDividerLocation(mainSplitDividerLocation);
-                textSplit.setDividerLocation(textSplitDividerLocation);
-            } else {
-                textSplit.setDividerLocation(100);
-                mainSplit.setDividerLocation(300);
-            }
-        } catch (final Exception e) {
-            e.printStackTrace();
-            textSplit.setDividerLocation(100);
-            mainSplit.setDividerLocation(300);
-        }
 
         buttons.add(clear);
         buttons.add(run);
@@ -181,6 +162,8 @@ public class Editor extends JPanel {
         setName(project.getName());
 
         codePane.highlightKeywords();
+        mainSplit.setDividerLocation(Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION)));
+        textSplit.setDividerLocation(Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION)));
     }
 
     /**
@@ -245,14 +228,6 @@ public class Editor extends JPanel {
             return;
         }
         resultsTable.setResults(Executor.runAndGetResults(project));
-    }
-
-    public int getMainSplitDividerLocation() {
-        return mainSplit.getDividerLocation();
-    }
-
-    public int getTextSplitDividerLocation() {
-        return textSplit.getDividerLocation();
     }
 
 }

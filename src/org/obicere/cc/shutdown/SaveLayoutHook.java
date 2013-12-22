@@ -2,7 +2,9 @@ package org.obicere.cc.shutdown;
 
 import org.obicere.cc.configuration.Global;
 
+import javax.swing.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -15,21 +17,40 @@ import java.util.Properties;
 public class SaveLayoutHook extends ShutDownHook {
 
     public static final String NAME = "save.layout";
+    public static final String PROPERTY_FRAME_WIDTH = "frame.width";
+    public static final String PROPERTY_FRAME_HEIGHT = "frame.height";
+    public static final String PROPERTY_FRAME_STATE = "frame.state";
+    public static final String PROPERTY_MAINSPLIT_DIVIDER_LOCATION = "mainsplit.divider.location";
+    public static final String PROPERTY_TEXTSPLIT_DIVIDER_LOCATION = "textsplit.divider.location";
+
     private static final File SAVE_FILE = new File(Global.Paths.LAYOUT_SAVE_FILE);
 
 
-    private Properties properties;
+    private final Properties properties = new Properties();
 
     public SaveLayoutHook(final boolean conditional, final String purpose) {
         super(conditional, purpose, NAME, PRIORITY_WINDOW_CLOSING);
+        final File file = new File(Global.Paths.LAYOUT_SAVE_FILE);
+
+        try {
+            if (file.exists()) {
+                properties.load(new FileInputStream(file));
+            } else {
+                file.createNewFile();
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+        fillProperty(PROPERTY_FRAME_WIDTH, 900);
+        fillProperty(PROPERTY_FRAME_HEIGHT, 600);
+        fillProperty(PROPERTY_FRAME_STATE, JFrame.NORMAL);
+        fillProperty(PROPERTY_MAINSPLIT_DIVIDER_LOCATION, 300);
+        fillProperty(PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, 100);
     }
 
     @Override
     public void run() {
         try {
-            if (properties == null) {
-                return;
-            }
             if (!SAVE_FILE.exists() && !SAVE_FILE.createNewFile()) {
                 return;
             }
@@ -42,8 +63,18 @@ public class SaveLayoutHook extends ShutDownHook {
         }
     }
 
-    public void provideProperties(final Properties properties) {
-        this.properties = properties;
+    public void saveProperty(final String property, final Object value){
+        properties.setProperty(property, value.toString());
+    }
+
+    public void fillProperty(final String property, final Object value){
+        if(properties.get(property) == null){
+            saveProperty(property, value);
+        }
+    }
+
+    public Object getProperty(final String property){
+        return properties.get(property);
     }
 
 }

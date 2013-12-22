@@ -35,8 +35,8 @@ public class SaveLayoutHook extends ShutDownHook {
         try {
             if (file.exists()) {
                 properties.load(new FileInputStream(file));
-            } else {
-                file.createNewFile();
+            } else if(!file.createNewFile()){
+                System.err.println("Failed to save settings");
             }
         } catch (final Exception e) {
             e.printStackTrace();

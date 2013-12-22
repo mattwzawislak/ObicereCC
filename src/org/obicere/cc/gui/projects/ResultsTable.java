@@ -76,6 +76,10 @@ public class ResultsTable extends JTable implements TableCellRenderer {
         model.setColumnIdentifiers(HEADERS);
         model.setColumnCount(3);
         model.insertRow(0, HEADERS);
+        getColumnModel().getColumn(0).setMinWidth(125);
+        getColumnModel().getColumn(0).setMaxWidth(125);
+        getColumnModel().getColumn(1).setMinWidth(125);
+        getColumnModel().getColumn(1).setMaxWidth(125);
     }
 
     /**
@@ -88,38 +92,41 @@ public class ResultsTable extends JTable implements TableCellRenderer {
      */
 
     public void setResults(final Result[] results) {
-        final DefaultTableModel m = new DefaultTableModel();
-        m.setColumnIdentifiers(HEADERS);
-        m.insertRow(0, HEADERS);
-        m.setColumnCount(3);
-        if (results != null) {
-            resultsCorrect = new boolean[results.length];
-            boolean wrong = false;
-            for (int i = 0; i < results.length; ) {
-                resultsCorrect[i] = results[i].isCorrect();
-                if (!wrong && !resultsCorrect[i]) {
-                    wrong = true;
-                }
-                final Object[] arr = {results[i].getCorrectAnswer(), results[i].getResult(), Arrays.toString(results[i].getParameters())};
-                m.insertRow(++i, arr);
+        synchronized (getTreeLock()) {
+            final DefaultTableModel m = (DefaultTableModel) getModel();
+            final int rowCount = m.getRowCount();
+            for(int i = 1; i < rowCount; i++){
+                m.removeRow(1);
             }
-            if (!wrong) {
-                try {
-                    final File complete = new File(Paths.SETTINGS + File.separator + "data.dat");
-                    final byte[] data = IOUtils.readData(complete);
-                    String info = new String(data);
-                    final String format = String.format("|%040x|", new BigInteger(project.getName().getBytes(/*YOUR_CHARSET?*/)));
-                    if (!info.contains(format)) {
-                        info = info.concat(format);
+            if (results != null) {
+                resultsCorrect = new boolean[results.length];
+                boolean wrong = false;
+                for (int i = 0; i < results.length; i++) {
+                    resultsCorrect[i] = results[i].isCorrect();
+                    if (!wrong && !resultsCorrect[i]) {
+                        wrong = true;
                     }
-                    IOUtils.write(complete, info.getBytes());
-                    project.setComplete(true);
-                } catch (final IOException e) {
-                    e.printStackTrace();
+                    final Object[] arr = {results[i].getCorrectAnswer(), results[i].getResult(), Arrays.toString(results[i].getParameters())};
+                    m.insertRow(i + 1, arr);
+                }
+                if (!wrong) {
+                    try {
+                        final File complete = new File(Paths.SETTINGS + File.separator + "data.dat");
+                        final byte[] data = IOUtils.readData(complete);
+                        String info = new String(data);
+                        final String format = String.format("|%040x|", new BigInteger(project.getName().getBytes()));
+                        if (!info.contains(format)) {
+                            info = info.concat(format);
+                        }
+                        IOUtils.write(complete, info.getBytes());
+                        project.setComplete(true);
+                    } catch (final IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+            setModel(m);
         }
-        setModel(m);
     }
 
     @Override

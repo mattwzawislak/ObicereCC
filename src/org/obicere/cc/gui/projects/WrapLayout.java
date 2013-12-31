@@ -40,9 +40,11 @@ public class WrapLayout extends FlowLayout {
     /**
      * Constructs a new <code>FlowLayout</code> with the specified
      * alignment and a default 5-unit horizontal and vertical gap.
+     *
      * The value of the alignment argument must be one of
-     * <code>WrapLayout</code>, <code>WrapLayout</code>,
-     * or <code>WrapLayout</code>.
+     * <code>FlowLayout.LEFT</code>, <code>FlowLayout.RIGHT</code>,
+     * <code>FlowLayout.CENTER</code>, <code>FlowLayout.LEADING</code>,
+     * or <code>FlowLayout.TRAILING</code>.
      *
      * @param align the alignment value
      */
@@ -53,10 +55,11 @@ public class WrapLayout extends FlowLayout {
     /**
      * Creates a new flow layout manager with the indicated alignment
      * and the indicated horizontal and vertical gaps.
-     * <p/>
+     *
      * The value of the alignment argument must be one of
-     * <code>WrapLayout</code>, <code>WrapLayout</code>,
-     * or <code>WrapLayout</code>.
+     * <code>FlowLayout.LEFT</code>, <code>FlowLayout.RIGHT</code>,
+     * <code>FlowLayout.CENTER</code>, <code>FlowLayout.LEADING</code>,
+     * or <code>FlowLayout.TRAILING</code>.
      *
      * @param align the alignment value
      * @param hgap  the horizontal gap between components

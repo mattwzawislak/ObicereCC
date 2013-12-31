@@ -203,6 +203,7 @@ public class Editor extends JPanel {
                         IOUtils.write(data, words.getBytes());
                         codePane.setText(project.getProperties().getSkeleton());
                         codePane.highlightKeywords();
+                        project.setComplete(false);
                         return;
                     } catch (final IOException e) {
                         e.printStackTrace();

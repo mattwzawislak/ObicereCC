@@ -25,7 +25,6 @@ import org.obicere.cc.methods.IOUtils;
 import org.obicere.cc.methods.XMLParser;
 import org.xml.sax.SAXException;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;

@@ -28,8 +28,8 @@ public class SaveLayoutHook extends ShutDownHook {
 
     private final Properties properties = new Properties();
 
-    public SaveLayoutHook(final boolean conditional, final String purpose) {
-        super(conditional, purpose, NAME, PRIORITY_WINDOW_CLOSING);
+    public SaveLayoutHook() {
+        super(true, "Save Layout", NAME, PRIORITY_WINDOW_CLOSING);
         final File file = new File(Global.Paths.LAYOUT_SAVE_FILE);
 
         try {

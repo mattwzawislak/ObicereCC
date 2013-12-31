@@ -12,7 +12,7 @@ import java.awt.event.WindowListener;
 public class ShutDownHookManager {
 
     private static final ShutDownHook[] HOOKS = new ShutDownHook[]{
-            new SaveLayoutHook(true, "Save Layout")
+            new SaveLayoutHook()
     };
 
     private static final ShutDownHookManager INSTANCE;

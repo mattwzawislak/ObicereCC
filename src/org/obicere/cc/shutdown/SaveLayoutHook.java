@@ -36,16 +36,11 @@ public class SaveLayoutHook extends ShutDownHook {
             if (file.exists()) {
                 properties.load(new FileInputStream(file));
             } else if(!file.createNewFile()){
-                System.err.println("Failed to save settings");
+                System.err.println("Failed to create settings file");
             }
         } catch (final Exception e) {
             e.printStackTrace();
         }
-        fillProperty(PROPERTY_FRAME_WIDTH, 900);
-        fillProperty(PROPERTY_FRAME_HEIGHT, 600);
-        fillProperty(PROPERTY_FRAME_STATE, JFrame.NORMAL);
-        fillProperty(PROPERTY_MAINSPLIT_DIVIDER_LOCATION, 300);
-        fillProperty(PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, 100);
     }
 
     @Override
@@ -67,14 +62,8 @@ public class SaveLayoutHook extends ShutDownHook {
         properties.setProperty(property, value.toString());
     }
 
-    public void fillProperty(final String property, final Object value){
-        if(properties.get(property) == null){
-            saveProperty(property, value);
-        }
-    }
-
-    public Object getProperty(final String property){
-        return properties.get(property);
+    public Object getProperty(final String property, final String defaultValue){
+        return properties.getProperty(property, defaultValue);
     }
 
 }

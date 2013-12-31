@@ -82,8 +82,9 @@ public class Global {
         public static final String SOURCE = HOME + File.separator + "src";
         public static final String SETTINGS = HOME + File.separator + "data";
         public static final String JAVA = SETTINGS + File.separator + "java";
+        public static final String LANGUAGE = SETTINGS + File.separator + "language";
         public static final String LAYOUT_SAVE_FILE = SETTINGS + File.separator + "layout.properties";
-        public static final String[] PATHS = new String[]{APP_DATA, HOME, SOURCE, SETTINGS, JAVA};
+        public static final String[] PATHS = new String[]{APP_DATA, HOME, SOURCE, SETTINGS, JAVA, LANGUAGE};
 
         /**
          * Used to build external folder sets. Internal use only.

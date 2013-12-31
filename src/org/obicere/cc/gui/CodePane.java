@@ -17,13 +17,11 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.obicere.cc.gui;
 
-import org.obicere.cc.configuration.Language;
+import org.obicere.cc.executor.language.Language;
 
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -46,17 +44,6 @@ import java.util.regex.Pattern;
 public class CodePane extends JTextPane {
 
     private static final String MASTER_SPLIT = "([(\\[\\]);\\{}\0.])";
-    private static final String STRING_LITERAL_MATCHER = "\"(?:[^\"\\\\\\n\\r\\u2028\\u2029]|\\\\(?:[^\\n\\rxu0-9]|0(?![0-9])|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|\\n|\\r\\n?))*\""; // Magic, do not touch
-    private static final String COMMENT_MATCHER = "(//.*+)|(?s)(/[*].*?[*]/)";
-    private static final String[] KEYWORDS = {
-            "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const",
-            "continue", "default", "do", "double", "else", "enum", "extends", "false", "final", "finally",
-            "float", "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long",
-            "native", "new", "null", "package", "private", "protected", "public", "return", "short", "static",
-            "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true",
-            "try", "void", "volatile", "while"
-    };
-
     private static final SimpleAttributeSet KEYWORD_SET = new SimpleAttributeSet();
     private static final SimpleAttributeSet NORMAL_SET = new SimpleAttributeSet();
     private static final SimpleAttributeSet OTHER_SET = new SimpleAttributeSet();
@@ -69,6 +56,7 @@ public class CodePane extends JTextPane {
     }
 
     private final boolean color;
+    private final Language language;
 
     /**
      * Constructs a basic <tt>CodePane</tt> instance.
@@ -79,6 +67,7 @@ public class CodePane extends JTextPane {
 
     public CodePane(final String content, final boolean color, final Language language) {
         this.color = color;
+        this.language = language;
 
         final InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
         final ActionMap actionMap = getActionMap();
@@ -188,8 +177,9 @@ public class CodePane extends JTextPane {
             return;
         }
         String code = getText();
-        code = clearMatches(code, STRING_LITERAL_MATCHER);
-        code = clearMatches(code, COMMENT_MATCHER);
+        for (final String literal : language.getLiteralMatchers()) {
+            code = clearMatches(code, literal);
+        }
         code = code.replaceAll(MASTER_SPLIT, " $1 "); // create buffer.
         // this will allow keywords to be adjacent to syntax-related characters
         // EX: (int)
@@ -206,7 +196,7 @@ public class CodePane extends JTextPane {
             if (word.matches("(\u0000)+")) { // an empty String buffer
                 style.setCharacterAttributes(i, word.length(), OTHER_SET, true);
             } else {
-                final boolean keyword = Arrays.binarySearch(KEYWORDS, word) >= 0;
+                final boolean keyword = language.isKeyword(word);
                 style.setCharacterAttributes(i, word.length(), keyword ? KEYWORD_SET : NORMAL_SET, true);
             }
             i += word.length() + 1;

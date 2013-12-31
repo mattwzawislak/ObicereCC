@@ -101,11 +101,11 @@ public class GUI {
         frame.add(main);
         frame.setVisible(true);
         frame.setMinimumSize(new Dimension(900, 600));
-        final int state = Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_FRAME_STATE));
+        final int state = Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_FRAME_STATE, "0"));
         frame.setExtendedState(state);
         if(state != JFrame.MAXIMIZED_BOTH){
-            final int width = Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_FRAME_WIDTH));
-            final int height = Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_FRAME_HEIGHT));
+            final int width = Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_FRAME_WIDTH, "900"));
+            final int height = Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_FRAME_HEIGHT, "600"));
             frame.setSize(width, height);
             frame.setLocationRelativeTo(null);
         }

@@ -22,7 +22,7 @@ import org.obicere.cc.gui.projects.ProjectPanel;
 import org.obicere.cc.gui.projects.ProjectSelector;
 import org.obicere.cc.methods.CustomClassLoader;
 import org.obicere.cc.methods.IOUtils;
-import org.obicere.cc.methods.XMLParser;
+import org.obicere.utility.io.XMLParser;
 import org.xml.sax.SAXException;
 
 import java.io.File;

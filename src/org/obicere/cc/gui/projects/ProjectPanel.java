@@ -18,7 +18,6 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Global;
-import org.obicere.cc.configuration.Language;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.tasks.projects.Project;
 
@@ -72,7 +71,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
         final JButton open = new JButton("Open");
 
-        final JComboBox<Language> languageChoice = new JComboBox<>(Language.values());
+        //final JComboBox<Language> languageChoice = new JComboBox<>(Language.values());
 
         final StringBuilder builder = new StringBuilder();
         final Pattern pattern = Pattern.compile("[A-Z]?[a-z]+|[0-9]+");
@@ -98,7 +97,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
         leftPane.setPreferredSize(new Dimension(25, 150));
 
-        options.add(languageChoice, BorderLayout.NORTH);
+        //options.add(languageChoice, BorderLayout.NORTH);
         options.add(open, BorderLayout.SOUTH);
 
         rightPane.add(options, BorderLayout.SOUTH);

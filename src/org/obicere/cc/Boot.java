@@ -21,6 +21,7 @@ import com.alee.laf.WebLookAndFeel;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.Executor;
+import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.gui.Splash;
 import org.obicere.cc.methods.Updater;
@@ -68,7 +69,9 @@ public class Boot {
             e.printStackTrace();
             System.exit(0);
         }
-        startUp();
+        Paths.build();
+        Updater.update();
+        Language.loadLanguages();
         Splash.setStatus("Loading framework");
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -82,32 +85,5 @@ public class Boot {
                 }
             }
         });
-    }
-
-    /**
-     * Handles universal booting techniques.
-     * Independent techniques are then handled in their likewise instance.
-     *
-     * @since 1.0
-     */
-
-    public static void startUp() {
-        Paths.build();
-        if (!Executor.hasJDKInstalled()) {
-            final String message = "<html>You need to have JDK installed to run ObicereCC.<br>Click 'Ok' if you would like to go to the JDK site.</html>";
-            final int option = JOptionPane.showConfirmDialog(null, message, "JDK Required", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
-            if (option == JOptionPane.OK_OPTION) {
-                final Desktop desktop = Desktop.getDesktop();
-                if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                    try {
-                        desktop.browse(new URI("www.oracle.com/technetwork/java/javase/downloads/"));
-                    } catch (final Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            System.exit(0);
-        }
-        Updater.update();
     }
 }

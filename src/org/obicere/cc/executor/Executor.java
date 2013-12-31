@@ -40,17 +40,6 @@ import java.io.InputStreamReader;
 
 public class Executor {
 
-    public static boolean hasJDKInstalled() {
-        try {
-            final Process r = Runtime.getRuntime().exec("javac -version");
-            final BufferedReader read = new BufferedReader(new InputStreamReader(r.getErrorStream()));
-            return !read.readLine().startsWith("'javac' is not recognized");
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     /**
      * Runs the compiled code from the {@link Executor#compileClass(Project)
      * compileClass(Project)} method. This returns a list of <tt>Result</tt>s

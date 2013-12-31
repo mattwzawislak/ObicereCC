@@ -18,8 +18,8 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Global.Paths;
-import org.obicere.cc.configuration.Language;
 import org.obicere.cc.executor.Executor;
+import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.CodePane;
 import org.obicere.cc.methods.IOUtils;
 import org.obicere.cc.shutdown.SaveLayoutHook;
@@ -65,7 +65,7 @@ public class Editor extends JPanel {
 
         this.project = project;
         this.instructions = new JTextArea();
-        this.codePane = new CodePane(project.getCurrentCode(), true, Language.JAVA);
+        this.codePane = new CodePane(project.getCurrentCode(), true, Language.byName("Java"));
         this.resultsTable = new ResultsTable(project);
         this.defaultInstructionFont = instructions.getFont();
 
@@ -156,8 +156,8 @@ public class Editor extends JPanel {
         setName(project.getName());
 
         codePane.highlightKeywords();
-        mainSplit.setDividerLocation(Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION)));
-        textSplit.setDividerLocation(Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION)));
+        mainSplit.setDividerLocation(Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION, "300")));
+        textSplit.setDividerLocation(Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, "100")));
     }
 
     /**

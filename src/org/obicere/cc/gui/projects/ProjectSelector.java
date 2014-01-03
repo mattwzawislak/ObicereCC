@@ -41,7 +41,7 @@ public class ProjectSelector extends JPanel {
 
     /**
      * Constructs a new project selector. Only to be used inside of the
-     * {@link org.obicere.cc.gui.GUI#openProject(Project)}.
+     * {@link org.obicere.cc.gui.GUI#openProject(Project, Language)}.
      *
      * @since 1.0
      */

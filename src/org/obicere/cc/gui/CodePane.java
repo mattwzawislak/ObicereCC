@@ -18,6 +18,7 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 package org.obicere.cc.gui;
 
 import org.obicere.cc.executor.language.Language;
+import org.obicere.cc.gui.projects.Editor;
 
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
@@ -25,9 +26,9 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.nio.CharBuffer;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,18 +56,14 @@ public class CodePane extends JTextPane {
         StyleConstants.setForeground(NORMAL_SET, new Color(36, 36, 36));
     }
 
-    private final boolean color;
     private final Language language;
 
     /**
      * Constructs a basic <tt>CodePane</tt> instance.
      * This sets the content type equal to Java styling.
-     *
-     * @param color Whether or not to highlight keywords
      */
 
-    public CodePane(final String content, final boolean color, final Language language) {
-        this.color = color;
+    public CodePane(final String content, final Language language) {
         this.language = language;
 
         final InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
@@ -86,7 +83,21 @@ public class CodePane extends JTextPane {
         setText(content);
 
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Newline");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Compile");
 
+        actionMap.put("Compile", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Container parent = CodePane.this.getParent();
+                while (!(parent instanceof Editor)) {
+                    parent = parent.getParent();
+                    if(parent == null){
+                        return;
+                    }
+                }
+                ((Editor) parent).saveAndRun();
+            }
+        });
         actionMap.put("Newline", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -173,9 +184,6 @@ public class CodePane extends JTextPane {
      */
 
     public void highlightKeywords() {
-        if (!color) {
-            return;
-        }
         String code = getText();
         for (final String literal : language.getLiteralMatchers()) {
             code = clearMatches(code, literal);
@@ -221,6 +229,5 @@ public class CodePane extends JTextPane {
         final Element branch = map.getElement(line);
         return getText().substring(branch.getStartOffset(), branch.getEndOffset());
     }
-
 
 }

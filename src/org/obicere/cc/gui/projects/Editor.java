@@ -19,7 +19,10 @@ package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.Executor;
+import org.obicere.cc.executor.compiler.*;
+import org.obicere.cc.executor.compiler.Compiler;
 import org.obicere.cc.executor.language.Language;
+import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.CodePane;
 import org.obicere.cc.methods.IOUtils;
 import org.obicere.cc.shutdown.SaveLayoutHook;
@@ -34,6 +37,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.spi.LocaleNameProvider;
 
 /**
  * The main panel for editing the runner's code, displaying instructions and
@@ -45,13 +49,15 @@ import java.math.BigInteger;
 
 public class Editor extends JPanel {
 
+    private static final Font CONSOLOAS_12 = new Font("Consolas", Font.PLAIN, 12);
     private static final long serialVersionUID = 4203077483497169333L;
+
     private final CodePane codePane;
     private final ResultsTable resultsTable;
     private final JTextArea instructions;
     private final Project project;
-    private static final Font CONSOLOAS_12 = new Font("Consolas", Font.PLAIN, 12);
     private final Font defaultInstructionFont;
+    private final Language language;
 
     /**
      * Constructs a new editor based off of the project. Will load code and
@@ -60,14 +66,15 @@ public class Editor extends JPanel {
      * @param project The project to base this runner off of.
      */
 
-    public Editor(final Project project) {
+    public Editor(final Project project, final Language language) {
         super(new BorderLayout());
 
         this.project = project;
         this.instructions = new JTextArea();
-        this.codePane = new CodePane(project.getCurrentCode(), true, Language.byName("Java"));
+        this.codePane = new CodePane(project.getCurrentCode(), language);
         this.resultsTable = new ResultsTable(project);
         this.defaultInstructionFont = instructions.getFont();
+        this.language = language;
 
         final SaveLayoutHook hook = ShutDownHookManager.hookByName(SaveLayoutHook.class, SaveLayoutHook.NAME);
         final JButton run = new JButton("Run");
@@ -89,17 +96,7 @@ public class Editor extends JPanel {
         });
 
         codePane.requestFocus();
-        codePane.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_R && e.isControlDown()) {
-                    saveAndRun();
-                    if (instructions.getFont().equals(CONSOLOAS_12)) {
-                        setInstructionsText(project.getProperties().getDescription(), false);
-                    }
-                }
-            }
-        });
+
         instructions.addFocusListener(new FocusListener() {
 
             @Override
@@ -198,15 +195,17 @@ public class Editor extends JPanel {
                 final File classF = new File(project.getFile().getAbsolutePath().replace(".java", ".class"));
                 final File data = new File(Paths.SETTINGS + File.separator + "data.dat");
                 if (project.getFile().delete() && classF.delete()) {
-                    try {
-                        final String words = new String(IOUtils.readData(data)).replace(String.format("|%040x|", new BigInteger(project.getName().getBytes())), "");
-                        IOUtils.write(data, words.getBytes());
-                        codePane.setText(project.getProperties().getSkeleton());
-                        codePane.highlightKeywords();
-                        project.setComplete(false);
-                        return;
-                    } catch (final IOException e) {
-                        e.printStackTrace();
+                    if (project.isComplete()) {
+                        try {
+                            final String words = new String(IOUtils.readData(data)).replace(String.format("|%040x|", new BigInteger(project.getName().getBytes())), "");
+                            IOUtils.write(data, words.getBytes());
+                            codePane.setText(project.getProperties().getSkeleton());
+                            codePane.highlightKeywords();
+                            project.setComplete(false);
+                            return;
+                        } catch (final IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -222,7 +221,7 @@ public class Editor extends JPanel {
             JOptionPane.showMessageDialog(null, "Error saving current code!");
             return;
         }
-        resultsTable.setResults(Executor.runAndGetResults(project));
+        final Compiler compiler = Executor.compilerByLanguage(language);
+        resultsTable.setResults(compiler.runAndGetResults(project));
     }
-
 }

@@ -22,6 +22,7 @@ import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.Executor;
 import org.obicere.cc.executor.language.Language;
+import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.gui.Splash;
 import org.obicere.cc.methods.Updater;
@@ -71,7 +72,7 @@ public class Boot {
         }
         Paths.build();
         Updater.update();
-        Language.loadLanguages();
+        LanguageHandler.loadLanguages();
         Splash.setStatus("Loading framework");
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

@@ -18,6 +18,8 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Global;
+import org.obicere.cc.executor.language.Language;
+import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.tasks.projects.Project;
 
@@ -26,6 +28,7 @@ import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,7 +74,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
         final JButton open = new JButton("Open");
 
-        //final JComboBox<Language> languageChoice = new JComboBox<>(Language.values());
+        final JComboBox<Language> languageChoice = new JComboBox<>(new Vector<>(LanguageHandler.getLoadedLanguage()));
 
         final StringBuilder builder = new StringBuilder();
         final Pattern pattern = Pattern.compile("[A-Z]?[a-z]+|[0-9]+");
@@ -97,7 +100,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
         leftPane.setPreferredSize(new Dimension(25, 150));
 
-        //options.add(languageChoice, BorderLayout.NORTH);
+        options.add(languageChoice, BorderLayout.NORTH);
         options.add(open, BorderLayout.SOUTH);
 
         rightPane.add(options, BorderLayout.SOUTH);
@@ -111,7 +114,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                GUI.openProject(project);
+                GUI.openProject(project, (Language) languageChoice.getSelectedItem());
             }
 
         });

@@ -1,5 +1,6 @@
 package org.obicere.cc.executor.compiler;
 
+import org.obicere.cc.executor.Result;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.tasks.projects.Project;
@@ -18,6 +19,8 @@ public abstract class Compiler {
     public abstract String getName();
 
     public abstract String prepareCommand(final Project project, final File file);
+
+    public abstract Result[] runAndGetResults(final Project project);
 
     public final boolean compile(final Project project, final File file){
         try {

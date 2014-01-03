@@ -18,6 +18,7 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 package org.obicere.cc.gui;
 
 import org.obicere.cc.configuration.Global;
+import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.gui.projects.ProjectTabPanel;
 import org.obicere.cc.methods.Updater;
@@ -119,11 +120,11 @@ public class GUI {
      * @since 1.0
      */
 
-    public synchronized static void openProject(final Project project) {
+    public synchronized static void openProject(final Project project, final Language language) {
         if (project == null) {
             return;
         }
-        final Editor editor = new Editor(project);
+        final Editor editor = new Editor(project, language);
         editor.setInstructionsText(project.getProperties().getDescription(), false);
         if (tabByName(project.getName()) == null) {
             final int index = tabs.getTabCount();

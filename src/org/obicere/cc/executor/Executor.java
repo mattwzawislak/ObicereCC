@@ -25,8 +25,6 @@ import org.obicere.cc.executor.language.Language;
  * Source code compiler and executor. This is used internally during the run of
  * the input code.
  *
- * Lots of magic happens here. Do not touch anything.
- *
  * @author Obicere
  * @since 1.0
  */

@@ -184,6 +184,9 @@ public class CodePane extends JTextPane {
      */
 
     public void highlightKeywords() {
+        if(language == null){
+            return;
+        }
         String code = getText();
         for (final String literal : language.getLiteralMatchers()) {
             code = clearMatches(code, literal);

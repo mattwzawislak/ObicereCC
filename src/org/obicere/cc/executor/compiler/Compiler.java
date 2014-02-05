@@ -50,6 +50,7 @@ public class Compiler {
         } catch (final Exception e) {
             return null;
         }
+        return null;
     }
 
     public String getCommand(final Project project) {

@@ -1,49 +1,38 @@
 package org.obicere.cc.executor.compiler;
 
+import org.obicere.cc.executor.ProcessRunner;
 import org.obicere.cc.executor.Result;
-import org.obicere.cc.gui.GUI;
-import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.tasks.projects.Project;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
 
 /**
+ * org.obicere.cc.executor.compiler
+ * Created: 2/4/14 3:17 PM
+ *
  * @author Obicere
+ * @version 1.0
  */
-public abstract class Compiler {
+public class Compiler {
 
-    public abstract boolean isInstalled();
+    private final String name;
 
-    public abstract String getName();
+    public Compiler(final String name){
+        this.name = name;
+    }
 
-    public abstract String prepareCommand(final Project project, final File file);
+    public Result[] compileAndRun(final Project project){
+        final String command = getCommand(project);
+        return null;
+    }
 
-    public abstract Result[] runAndGetResults(final Project project);
+    public String getCommand(final Project project){
+        final File file = project.getFile();
+        return String.format("javac -g -d %s %s", file.getParent(), file.getPath());
+    }
 
-    public final boolean compile(final Project project, final File file){
-        try {
-            final Editor editor = GUI.tabByName(project.getName());
-            final String command = prepareCommand(project, file);
-            final Process p = Runtime.getRuntime().exec(command, null, null);
-            p.waitFor();
-            final BufferedReader error = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String line;
-            final StringBuilder replacement = new StringBuilder();
-            while ((line = error.readLine()) != null) {
-                replacement.append(line);
-                replacement.append('\n');
-            }
-            if (replacement.length() != 0) {
-                editor.setInstructionsText(replacement.toString(), true);
-                return false;
-            }
-            return true;
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+    public String getName(){
+        return name;
     }
 
 }

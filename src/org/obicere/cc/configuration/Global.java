@@ -59,7 +59,7 @@ public class Global {
     private static Image load(final String url) {
         try {
             final Toolkit tk = Toolkit.getDefaultToolkit();
-            final URL path = Global.class.getResource(url);
+            final URL path = Global.class.getClassLoader().getResource(url);
             final Image img = tk.createImage(path);
             tk.prepareImage(img, -1, -1, null);
             return img;
@@ -128,11 +128,12 @@ public class Global {
 
         public static final String HOME = "http://www.obicere.uni.me";
         public static final String BIN = HOME + "/ccbin/";
-        public static final String RESOURCES = "/resource/";
+        public static final String RESOURCES = "resource/";
         public static final String ICON = RESOURCES + "icon.png";
         public static final String CLOSE = RESOURCES + "close.png";
         public static final String COMPLETE = RESOURCES + "complete.png";
         public static final String ANIMATION = RESOURCES + "gear_spin.gif";
+        public static final String COMPILERS = RESOURCES + "compilers/";
     }
 
     /**

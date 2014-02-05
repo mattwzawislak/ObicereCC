@@ -17,10 +17,6 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.obicere.cc.executor;
 
-import org.obicere.cc.executor.compiler.*;
-import org.obicere.cc.executor.compiler.Compiler;
-import org.obicere.cc.executor.language.Language;
-
 /**
  * Source code compiler and executor. This is used internally during the run of
  * the input code.
@@ -31,23 +27,6 @@ import org.obicere.cc.executor.language.Language;
 
 public class Executor {
 
-    public static final Compiler JAVA_COMPILER = new JavaCompiler();
 
-    public static Compiler compilerByLanguage(final Language language){
-        switch(language.getName()){
-            case "Java":
-                return JAVA_COMPILER;
-            default:
-                throw new UnsupportedLanguageException(language.getName());
-        }
-    }
-
-    public static class UnsupportedLanguageException extends RuntimeException {
-
-        public UnsupportedLanguageException(final String message){
-            super(message);
-        }
-
-    }
 
 }

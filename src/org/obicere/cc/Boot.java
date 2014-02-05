@@ -21,6 +21,7 @@ import com.alee.laf.WebLookAndFeel;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.Executor;
+import org.obicere.cc.executor.compiler.CompilerHandler;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.GUI;
@@ -72,6 +73,7 @@ public class Boot {
         }
         Paths.build();
         Updater.update();
+        CompilerHandler.loadCompilers();
         LanguageHandler.loadLanguages();
         Splash.setStatus("Loading framework");
         SwingUtilities.invokeLater(new Runnable() {

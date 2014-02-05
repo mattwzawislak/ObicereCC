@@ -19,10 +19,7 @@ package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.Executor;
-import org.obicere.cc.executor.compiler.*;
-import org.obicere.cc.executor.compiler.Compiler;
 import org.obicere.cc.executor.language.Language;
-import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.CodePane;
 import org.obicere.cc.methods.IOUtils;
 import org.obicere.cc.shutdown.SaveLayoutHook;
@@ -37,7 +34,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.spi.LocaleNameProvider;
 
 /**
  * The main panel for editing the runner's code, displaying instructions and
@@ -221,7 +217,7 @@ public class Editor extends JPanel {
             JOptionPane.showMessageDialog(null, "Error saving current code!");
             return;
         }
-        final Compiler compiler = Executor.compilerByLanguage(language);
-        resultsTable.setResults(compiler.runAndGetResults(project));
+        //final Compiler compiler = Executor.compilerByLanguage(language);
+        //resultsTable.setResults(compiler.runAndGetResults(project));
     }
 }

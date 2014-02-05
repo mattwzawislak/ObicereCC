@@ -18,6 +18,7 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 package org.obicere.cc.tasks.projects;
 
 import org.obicere.cc.configuration.Global.Paths;
+import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.ProjectPanel;
 import org.obicere.cc.gui.projects.ProjectSelector;
 import org.obicere.cc.methods.CustomClassLoader;
@@ -202,6 +203,10 @@ public class Project {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public String[] run(final Language language){
+        return null;
     }
 
     /**

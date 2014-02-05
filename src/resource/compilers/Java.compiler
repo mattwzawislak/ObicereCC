@@ -1,4 +1,0 @@
-javac
-javac -g -d %s %s
-.java
-.class

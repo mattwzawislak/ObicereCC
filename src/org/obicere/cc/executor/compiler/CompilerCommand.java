@@ -8,19 +8,25 @@ import org.obicere.cc.executor.ProcessRunner;
  */
 public class CompilerCommand {
 
-    private final String command;
+    private final String program;
     private final String format;
 
-    private boolean installed;
-
-    public CompilerCommand(final String command, final String format) {
-        this.command = command;
+    public CompilerCommand(final String program, final String format) {
+        this.program = program;
         this.format = format;
+    }
+
+    public String getFormat(){
+        return format;
+    }
+
+    public String getProgram(){
+        return program;
     }
 
     public boolean check() {
         try {
-            final String[] str = ProcessRunner.run(command);
+            final String[] str = ProcessRunner.run(program);
             if (str.length <= 0) {
                 return false;
             }
@@ -33,7 +39,7 @@ public class CompilerCommand {
                     failure = "%s";
                     break;
             }
-            return !str[0].equals(String.format(failure, command));
+            return !str[0].equals(String.format(failure, program));
         } catch (final Exception e) {
             e.printStackTrace();
         }

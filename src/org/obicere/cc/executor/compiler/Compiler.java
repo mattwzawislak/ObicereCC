@@ -1,5 +1,6 @@
 package org.obicere.cc.executor.compiler;
 
+import org.obicere.cc.executor.ProcessRunner;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.tasks.projects.Project;
 
@@ -15,23 +16,25 @@ import java.io.File;
 public class Compiler {
 
     private final String name;
-    private final String[] extensions;
+    private final String sourceExt;
+    private final String compiledExt;
     private final CompilerCommand[] commands;
 
     private CompilerCommand workingCommand;
 
-    public Compiler(final String name, final String[] extensions, final CompilerCommand[] commands){
+    public Compiler(final String name, final String sourceExt, final String compiledExt, final CompilerCommand[] commands) {
         this.name = name;
-        this.extensions = extensions;
+        this.sourceExt = sourceExt;
+        this.compiledExt = compiledExt;
         this.commands = commands;
     }
 
-    public CompilerCommand getCompilerCommand(){
-        if(workingCommand != null){
+    public CompilerCommand getCompilerCommand() {
+        if (workingCommand != null) {
             return workingCommand;
         }
-        for(final CompilerCommand command : commands){
-            if(command.check()){
+        for (final CompilerCommand command : commands) {
+            if (command.check()) {
                 workingCommand = command;
                 break;
             }
@@ -40,17 +43,28 @@ public class Compiler {
         return null;
     }
 
-    public Result[] compileAndRun(final Project project){
-        final String command = getCommand(project);
-        return null;
+    public Result[] compileAndRun(final Project project) {
+        try {
+            final String command = getCommand(project);
+            final String[] stream = ProcessRunner.run(command);
+        } catch (final Exception e) {
+            return null;
+        }
     }
 
-    public String getCommand(final Project project){
+    public String getCommand(final Project project) {
         final File file = project.getFile();
-        return String.format("javac -g -d %s %s", file.getParent(), file.getPath());
+        final CompilerCommand command = getCompilerCommand();
+        String exec = command.getFormat();
+        exec = exec.replace("$exec", command.getProgram());
+        exec = exec.replace("$path", file.getParent());
+        exec = exec.replace("$file", file.getName());
+        exec = exec.replace("$sext", sourceExt);
+        exec = exec.replace("$cext", compiledExt);
+        return exec;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 

@@ -19,6 +19,8 @@ public class CompilerHandler {
     private static final LinkedList<Compiler> LOADED_COMPILERS = new LinkedList<>();
 
     public static void loadCompilers() {
+
+        /*
         try {
             final Enumeration<URL> files = CompilerHandler.class.getClassLoader().getResources(Global.URLs.COMPILERS);
             while(files.hasMoreElements()){
@@ -27,7 +29,7 @@ public class CompilerHandler {
             }
         } catch (final Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 

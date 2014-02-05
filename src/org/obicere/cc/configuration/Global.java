@@ -143,7 +143,7 @@ public class Global {
      * @see Global#getOS()
      * @since 1.0
      */
-    public enum OS {
+    public static enum OS {
         WINDOWS, MAC, LINUX, OTHER
     }
 

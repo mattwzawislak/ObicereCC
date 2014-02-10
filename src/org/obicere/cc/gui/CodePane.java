@@ -26,7 +26,6 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.nio.CharBuffer;
 import java.util.regex.Matcher;
@@ -184,9 +183,6 @@ public class CodePane extends JTextPane {
      */
 
     public void highlightKeywords() {
-        if(language == null){
-            return;
-        }
         String code = getText();
         for (final String literal : language.getLiteralMatchers()) {
             code = clearMatches(code, literal);

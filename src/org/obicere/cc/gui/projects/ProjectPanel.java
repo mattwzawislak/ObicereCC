@@ -68,13 +68,13 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
         final JPanel centerPane = new JPanel(new GridLayout(3, 1));
         final JPanel options = new JPanel(new BorderLayout(5, 5));
 
-        final JLabel difficulty = new JLabel(Project.DIFFICULTY[project.getProperties().getCategory() - 1]);
+        final JLabel difficulty = new JLabel(Project.DIFFICULTY[project.getDifficulty() - 1]);
         final JLabel name = new JLabel();
-        final JLabel author = new JLabel(project.getProperties().getAuthor());
+        final JLabel author = new JLabel(project.getAuthor());
 
         final JButton open = new JButton("Open");
 
-        final JComboBox<Language> languageChoice = new JComboBox<>(new Vector<>(LanguageHandler.getLoadedLanguage()));
+        final JComboBox<String> languageChoice = new JComboBox<>(LanguageHandler.getSupportedLanguages());
 
         final StringBuilder builder = new StringBuilder();
         final Pattern pattern = Pattern.compile("[A-Z]?[a-z]+|[0-9]+");
@@ -89,7 +89,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
             name.setText(project.getName());
         }
 
-        String description = project.getProperties().getDescription();
+        String description = project.getDescription();
         description = description.replace("\n", "<br>");
         description = "<html>".concat(description).concat("</html>");
 
@@ -114,7 +114,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                GUI.openProject(project, (Language) languageChoice.getSelectedItem());
+                GUI.openProject(project, LanguageHandler.getLanguage((String) languageChoice.getSelectedItem()));
             }
 
         });

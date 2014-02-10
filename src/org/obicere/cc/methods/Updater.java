@@ -26,7 +26,6 @@ import org.obicere.cc.tasks.projects.Project;
 import javax.swing.*;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.URL;
 import java.util.Enumeration;
@@ -104,7 +103,7 @@ public class Updater {
             }
             final String runner = "Runner";
             for (final Project p : Project.DATA) {
-                currentRunnersList.put(p.getName() + runner, p.getProperties().getVersion());
+                currentRunnersList.put(p.getName() + runner, p.getVersion());
             }
             for (final String key : updatedRunnersList.keySet()) {
                 if (!currentRunnersList.containsKey(key) || updatedRunnersList.get(key) > currentRunnersList.get(key)) {
@@ -134,11 +133,6 @@ public class Updater {
             final byte[] data = IOUtils.download(new URL(src + runnerName + ".class"));
             final File out = new File(Global.Paths.SOURCE, runnerName + ".class");
             IOUtils.write(out, data);
-
-            Splash.setStatus("Downloading " + runnerName + ".xml");
-            final byte[] xdata = IOUtils.download(new URL(src + runnerName + ".xml"));
-            final File xout = new File(Global.Paths.SOURCE, runnerName + ".xml");
-            IOUtils.write(xout, xdata);
 
         } catch (final IOException e) {
             System.err.println("Unable to download " + runnerName);

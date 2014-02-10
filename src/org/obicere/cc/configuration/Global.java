@@ -81,10 +81,9 @@ public class Global {
         public static final String HOME = APP_DATA + File.separator + "ObicereCC";
         public static final String SOURCE = HOME + File.separator + "src";
         public static final String SETTINGS = HOME + File.separator + "data";
-        public static final String JAVA = SETTINGS + File.separator + "java";
         public static final String LANGUAGE = SETTINGS + File.separator + "language";
         public static final String LAYOUT_SAVE_FILE = SETTINGS + File.separator + "layout.properties";
-        public static final String[] PATHS = new String[]{APP_DATA, HOME, SOURCE, SETTINGS, JAVA, LANGUAGE};
+        public static final String[] PATHS = new String[]{APP_DATA, HOME, SOURCE, SETTINGS, LANGUAGE};
 
         /**
          * Used to build external folder sets. Internal use only.
@@ -134,6 +133,7 @@ public class Global {
         public static final String COMPLETE = RESOURCES + "complete.png";
         public static final String ANIMATION = RESOURCES + "gear_spin.gif";
         public static final String COMPILERS = RESOURCES + "compilers/";
+        public static final String LANGUAGES = RESOURCES + "languages/";
     }
 
     /**

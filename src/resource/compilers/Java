@@ -1,2 +1,2 @@
 .java;.class
-javac; $exec -g -d $path $file
+javac; $exec -g -nowarn "$file"

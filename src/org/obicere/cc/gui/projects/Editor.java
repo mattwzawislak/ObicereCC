@@ -18,7 +18,7 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Global.Paths;
-import org.obicere.cc.executor.Executor;
+import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.CodePane;
 import org.obicere.cc.methods.IOUtils;
@@ -67,7 +67,7 @@ public class Editor extends JPanel {
 
         this.project = project;
         this.instructions = new JTextArea();
-        this.codePane = new CodePane(project.getCurrentCode(), language);
+        this.codePane = new CodePane(project.getCurrentCode(language), language);
         this.resultsTable = new ResultsTable(project);
         this.defaultInstructionFont = instructions.getFont();
         this.language = language;
@@ -98,7 +98,7 @@ public class Editor extends JPanel {
             @Override
             public void focusGained(FocusEvent e) {
                 if (instructions.getFont().equals(CONSOLOAS_12)) {
-                    setInstructionsText(project.getProperties().getDescription(), false);
+                    setInstructionsText(project.getDescription(), false);
                 }
             }
 
@@ -187,15 +187,15 @@ public class Editor extends JPanel {
     public void clearSaveFiles() {
         final int n = JOptionPane.showConfirmDialog(null, "This will delete all progress on this project.\nDo you wish to continue?", "Continue?", JOptionPane.YES_NO_OPTION);
         if (n == JOptionPane.YES_OPTION) {
-            if (project.getFile().exists()) {
-                final File classF = new File(project.getFile().getAbsolutePath().replace(".java", ".class"));
+            if (project.getFile(language).exists()) {
+                final File classF = new File(project.getFile(language).getAbsolutePath().replace(".java", ".class"));
                 final File data = new File(Paths.SETTINGS + File.separator + "data.dat");
-                if (project.getFile().delete() && classF.delete()) {
+                if (project.getFile(language).delete() && classF.delete()) {
                     if (project.isComplete()) {
                         try {
                             final String words = new String(IOUtils.readData(data)).replace(String.format("|%040x|", new BigInteger(project.getName().getBytes())), "");
                             IOUtils.write(data, words.getBytes());
-                            codePane.setText(project.getProperties().getSkeleton());
+                            codePane.setText(language.getSkeleton(project));
                             codePane.highlightKeywords();
                             project.setComplete(false);
                             return;
@@ -213,11 +213,11 @@ public class Editor extends JPanel {
         if (codePane.getText().length() == 0 || project == null) {
             return;
         }
-        if (!project.save(codePane.getText())) {
+        if (!project.save(codePane.getText(), language)) {
             JOptionPane.showMessageDialog(null, "Error saving current code!");
             return;
         }
-        //final Compiler compiler = Executor.compilerByLanguage(language);
-        //resultsTable.setResults(compiler.runAndGetResults(project));
+        final Result[] results = language.compileAndRun(project);
+        resultsTable.setResults(results);
     }
 }

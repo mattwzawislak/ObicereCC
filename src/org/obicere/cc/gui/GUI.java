@@ -125,7 +125,7 @@ public class GUI {
             return;
         }
         final Editor editor = new Editor(project, language);
-        editor.setInstructionsText(project.getProperties().getDescription(), false);
+        editor.setInstructionsText(project.getDescription(), false);
         if (tabByName(project.getName()) == null) {
             final int index = tabs.getTabCount();
             tabs.add(editor, index);

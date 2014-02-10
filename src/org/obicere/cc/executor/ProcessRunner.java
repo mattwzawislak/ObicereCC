@@ -3,6 +3,7 @@ package org.obicere.cc.executor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -14,10 +15,10 @@ import java.util.LinkedList;
  */
 public class ProcessRunner {
 
-    private static final Runtime RUNTIME = Runtime.getRuntime();
-
     private static Process runProcess(final String command) throws IOException {
-        final ProcessBuilder builder = new ProcessBuilder(command);
+        final String[] split = command.split(" +(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+        System.out.println(Arrays.toString(split));
+        final ProcessBuilder builder = new ProcessBuilder(split);
         builder.redirectErrorStream(true);
         return builder.start();
     }
@@ -31,14 +32,9 @@ public class ProcessRunner {
 
         while ((line = reader.readLine()) != null) {
             list.add(line);
-            try {
-                if (proc.exitValue() == 0) {
-                    break;
-                }
-            } catch (final IllegalThreadStateException t) {
-                proc.destroy();
-            }
         }
+        reader.close();
+        proc.destroy();
         return list.toArray(new String[list.size()]);
     }
 

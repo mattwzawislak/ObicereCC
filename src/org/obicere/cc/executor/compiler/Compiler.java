@@ -5,6 +5,7 @@ import org.obicere.cc.executor.Result;
 import org.obicere.cc.tasks.projects.Project;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * org.obicere.cc.executor.compiler
@@ -36,37 +37,49 @@ public class Compiler {
         for (final CompilerCommand command : commands) {
             if (command.check()) {
                 workingCommand = command;
-                break;
+                return workingCommand;
             }
         }
         // Throw a message
         return null;
     }
 
-    public Result[] compileAndRun(final Project project) {
+    public boolean compile(final File file) {
         try {
-            final String command = getCommand(project);
+            final String command = getCommand(file);
             final String[] stream = ProcessRunner.run(command);
+            if (stream.length == 0) {
+                return true;
+            }
+            System.out.println(stream[0]);
         } catch (final Exception e) {
-            return null;
+            e.printStackTrace();
         }
-        return null;
+        return false;
     }
 
-    public String getCommand(final Project project) {
-        final File file = project.getFile();
+    public String getCommand(final File file) {
         final CompilerCommand command = getCompilerCommand();
         String exec = command.getFormat();
         exec = exec.replace("$exec", command.getProgram());
         exec = exec.replace("$path", file.getParent());
-        exec = exec.replace("$file", file.getName());
+        exec = exec.replace("$name", file.getName());
+        exec = exec.replace("$file", file.getAbsolutePath());
         exec = exec.replace("$sext", sourceExt);
         exec = exec.replace("$cext", compiledExt);
-        return exec;
+        return exec.trim();
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getSourceExtension(){
+        return sourceExt;
+    }
+
+    public String getCompiledExtension(){
+        return compiledExt;
     }
 
 }

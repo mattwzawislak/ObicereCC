@@ -17,11 +17,11 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.obicere.cc.tasks.projects;
 
-import org.obicere.cc.executor.Result;
+import org.obicere.cc.executor.Case;
+import org.obicere.utility.Joiner;
 
 /**
- * All Runners must extend this class. It will handle all manifest properties
- * and project-specific builds.
+ * All Runners must extend this class.
  *
  * @author Obicere
  * @since 1.0
@@ -35,5 +35,20 @@ public abstract class Runner {
      *
      * @since 1.0
      */
-    public abstract Result[] getResults(Class<?> clazz);
+
+    public abstract Case[] getCases();
+
+    public abstract Parameter[] getParameters();
+
+    public abstract String getMethodName();
+
+    public abstract Class<?> getReturnType();
+
+    public String getAlternativeMethodName() {
+        final StringBuilder builder = new StringBuilder();
+        final String[] tokens = getMethodName().toLowerCase().split("(?=[A-Z])");
+        final Joiner joiner = Joiner.joinOn("_");
+        return joiner.join(tokens);
+    }
+
 }

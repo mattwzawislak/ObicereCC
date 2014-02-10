@@ -23,7 +23,6 @@ import org.obicere.cc.gui.projects.ProjectPanel;
 import org.obicere.cc.gui.projects.ProjectSelector;
 import org.obicere.cc.methods.CustomClassLoader;
 import org.obicere.cc.methods.IOUtils;
-import org.obicere.utility.io.XMLParser;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -44,8 +43,7 @@ public class Project {
     public static final LinkedList<Project> DATA = new LinkedList<>();
 
     private final String name;
-    private final File file;
-    private final Properties properties;
+    private final Manifest manifest;
     private final Class<?> runner;
     private boolean complete;
 
@@ -59,15 +57,10 @@ public class Project {
     public Project(final String name, final File runnerFile) throws IOException, SAXException {
         final File data = new File(Paths.SETTINGS + File.separator + "data.dat");
         final String in = new String(IOUtils.readData(data));
-        final XMLParser parser = XMLParser.getInstance();
-        final File xml = new File(Paths.SOURCE, name + "Runner.xml");
-        parser.prepare(xml);
-
-        this.properties = new Properties(parser.getAttributeMapping());
         this.name = name;
         this.complete = (in.contains(String.format("|%040x|", new BigInteger(name.getBytes()))));
-        this.file = new File(Paths.JAVA + File.separator + name + ".java");
         this.runner = CustomClassLoader.loadClassFromFile(runnerFile);
+        this.manifest = runner.getAnnotation(Manifest.class);
     }
 
     /**
@@ -80,6 +73,22 @@ public class Project {
         return name;
     }
 
+    public String getDescription(){
+        return manifest.description();
+    }
+
+    public double getVersion(){
+        return manifest.version();
+    }
+
+    public String getAuthor(){
+        return manifest.author();
+    }
+
+    public int getDifficulty(){
+        return manifest.difficulty();
+    }
+
     /**
      * Used to sort and distribute difficulties
      *
@@ -87,12 +96,7 @@ public class Project {
      */
 
     public String getSortName() {
-        return properties.getCategory() + getName();
-    }
-
-
-    public Properties getProperties() {
-        return properties;
+        return manifest.difficulty() + getName();
     }
 
     /**
@@ -111,8 +115,9 @@ public class Project {
      * @return formatted String containing user's code
      */
 
-    public String getCurrentCode() {
+    public String getCurrentCode(final Language language) {
         try {
+            final File file = getFile(language);
             if (file.exists()) {
                 final byte[] data = IOUtils.readData(file);
                 return new String(data);
@@ -120,7 +125,7 @@ public class Project {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return properties.getSkeleton();
+        return language.getSkeleton(this);
     }
 
 
@@ -130,8 +135,8 @@ public class Project {
      * @return The file type to read and store data
      */
 
-    public File getFile() {
-        return file;
+    public File getFile(final Language language) {
+        return new File(language.getDirectory(), name + language.getSourceExtension());
     }
 
     /**
@@ -152,7 +157,7 @@ public class Project {
 
     @Override
     public int hashCode() {
-        return name.hashCode() * 31 + file.hashCode() * 17;
+        return name.hashCode() * 31 + manifest.difficulty() * 17;
     }
 
     /**
@@ -195,18 +200,14 @@ public class Project {
      * @return <tt>true</tt> if it saved correctly.
      */
 
-    public boolean save(final String code) {
+    public boolean save(final String code, final Language language) {
         try {
-            IOUtils.write(getFile(), code.getBytes());
+            IOUtils.write(getFile(language), code.getBytes());
             return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-    }
-
-    public String[] run(final Language language){
-        return null;
     }
 
     /**

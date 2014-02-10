@@ -18,21 +18,15 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 package org.obicere.cc;
 
 import com.alee.laf.WebLookAndFeel;
-import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Global.Paths;
-import org.obicere.cc.executor.Executor;
-import org.obicere.cc.executor.compiler.CompilerHandler;
-import org.obicere.cc.executor.language.Language;
-import org.obicere.cc.executor.language.LanguageHandler;
+import org.obicere.cc.executor.ProcessRunner;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.gui.Splash;
 import org.obicere.cc.methods.Updater;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 
 import javax.swing.*;
-import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 
 /**
  * The boot class is responsible for basic loading for the client. Bringing all
@@ -60,6 +54,16 @@ public class Boot {
      */
 
     public static void main(final String[] args) {
+        try {
+            final String[] stream = ProcessRunner.run("javac");
+            for (final String str : stream) {
+                System.out.println(str);
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+        System.exit(0);
+
         ShutDownHookManager.setup();
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
@@ -73,8 +77,6 @@ public class Boot {
         }
         Paths.build();
         Updater.update();
-        CompilerHandler.loadCompilers();
-        LanguageHandler.loadLanguages();
         Splash.setStatus("Loading framework");
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

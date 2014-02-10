@@ -16,30 +16,36 @@ public class CompilerCommand {
         this.format = format;
     }
 
-    public String getFormat(){
+    public String getFormat() {
         return format;
     }
 
-    public String getProgram(){
+    public String getProgram() {
         return program;
     }
 
     public boolean check() {
         try {
-            final String[] str = ProcessRunner.run(program);
-            if (str.length <= 0) {
-                return false;
-            }
+            final String command;
             final String failure;
             switch (Global.getOS()) {
                 case WINDOWS:
-                    failure = "'%s' is not recognized as an internal or external command,";
+                    command = "where " + program;
+                    failure = "INFO: Could not find";
+                    break;
+                case MAC:
+                    command = "where " + program;
+                    failure = ""; //TODO
+                    break;
+                case LINUX:
+                    command = "whereis " + program;
+                    failure = ""; //TODO
                     break;
                 default:
-                    failure = "%s";
-                    break;
+                    return false;
             }
-            return !str[0].equals(String.format(failure, program));
+            final String[] str = ProcessRunner.run(command);
+            return str.length != 0 && !str[0].startsWith(failure);
         } catch (final Exception e) {
             e.printStackTrace();
         }

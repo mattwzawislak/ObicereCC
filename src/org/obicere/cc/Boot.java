@@ -54,16 +54,6 @@ public class Boot {
      */
 
     public static void main(final String[] args) {
-        try {
-            final String[] stream = ProcessRunner.run("javac");
-            for (final String str : stream) {
-                System.out.println(str);
-            }
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        System.exit(0);
-
         ShutDownHookManager.setup();
         try {
             SwingUtilities.invokeAndWait(new Runnable() {

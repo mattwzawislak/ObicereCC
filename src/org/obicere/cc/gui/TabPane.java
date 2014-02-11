@@ -18,6 +18,7 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 package org.obicere.cc.gui;
 
 import org.obicere.cc.configuration.Global;
+import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.tasks.projects.Project;
 
 import javax.swing.*;
@@ -29,7 +30,7 @@ public class TabPane extends JPanel {
 
     private static final Dimension TAB_SIZE = new Dimension(170, 30);
 
-    public TabPane(final Project project) {
+    public TabPane(final Project project, final Language language) {
         super(new FlowLayout(FlowLayout.LEFT, 0, 2));
         final JLabel label = new JLabel(project.getName());
         final JPanel buffer = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -45,7 +46,7 @@ public class TabPane extends JPanel {
         close.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                GUI.removeTab(project.getName());
+                GUI.removeTab(project.getName(), language);
             }
         });
 

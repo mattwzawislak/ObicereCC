@@ -77,7 +77,7 @@ public class Updater {
         final HashSet<String> sources = new HashSet<>();
         sources.add(URLs.BIN);
         try {
-            final File sourceFile = new File(Paths.SETTINGS, "sources.txt");
+            final File sourceFile = new File(Paths.DATA, "sources.txt");
             if (sourceFile.exists() || sourceFile.createNewFile()) {
                 final BufferedReader br = new BufferedReader(new FileReader(sourceFile));
                 String next;

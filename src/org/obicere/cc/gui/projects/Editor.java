@@ -184,29 +184,28 @@ public class Editor extends JPanel {
         instructions.append(string);
     }
 
+    public Language getLanguage() {
+        return language;
+    }
+
     public void clearSaveFiles() {
         final int n = JOptionPane.showConfirmDialog(null, "This will delete all progress on this project.\nDo you wish to continue?", "Continue?", JOptionPane.YES_NO_OPTION);
         if (n == JOptionPane.YES_OPTION) {
-            if (project.getFile(language).exists()) {
-                final File classF = new File(project.getFile(language).getAbsolutePath().replace(".java", ".class"));
-                final File data = new File(Paths.SETTINGS + File.separator + "data.dat");
-                if (project.getFile(language).delete() && classF.delete()) {
-                    if (project.isComplete()) {
-                        try {
-                            final String words = new String(IOUtils.readData(data)).replace(String.format("|%040x|", new BigInteger(project.getName().getBytes())), "");
-                            IOUtils.write(data, words.getBytes());
-                            codePane.setText(language.getSkeleton(project));
-                            codePane.highlightKeywords();
-                            project.setComplete(false);
-                            return;
-                        } catch (final IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+            final File sourceFile = new File(project.getFileName(language) + language.getSourceExtension());
+            final File compiledFile = new File(project.getFileName(language) + language.getCompiledExtension());
+            final boolean deleteSource = sourceFile.exists() && sourceFile.delete();
+            final boolean deleteCompiled = compiledFile.exists() && compiledFile.delete();
+            if (deleteSource || deleteCompiled) {
+                if (project.isComplete()) {
+                    codePane.setText(language.getSkeleton(project));
+                    codePane.highlightKeywords();
+                    project.setComplete(false);
                 }
+                return;
             }
             JOptionPane.showMessageDialog(null, "Error deleting current code!");
         }
+
     }
 
     public void saveAndRun() {

@@ -20,7 +20,6 @@ package org.obicere.cc.configuration;
 import org.obicere.cc.gui.Splash;
 import org.obicere.cc.methods.Updater;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -80,10 +79,10 @@ public class Global {
         public static final String APP_DATA = getAppData();
         public static final String HOME = APP_DATA + File.separator + "ObicereCC";
         public static final String SOURCE = HOME + File.separator + "src";
-        public static final String SETTINGS = HOME + File.separator + "data";
-        public static final String LANGUAGE = SETTINGS + File.separator + "language";
-        public static final String LAYOUT_SAVE_FILE = SETTINGS + File.separator + "layout.properties";
-        public static final String[] PATHS = new String[]{APP_DATA, HOME, SOURCE, SETTINGS, LANGUAGE};
+        public static final String DATA = HOME + File.separator + "data";
+        public static final String LANGUAGE = DATA + File.separator + "language";
+        public static final String LAYOUT_SAVE_FILE = DATA + File.separator + "layout.properties";
+        public static final String[] PATHS = new String[]{APP_DATA, HOME, SOURCE, DATA, LANGUAGE};
 
         /**
          * Used to build external folder sets. Internal use only.
@@ -101,7 +100,7 @@ public class Global {
                     }
                 }
             }
-            final File complete = new File(SETTINGS + File.separator + "data.dat");
+            final File complete = new File(DATA + File.separator + "data.dat");
             if (!complete.exists()) {
                 try {
                     if (complete.createNewFile()) {

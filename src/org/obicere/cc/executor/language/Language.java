@@ -26,7 +26,7 @@ public abstract class Language {
     protected Language(final String name) {
         try {
             this.name = name;
-            this.directory = new File(Global.Paths.SETTINGS, name);
+            this.directory = new File(Global.Paths.DATA, name);
             if (!directory.exists() && !directory.mkdir()) {
                 System.err.println("Failed to create directory for " + name);
             }
@@ -117,5 +117,13 @@ public abstract class Language {
     public abstract String getSkeleton(final Project project);
 
     public abstract Result[] compileAndRun(final Project project);
+
+    @Override
+    public boolean equals(final Object obj){
+        if(obj instanceof Language){
+            return ((Language)obj).getName().equals(getName());
+        }
+        return false;
+    }
 
 }

@@ -23,7 +23,6 @@ import org.obicere.cc.gui.projects.ProjectPanel;
 import org.obicere.cc.gui.projects.ProjectSelector;
 import org.obicere.cc.methods.CustomClassLoader;
 import org.obicere.cc.methods.IOUtils;
-import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,11 +53,9 @@ public class Project {
      * @param runnerFile The file to read data from
      */
 
-    public Project(final String name, final File runnerFile) throws IOException, SAXException {
-        final File data = new File(Paths.SETTINGS + File.separator + "data.dat");
-        final String in = new String(IOUtils.readData(data));
+    public Project(final String name, final File runnerFile, final boolean complete) {
         this.name = name;
-        this.complete = (in.contains(String.format("|%040x|", new BigInteger(name.getBytes()))));
+        this.complete = complete;
         this.runner = CustomClassLoader.loadClassFromFile(runnerFile);
         this.manifest = runner.getAnnotation(Manifest.class);
     }
@@ -73,19 +70,19 @@ public class Project {
         return name;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return manifest.description();
     }
 
-    public double getVersion(){
+    public double getVersion() {
         return manifest.version();
     }
 
-    public String getAuthor(){
+    public String getAuthor() {
         return manifest.author();
     }
 
-    public int getDifficulty(){
+    public int getDifficulty() {
         return manifest.difficulty();
     }
 
@@ -137,6 +134,10 @@ public class Project {
 
     public File getFile(final Language language) {
         return new File(language.getDirectory(), name + language.getSourceExtension());
+    }
+
+    public File getFileName(final Language language) {
+        return new File(language.getDirectory(), name);
     }
 
     /**
@@ -210,18 +211,16 @@ public class Project {
         }
     }
 
-    /**
-     * This does a sweep of the source folder to get all 5 categories and
-     * respective Runners inside of them. This is should only be called to check
-     * for currently loaded Runners, then to add all the updated versions of
-     * Runners, if any. The key for the HashMap is the category, with the value
-     * being a list of runners.
-     *
-     * @since 1.0
-     */
-
     public static void loadCurrent() {
         DATA.clear();
+        String in;
+        try {
+            final File data = new File(Paths.DATA + File.separator + "data.dat");
+            in = new String(IOUtils.readData(data));
+        } catch (final Exception e) {
+            e.printStackTrace();
+            in = "";
+        }
         final File root = new File(Paths.SOURCE);
         if (!root.exists()) {
             return;
@@ -234,11 +233,9 @@ public class Project {
                 if (idx == -1) {
                     continue;
                 }
-                try {
-                    DATA.add(new Project(name.substring(0, idx), file));
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                }
+                final String projectName = name.substring(0, idx);
+                final String data = String.format("|%040x|", new BigInteger(projectName.getBytes()));
+                DATA.add(new Project(projectName, file, in.contains(data)));
             }
         }
     }

@@ -111,7 +111,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
                 }
                 if (!wrong) {
                     try {
-                        final File complete = new File(Paths.SETTINGS + File.separator + "data.dat");
+                        final File complete = new File(Paths.DATA + File.separator + "data.dat");
                         final byte[] data = IOUtils.readData(complete);
                         String info = new String(data);
                         final String format = String.format("|%040x|", new BigInteger(project.getName().getBytes()));

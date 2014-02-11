@@ -13,6 +13,10 @@ public abstract class ShutDownHook extends  Thread {
     private final String purpose;
     private final int priority;
 
+    public ShutDownHook(final String name, final int priority){
+        this(false, null, name, priority);
+    }
+
     public ShutDownHook(final boolean conditional, final String purpose, final String name, final int priority){
         super(name);
         this.conditional = conditional;

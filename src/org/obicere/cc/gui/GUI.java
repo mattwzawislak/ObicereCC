@@ -37,8 +37,8 @@ import java.util.LinkedList;
  * Only for use in the boot and the setting and getting of Projects.
  *
  * @author Obicere
- * @see GUI#removeTab(String)
- * @see GUI#tabByName(String)
+ * @see GUI#removeTab(String, Language)
+ * @see GUI#tabByName(String, Language)
  * @since 1.0
  */
 public class GUI {
@@ -126,12 +126,12 @@ public class GUI {
         }
         final Editor editor = new Editor(project, language);
         editor.setInstructionsText(project.getDescription(), false);
-        if (tabByName(project.getName()) == null) {
+        if (tabByName(project.getName(), language) == null) {
             final int index = tabs.getTabCount();
             tabs.add(editor, index);
-            tabs.setTabComponentAt(index, new TabPane(project));
+            tabs.setTabComponentAt(index, new TabPane(project, language));
         }
-        tabs.setSelectedComponent(tabByName(project.getName()));
+        tabs.setSelectedComponent(tabByName(project.getName(), language));
     }
 
     /**
@@ -143,11 +143,11 @@ public class GUI {
      * @since 1.0
      */
 
-    public synchronized static Editor tabByName(final String name) {
+    public synchronized static Editor tabByName(final String name, final Language language) {
         for (final Component c : tabs.getComponents()) {
             if (c instanceof Editor) {
                 final Editor c1 = (Editor) c;
-                if (name.equals(c1.getName())) {
+                if (name.equals(c1.getName()) && language.equals(c1.getLanguage())) {
                     return c1;
                 }
             }
@@ -158,12 +158,12 @@ public class GUI {
     /**
      * Removes the tab from the tabbed pane. Loads the tab by name.
      *
-     * @see GUI#tabByName(String)
+     * @see GUI#tabByName(String, Language)
      * @since 1.0
      */
 
-    public synchronized static void removeTab(final String name) {
-        final Editor cur = tabByName(name);
+    public synchronized static void removeTab(final String name, final Language language) {
+        final Editor cur = tabByName(name, language);
         if (cur != null) {
             tabs.remove(cur);
             return;

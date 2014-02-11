@@ -52,6 +52,7 @@ public class JavaExecutor extends Language {
                 return results;
             } catch (final Exception e) {
                 e.printStackTrace();
+                return new Result[0];
             }
         }
         final Editor editor = GUI.tabByName(project.getName(), this);

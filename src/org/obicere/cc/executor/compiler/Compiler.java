@@ -44,18 +44,14 @@ public class Compiler {
         return null;
     }
 
-    public boolean compile(final File file) {
+    public String[] compile(final File file) {
         try {
             final String command = getCommand(file);
-            final String[] stream = ProcessRunner.run(command);
-            if (stream.length == 0) {
-                return true;
-            }
-            System.out.println(stream[0]);
+            return ProcessRunner.run(command);
         } catch (final Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return new String[]{"Internal Error"};
     }
 
     public String getCommand(final File file) {

@@ -87,14 +87,12 @@ public class CodePane extends JTextPane {
         actionMap.put("Compile", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Container parent = CodePane.this.getParent();
-                while (!(parent instanceof Editor)) {
-                    parent = parent.getParent();
-                    if(parent == null){
-                        return;
-                    }
+                final Editor parent = (Editor) SwingUtilities.getAncestorOfClass(Editor.class, CodePane.this);
+                if(parent == null){
+                    JOptionPane.showMessageDialog(null, "Failed to save code!", "Error", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    parent.saveAndRun();
                 }
-                ((Editor) parent).saveAndRun();
             }
         });
         actionMap.put("Newline", new AbstractAction() {

@@ -17,7 +17,6 @@ public class ProcessRunner {
 
     private static Process runProcess(final String command) throws IOException {
         final String[] split = command.split(" +(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-        System.out.println(Arrays.toString(split));
         final ProcessBuilder builder = new ProcessBuilder(split);
         builder.redirectErrorStream(true);
         return builder.start();

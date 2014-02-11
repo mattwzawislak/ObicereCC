@@ -28,6 +28,8 @@ import org.obicere.cc.tasks.projects.Project;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -51,6 +53,7 @@ public class Editor extends JPanel {
     private final CodePane codePane;
     private final ResultsTable resultsTable;
     private final JTextArea instructions;
+    private final JPanel instructionButtons;
     private final Project project;
     private final Font defaultInstructionFont;
     private final Language language;
@@ -69,17 +72,22 @@ public class Editor extends JPanel {
         this.instructions = new JTextArea();
         this.codePane = new CodePane(project.getCurrentCode(language), language);
         this.resultsTable = new ResultsTable(project);
+        this.instructionButtons = new JPanel(new WrapLayout(WrapLayout.LEFT));
         this.defaultInstructionFont = instructions.getFont();
         this.language = language;
 
         final SaveLayoutHook hook = ShutDownHookManager.hookByName(SaveLayoutHook.class, SaveLayoutHook.NAME);
         final JButton run = new JButton("Run");
         final JButton clear = new JButton("Clear Project");
+        final JButton clearError = new JButton("Clear");
+        final JButton copy = new JButton("Copy");
         final JPanel rightSide = new JPanel(new BorderLayout());
         final JPanel buttons = new JPanel();
+        final JPanel instructionPanel = new JPanel();
+        final JScrollPane instructionScroll = new JScrollPane(instructionPanel);
 
         final JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsTable, rightSide);
-        final JSplitPane textSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(instructions), mainSplit);
+        final JSplitPane textSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, instructionScroll, mainSplit);
 
         run.setHorizontalTextPosition(SwingConstants.CENTER);
         run.setPreferredSize(new Dimension(200, run.getPreferredSize().height));
@@ -93,21 +101,6 @@ public class Editor extends JPanel {
 
         codePane.requestFocus();
 
-        instructions.addFocusListener(new FocusListener() {
-
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (instructions.getFont().equals(CONSOLOAS_12)) {
-                    setInstructionsText(project.getDescription(), false);
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-
-            }
-        });
-
         clear.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -119,7 +112,6 @@ public class Editor extends JPanel {
             @Override
             public void propertyChange(final PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("dividerLocation")) {
-
                     hook.saveProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, evt.getNewValue());
                 }
             }
@@ -145,6 +137,28 @@ public class Editor extends JPanel {
         instructions.setFont(CONSOLOAS_12);
         instructions.setToolTipText("Instructions and any errors will appear here.");
 
+        clearError.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setInstructionsText(project.getDescription(), false);
+            }
+        });
+        copy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final StringSelection selection = new StringSelection(instructions.getText());
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(selection, null);
+            }
+        });
+
+        instructionButtons.add(clearError);
+        instructionButtons.add(copy);
+
+        instructionPanel.setLayout(new BoxLayout(instructionPanel, BoxLayout.Y_AXIS));
+        instructionPanel.add(instructions);
+        instructionPanel.add(instructionButtons);
+
         add(textSplit, BorderLayout.CENTER);
         setName(project.getName());
 
@@ -165,9 +179,12 @@ public class Editor extends JPanel {
     public void setInstructionsText(final String string, final boolean error) {
         if (error) {
             instructions.setFont(CONSOLOAS_12);
+            instructionButtons.setVisible(true);
         } else {
             instructions.setFont(defaultInstructionFont);
+            instructionButtons.setVisible(false);
         }
+        instructionButtons.revalidate();
         instructions.setText(string);
     }
 

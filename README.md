@@ -6,6 +6,7 @@ your programming abilities and logical techniques. Most of these
 problems have more than one way to solve them, but it's up to you 
 to find the best solution. The project is completely open-sourced,
 so even those more familiar with programming languages can learn.
+
 =========
 ObicereCC is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

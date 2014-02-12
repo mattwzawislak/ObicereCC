@@ -18,8 +18,6 @@ along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
 package org.obicere.cc.tasks.projects;
 
 import org.obicere.cc.executor.Case;
-import org.obicere.utility.Joiner;
-
 /**
  * All Runners must extend this class.
  *
@@ -43,12 +41,5 @@ public abstract class Runner {
     public abstract String getMethodName();
 
     public abstract Class<?> getReturnType();
-
-    public String getAlternativeMethodName() {
-        final StringBuilder builder = new StringBuilder();
-        final String[] tokens = getMethodName().toLowerCase().split("(?=[A-Z])");
-        final Joiner joiner = Joiner.joinOn("_");
-        return joiner.join(tokens);
-    }
 
 }

@@ -1,8 +1,6 @@
 package org.obicere.cc.tasks.projects;
 
-/**
- * @author Obicere
- */
+
 
 public class Parameter {
 

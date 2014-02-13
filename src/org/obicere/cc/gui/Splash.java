@@ -1,19 +1,4 @@
-/*
-This file is part of ObicereCC.
 
-ObicereCC is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-ObicereCC is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 package org.obicere.cc.gui;
 
@@ -25,14 +10,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-/**
- * The splash screen loaded before the main application. It displays information
- * regarding current status, tips to help you and gives you a nice heart-filled
- * welcome.
- *
- * @author Obicere
- * @since 1.0
- */
+
 
 public class Splash {
 
@@ -49,11 +27,7 @@ public class Splash {
     private static final Font FONT = new Font("Consolas", Font.PLAIN, 14);
     private boolean should;
 
-    /**
-     * Constructs a new splash with default arguments.
-     *
-     * @since 1.0
-     */
+
 
     private Splash() {
         frame = new JFrame();
@@ -79,7 +53,7 @@ public class Splash {
         message = Message.getRandom();
         name = System.getProperty("user.name");
         if (name == null || name.length() == 0) {
-            name = "Mr. Anderson"; // matrix.
+            name = "Mr. Anderson";
         }
 
         frame.setIconImage(Global.ICON_IMAGE);
@@ -106,24 +80,13 @@ public class Splash {
         return instance;
     }
 
-    /**
-     * Used to check if the boot went well and was not terminated prematurely.
-     *
-     * @param should Whether or not it should dispose and continue basic operation.
-     * @since 1.0
-     */
+
 
     public void shouldDispose(boolean should) {
         this.should = should;
     }
 
-    /**
-     * Sets the current status of the splash screen. This is only used during
-     * boot, as is the splash itself.
-     *
-     * @param status The message you would like to relay to the user.
-     * @since 1.0
-     */
+
 
     public static void setStatus(String status) {
         System.out.println(status);
@@ -131,12 +94,7 @@ public class Splash {
         instance.getFrame().repaint();
     }
 
-    /**
-     * Used to call JFrame-specific calls such as <tt>dipose()</tt> or <tt>repaint()</tt>
-     *
-     * @return The splash screen's JFrame instance.
-     * @since 1.0
-     */
+
 
     public JFrame getFrame() {
         return frame;

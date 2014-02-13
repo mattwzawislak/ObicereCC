@@ -1,19 +1,4 @@
-/*
-This file is part of ObicereCC.
 
-ObicereCC is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-ObicereCC is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 package org.obicere.cc.gui;
 
@@ -31,15 +16,7 @@ import java.nio.CharBuffer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * The <tt>CodePane</tt> class is used to demonstrate a Java editor.
- * It can also be used to showcase Java code with or without the
- * feature of highlighting keywords.
- *
- * @author Obicere
- * @version 1.0
- * @since 1.0
- */
+
 
 public class CodePane extends JTextPane {
 
@@ -57,10 +34,7 @@ public class CodePane extends JTextPane {
 
     private final Language language;
 
-    /**
-     * Constructs a basic <tt>CodePane</tt> instance.
-     * This sets the content type equal to Java styling.
-     */
+
 
     public CodePane(final String content, final Language language) {
         this.language = language;
@@ -145,16 +119,7 @@ public class CodePane extends JTextPane {
         });
     }
 
-    /**
-     * Used in conjunction with {@link org.obicere.cc.gui.CodePane#highlightKeywords()}
-     * <br>
-     * This will replace all matches of a given <tt>regex</tt> in the given <tt>code</tt>
-     * with a <tt>String</tt> composed of null characters.
-     *
-     * @param code  The code to parse and replace
-     * @param regex The regex to match
-     * @return The new <tt>code</tt> with all matches removed
-     */
+
 
     private String clearMatches(String code, final String regex) {
         final Pattern pattern = Pattern.compile(regex);
@@ -171,14 +136,7 @@ public class CodePane extends JTextPane {
         return getUI().getPreferredSize(this).width <= getParent().getSize().width;
     }
 
-    /**
-     * This will highlight the Java keywords, from a list of reserved ones. It
-     * will change the color of them, given by specific character attribute.
-     * <br>
-     * This also avoids highlighting keywords inside a String.
-     *
-     * @since 1.0
-     */
+
 
     public void highlightKeywords() {
         String code = getText();

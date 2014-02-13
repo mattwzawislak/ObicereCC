@@ -3,9 +3,7 @@ package org.obicere.cc.executor.compiler;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.executor.ProcessRunner;
 
-/**
- * @author Obicere
- */
+
 public class CompilerCommand {
 
     private final String program;

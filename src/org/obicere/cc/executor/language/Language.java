@@ -11,9 +11,7 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-/**
- * @author Obicere
- */
+
 public abstract class Language {
 
     private final String name;

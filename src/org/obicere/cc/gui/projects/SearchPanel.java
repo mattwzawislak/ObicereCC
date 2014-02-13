@@ -1,19 +1,4 @@
-/*
-This file is part of ObicereCC.
 
-ObicereCC is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-ObicereCC is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 package org.obicere.cc.gui.projects;
 
@@ -21,14 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- * Used to refine the project panels based off the user's
- * discretion and what they want to do.
- *
- * @author Obicere
- * @version 1.0
- * @since 1.0
- */
+
 
 public class SearchPanel extends JPanel {
 
@@ -39,12 +17,7 @@ public class SearchPanel extends JPanel {
     private final JCheckBox name;
     private final JCheckBox incomplete;
 
-    /**
-     * Constructs a new search panel. This ideally
-     * should only be done once.
-     *
-     * @since 1.0
-     */
+
 
     public SearchPanel() {
         super(new BorderLayout());
@@ -119,13 +92,7 @@ public class SearchPanel extends JPanel {
         add(options, BorderLayout.SOUTH);
     }
 
-    /**
-     * Standardizes the search key and passes conditions into
-     * the refining process for the panels.
-     *
-     * @param key The key to search for. Defaults to empty.
-     * @since 1.0
-     */
+
 
     public synchronized void search(final String key) {
         String fixedKey = "";

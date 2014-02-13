@@ -1,19 +1,4 @@
-/*
-This file is part of ObicereCC.
 
-ObicereCC is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-ObicereCC is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 package org.obicere.cc.gui.projects;
 
@@ -32,16 +17,7 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * This class is used for the construction of the
- * {@link ProjectSelector}. In regards to other usage, there is none.
- * This will get information from project and use that to render an appropriate
- * UI.
- *
- * @author Obicere
- * @see ProjectSelector
- * @since 1.0
- */
+
 
 public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
@@ -52,13 +28,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
     private static final Color TEXT_COLOR = new Color(0x0F0F0F);
     private final JLabel complete;
 
-    /**
-     * Constructs a new panel dependent on the <tt>project</tt>.
-     *
-     * @param project The project to get required information such as name and
-     *                difficulty.
-     * @since 1.0
-     */
+
 
     public ProjectPanel(final Project project) {
         super(new BorderLayout());
@@ -143,24 +113,13 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
         setToolTipText(description);
     }
 
-    /**
-     * Used to change the Icon for the completion marker. Only true usage is in
-     * the instance construction and during execution.
-     *
-     * @param isComplete sets the project icon complete
-     * @since 1.0
-     */
+
 
     public void setComplete(boolean isComplete) {
         complete.setIcon(isComplete ? new ImageIcon(Global.COMPLETE_IMAGE) : null);
     }
 
-    /**
-     * This will return the project this panel is based off of.
-     *
-     * @return Project instance used to make this panel.
-     * @since 1.0
-     */
+
 
     public Project getProject() {
         return project;

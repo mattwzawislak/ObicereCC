@@ -1,19 +1,4 @@
-/*
-This file is part of ObicereCC.
 
-ObicereCC is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-ObicereCC is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 package org.obicere.cc.gui.projects;
 
@@ -37,13 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 
-/**
- * The main panel for editing the runner's code, displaying instructions and
- * displaying results.
- *
- * @author Obicere
- * @since 1.0
- */
+
 
 public class Editor extends JPanel {
 
@@ -58,12 +37,7 @@ public class Editor extends JPanel {
     private final Font defaultInstructionFont;
     private final Language language;
 
-    /**
-     * Constructs a new editor based off of the project. Will load code and
-     * skeleton for the runner if necessary.
-     *
-     * @param project The project to base this runner off of.
-     */
+
 
     public Editor(final Project project, final Language language) {
         super(new BorderLayout());
@@ -167,14 +141,7 @@ public class Editor extends JPanel {
         textSplit.setDividerLocation(Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, "100")));
     }
 
-    /**
-     * Used to change the instruction panel's text. Most commonly, this is done
-     * for error representation.
-     *
-     * @param string The <tt>String</tt> you would like to set the text to.
-     * @see {@link Editor#append(String)}
-     * @since 1.0
-     */
+
 
     public void setInstructionsText(final String string, final boolean error) {
         if (error) {
@@ -188,14 +155,7 @@ public class Editor extends JPanel {
         instructions.setText(string);
     }
 
-    /**
-     * Appends a String to the instructions pane. This will be mostly used for
-     * direct error sourcing.
-     *
-     * @param string The <tt>String</tt> you would like to append to the current
-     *               text.
-     * @since 1.0
-     */
+
 
     public void append(String string) {
         instructions.append(string);

@@ -2,9 +2,7 @@ package org.obicere.cc.executor;
 
 import java.util.Arrays;
 
-/**
- * @author Obicere
- */
+
 public class Case {
 
     private final Object expectedResult;

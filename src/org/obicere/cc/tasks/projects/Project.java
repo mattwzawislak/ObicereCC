@@ -1,19 +1,4 @@
-/*
-This file is part of ObicereCC.
 
-ObicereCC is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-ObicereCC is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 package org.obicere.cc.tasks.projects;
 
@@ -29,12 +14,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.LinkedList;
 
-/**
- * Used for handling project attributes and other data
- *
- * @author Obicere
- * @version 1.0
- */
+
 
 public class Project {
 
@@ -46,12 +26,7 @@ public class Project {
     private final Class<?> runner;
     private boolean complete;
 
-    /**
-     * Constructs a new Project and reads file data
-     *
-     * @param name       Name of the Project
-     * @param runnerFile The file to read data from
-     */
+
 
     public Project(final String name, final File runnerFile, final boolean complete) {
         this.name = name;
@@ -60,11 +35,7 @@ public class Project {
         this.manifest = runner.getAnnotation(Manifest.class);
     }
 
-    /**
-     * This is used for loading dynamic files, including compiled files and soon to be XML/CSS files
-     *
-     * @return The name of the Runner
-     */
+
 
     public String getName() {
         return name;
@@ -86,19 +57,13 @@ public class Project {
         return manifest.difficulty();
     }
 
-    /**
-     * Used to sort and distribute difficulties
-     *
-     * @return The category that this Runner falls into
-     */
+
 
     public String getSortName() {
         return manifest.difficulty() + getName();
     }
 
-    /**
-     * @see Project#getName()
-     */
+
 
     @Override
     public String toString() {
@@ -106,11 +71,7 @@ public class Project {
     }
 
 
-    /**
-     * This is used only during loading to get the saved code if any
-     *
-     * @return formatted String containing user's code
-     */
+
 
     public String getCurrentCode(final Language language) {
         try {
@@ -126,11 +87,7 @@ public class Project {
     }
 
 
-    /**
-     * Returns the file of the runner. This is used nicely to read data
-     *
-     * @return The file type to read and store data
-     */
+
 
     public File getFile(final Language language) {
         return new File(language.getDirectory(), name + language.getSourceExtension());
@@ -140,42 +97,26 @@ public class Project {
         return new File(language.getDirectory(), name);
     }
 
-    /**
-     * Returns the runner class for reflection to run the user-provided code
-     *
-     * @return the Class instance of the loaded Runner
-     */
+
 
     public Class<?> getRunner() {
         return runner;
     }
 
-    /**
-     * Hashing for adding to a <tt>HashMap</tt> without overriding version sets
-     *
-     * @return hash code based off the name, file and instructions.
-     */
+
 
     @Override
     public int hashCode() {
         return name.hashCode() * 31 + manifest.difficulty() * 17;
     }
 
-    /**
-     * Used to filter complete projects and displaying detailed information about the runner
-     *
-     * @return whether or not the project is complete
-     */
+
 
     public boolean isComplete() {
         return complete;
     }
 
-    /**
-     * Used only internally during execution of code.
-     *
-     * @param complete <tt>boolean</tt> representing if the project was 100% successful and complete.
-     */
+
 
     public void setComplete(boolean complete) {
         this.complete = complete;
@@ -192,14 +133,7 @@ public class Project {
         return o instanceof Project && o.hashCode() == this.hashCode();
     }
 
-    /**
-     * Saves the code so the user can resume the project at a later time
-     * <p/>
-     * Compilation is not required, so non-working code can be accepted.
-     *
-     * @param code The <tt>String</tt> of code to save
-     * @return <tt>true</tt> if it saved correctly.
-     */
+
 
     public boolean save(final String code, final Language language) {
         try {

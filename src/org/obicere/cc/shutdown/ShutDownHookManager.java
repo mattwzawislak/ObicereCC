@@ -6,9 +6,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-/**
- * @author Obicere
- */
+
 public class ShutDownHookManager {
 
     private static final ShutDownHook[] HOOKS = new ShutDownHook[]{

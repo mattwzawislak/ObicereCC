@@ -1,19 +1,4 @@
-/*
-This file is part of ObicereCC.
 
-ObicereCC is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-ObicereCC is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 package org.obicere.cc.configuration;
 
@@ -25,15 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-/**
- * Used for file, directory and image creations. Contains information regarding
- * URLs, operating system information and file directories.
- *
- * @author Obicere
- * @see URLs
- * @see Paths
- * @since 1.0
- */
+
 public class Global {
 
     public static final Image ICON_IMAGE;
@@ -41,12 +18,7 @@ public class Global {
     public static final Image COMPLETE_IMAGE;
     public static final Image ANIMATION_IMAGE;
 
-    /**
-     * Loads the images. Preferably only ran once in the boot to avoid
-     * unnecessary loading.
-     *
-     * @since 1.0
-     */
+
 
     static {
         ICON_IMAGE = load(URLs.ICON);
@@ -68,11 +40,7 @@ public class Global {
         }
     }
 
-    /**
-     * For path configurations. Depends on {@link OS} for certain dependencies.
-     *
-     * @since 1.0
-     */
+
 
     public static class Paths {
 
@@ -84,11 +52,7 @@ public class Global {
         public static final String LAYOUT_SAVE_FILE = DATA + File.separator + "layout.properties";
         public static final String[] PATHS = new String[]{APP_DATA, HOME, SOURCE, DATA, LANGUAGE};
 
-        /**
-         * Used to build external folder sets. Internal use only.
-         *
-         * @since 1.0
-         */
+
 
         public static void build() {
             for (final String s : PATHS) {
@@ -114,13 +78,7 @@ public class Global {
         }
     }
 
-    /**
-     * The default URLs for all of ObicereCC's necessities such as images,
-     * version information and packaged Runners.
-     *
-     * @see {@link Updater#update()}
-     * @since 1.0
-     */
+
 
     public static class URLs {
 
@@ -135,36 +93,17 @@ public class Global {
         public static final String LANGUAGES = RESOURCES + "languages/";
     }
 
-    /**
-     * To switch and find the current Operating system.
-     *
-     * @see Global#getAppData()
-     * @see Global#getOS()
-     * @since 1.0
-     */
+
     public static enum OS {
         WINDOWS, MAC, LINUX, OTHER
     }
 
-    /**
-     * Returns the location of the parent storage directory.
-     *
-     * @return <tt>String</tt> representation of the <tt>AppData</tt> or
-     *         <tt>user.home</tt> directory
-     * @see Global#getOS()
-     * @since 1.0
-     */
+
     public static String getAppData() {
         return getOS() == OS.WINDOWS ? System.getenv("APPDATA") : System.getProperty("user.home");
     }
 
-    /**
-     * Returns the OS system for basic configuration.
-     *
-     * @return Returns the <tt>enumerator</tt> of type {@link OS}
-     * @see Global#getAppData()
-     * @since 1.0
-     */
+
     public static OS getOS() {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("windows")) {

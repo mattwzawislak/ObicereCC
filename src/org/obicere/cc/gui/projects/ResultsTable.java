@@ -1,19 +1,4 @@
-/*
-This file is part of ObicereCC.
 
-ObicereCC is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-ObicereCC is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 package org.obicere.cc.gui.projects;
 
@@ -31,19 +16,11 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-/**
- * This is always linked to a specific Java editor and project. It displays the
- * results of that runner openly with color coordination.
- *
- * @author Obicere
- * @since 1.0
- */
+
 
 public class ResultsTable extends JTable implements TableCellRenderer {
 
-    /**
-     *
-     */
+
     private static final long serialVersionUID = 5610470469686875396L;
 
     private boolean[] resultsCorrect;
@@ -51,13 +28,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
     private static final Color CORRECT = new Color(37, 133, 0);
     private static final String[] HEADERS = new String[]{"Correct Answer", "Your Answer", "Parameters"};
 
-    /**
-     * Constructs a new <tt>ResultsTable</tt> instance. This sets all
-     * static information in terms of display.
-     *
-     * @param project The project to which this table will display results of.
-     * @since 1.0
-     */
+
 
     public ResultsTable(final Project project) {
         this.project = project;
@@ -82,14 +53,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
         getColumnModel().getColumn(1).setMaxWidth(125);
     }
 
-    /**
-     * Sets the results of the table. This will also check whether or not the
-     * result is true and change the color of the cells accordingly. Note: may
-     * not work for color blind people.
-     *
-     * @param results The results returned from the execution of the runner.
-     * @since 1.0
-     */
+
 
     public void setResults(final Result[] results) {
         synchronized (getTreeLock()) {

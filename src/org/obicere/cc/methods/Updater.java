@@ -1,19 +1,4 @@
-/*
-This file is part of ObicereCC.
 
-ObicereCC is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-ObicereCC is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with ObicereCC.  If not, see <http://www.gnu.org/licenses/>.
-*/
 
 package org.obicere.cc.methods;
 
@@ -32,14 +17,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 
-/**
- * Updates all Runner information and program data. This is used in conjunction
- * with the boot class and only should be used in there. This class handles most
- * client data and also calls upon the other loaders.
- *
- * @author Obicere
- * @since 1.0
- */
+
 public class Updater {
 
     private static double updatedClientVersion = 0.0;
@@ -51,23 +29,13 @@ public class Updater {
     private Updater() {
     }
 
-    /**
-     * Returns the current client version. This is hard-coded every update.
-     *
-     * @return Client version.
-     * @since 1.0
-     */
+
 
     public static double clientVersion() {
         return currentClientVersion;
     }
 
-    /**
-     * Updates the client and all public Runners. No alpha implementation yet.
-     * Should only ever be ran once.
-     *
-     * @since 1.0
-     */
+
 
     public static void update() {
         Project.loadCurrent();
@@ -116,15 +84,7 @@ public class Updater {
         Project.loadCurrent();
     }
 
-    /**
-     * Downloads a runner name from a URL. The URL is constructed from the
-     * <tt>src</tt> followed by the <tt>runnerName</tt>.
-     *
-     * @param runnerName The name of the Runner, in pure form such as
-     *                   <tt>SimpleAdditionRunner</tt>
-     * @param src        The depot of the Runner.
-     * @since 1.0
-     */
+
 
     private static void download(final String runnerName, final String src) {
         try {
@@ -141,14 +101,7 @@ public class Updater {
 
     }
 
-    /**
-     * Reads the update information and runner information from a source. Source
-     * specific arguments do matter.
-     *
-     * @param data The byte data downloaded from the source.txt file.
-     * @param src  The URL directory for special loads.
-     * @since 1.0
-     */
+
 
     private static void parseUpdate(final byte[] data, final String src) {
         try {
@@ -166,15 +119,7 @@ public class Updater {
         }
     }
 
-    /**
-     * Reads information from a source. This will automatically be called for
-     * the default directory, as implemented by myself.
-     *
-     * @param src The source of the current bin
-     * @return The byte data to be read.
-     * @see {@link Updater#parseUpdate(byte[], String)}
-     * @since 1.0
-     */
+
 
     private static byte[] downloadCurrentClientInfo(final String src) {
         try {
@@ -185,13 +130,7 @@ public class Updater {
         return null;
     }
 
-    /**
-     * Ping common sites to check Internet availability.
-     *
-     * @return a boolean to check if Internet is available. Used before
-     *         attempting to update.
-     * @since {@link Updater#update()}
-     */
+
 
     public static boolean isInternetReachable() {
         Splash.setStatus("Checking connection");

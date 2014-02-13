@@ -14,9 +14,7 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-/**
- * @author Obicere
- */
+
 public class JavaExecutor extends Language {
 
     protected JavaExecutor() {

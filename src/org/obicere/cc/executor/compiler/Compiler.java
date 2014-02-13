@@ -7,13 +7,7 @@ import org.obicere.cc.tasks.projects.Project;
 import java.io.File;
 import java.util.Arrays;
 
-/**
- * org.obicere.cc.executor.compiler
- * Created: 2/4/14 3:17 PM
- *
- * @author Obicere
- * @version 1.0
- */
+
 public class Compiler {
 
     private final String name;

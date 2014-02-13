@@ -6,13 +6,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-/**
- * org.obicere.cc.executor
- * Created: 2/4/14 3:03 PM
- *
- * @author Obicere
- * @version 1.0
- */
+
 public class ProcessRunner {
 
     private static Process runProcess(final String command) throws IOException {

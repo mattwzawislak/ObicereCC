@@ -9,10 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-/**
- * @author Obicere
- * @since 1.0
- */
+
 
 public class SaveLayoutHook extends ShutDownHook {
 

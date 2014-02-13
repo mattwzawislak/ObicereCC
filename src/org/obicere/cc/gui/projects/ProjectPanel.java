@@ -1,5 +1,3 @@
-
-
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Global;
@@ -17,8 +15,6 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
 public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
     private static final long serialVersionUID = -3692838815172773196L;
@@ -27,8 +23,6 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
     private static final Color TEXT_COLOR = new Color(0x0F0F0F);
     private final JLabel complete;
-
-
 
     public ProjectPanel(final Project project) {
         super(new BorderLayout());
@@ -113,13 +107,9 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
         setToolTipText(description);
     }
 
-
-
     public void setComplete(boolean isComplete) {
         complete.setIcon(isComplete ? new ImageIcon(Global.COMPLETE_IMAGE) : null);
     }
-
-
 
     public Project getProject() {
         return project;

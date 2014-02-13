@@ -1,5 +1,3 @@
-
-
 package org.obicere.cc;
 
 import com.alee.laf.WebLookAndFeel;
@@ -13,11 +11,7 @@ import org.obicere.cc.shutdown.ShutDownHookManager;
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 
-
-
 public class Boot {
-
-
 
     public static void main(final String[] args) {
         ShutDownHookManager.setup();

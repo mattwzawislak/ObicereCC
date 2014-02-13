@@ -1,5 +1,3 @@
-
-
 package org.obicere.cc.configuration;
 
 import org.obicere.cc.gui.Splash;
@@ -9,16 +7,12 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-
-
 public class Global {
 
     public static final Image ICON_IMAGE;
     public static final Image CLOSE_IMAGE;
     public static final Image COMPLETE_IMAGE;
     public static final Image ANIMATION_IMAGE;
-
-
 
     static {
         ICON_IMAGE = load(URLs.ICON);
@@ -40,8 +34,6 @@ public class Global {
         }
     }
 
-
-
     public static class Paths {
 
         public static final String APP_DATA = getAppData();
@@ -51,8 +43,6 @@ public class Global {
         public static final String LANGUAGE = DATA + File.separator + "language";
         public static final String LAYOUT_SAVE_FILE = DATA + File.separator + "layout.properties";
         public static final String[] PATHS = new String[]{APP_DATA, HOME, SOURCE, DATA, LANGUAGE};
-
-
 
         public static void build() {
             for (final String s : PATHS) {
@@ -78,8 +68,6 @@ public class Global {
         }
     }
 
-
-
     public static class URLs {
 
         public static final String HOME = "http://www.obicere.uni.me";
@@ -92,18 +80,12 @@ public class Global {
         public static final String COMPILERS = RESOURCES + "compilers/";
         public static final String LANGUAGES = RESOURCES + "languages/";
     }
-
-
     public static enum OS {
         WINDOWS, MAC, LINUX, OTHER
     }
-
-
     public static String getAppData() {
         return getOS() == OS.WINDOWS ? System.getenv("APPDATA") : System.getProperty("user.home");
     }
-
-
     public static OS getOS() {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("windows")) {

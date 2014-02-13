@@ -1,5 +1,3 @@
-
-
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Global.Paths;
@@ -16,19 +14,13 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-
-
 public class ResultsTable extends JTable implements TableCellRenderer {
-
-
     private static final long serialVersionUID = 5610470469686875396L;
 
     private boolean[] resultsCorrect;
     private final Project project;
     private static final Color CORRECT = new Color(37, 133, 0);
     private static final String[] HEADERS = new String[]{"Correct Answer", "Your Answer", "Parameters"};
-
-
 
     public ResultsTable(final Project project) {
         this.project = project;
@@ -52,8 +44,6 @@ public class ResultsTable extends JTable implements TableCellRenderer {
         getColumnModel().getColumn(1).setMinWidth(125);
         getColumnModel().getColumn(1).setMaxWidth(125);
     }
-
-
 
     public void setResults(final Result[] results) {
         synchronized (getTreeLock()) {

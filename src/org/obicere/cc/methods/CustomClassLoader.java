@@ -1,28 +1,18 @@
-
-
 package org.obicere.cc.methods;
 
 import java.io.File;
-
-
 
 public class CustomClassLoader extends ClassLoader {
 
     private CustomClassLoader() {
     }
-
-
     public static Class<?> loadClassFromFile(final String file) {
         return loadClassFromFile(new File(file));
     }
 
-
-
     public static Class<?> loadClassFromFile(final File file) {
         return new CustomClassLoader().loadClass(file);
     }
-
-
 
     private Class<?> loadClass(final File file) {
         try {

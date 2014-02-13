@@ -1,5 +1,3 @@
-
-
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Global.Paths;
@@ -22,8 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 
-
-
 public class Editor extends JPanel {
 
     private static final Font CONSOLOAS_12 = new Font("Consolas", Font.PLAIN, 12);
@@ -36,8 +32,6 @@ public class Editor extends JPanel {
     private final Project project;
     private final Font defaultInstructionFont;
     private final Language language;
-
-
 
     public Editor(final Project project, final Language language) {
         super(new BorderLayout());
@@ -141,8 +135,6 @@ public class Editor extends JPanel {
         textSplit.setDividerLocation(Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, "100")));
     }
 
-
-
     public void setInstructionsText(final String string, final boolean error) {
         if (error) {
             instructions.setFont(CONSOLOAS_12);
@@ -154,8 +146,6 @@ public class Editor extends JPanel {
         instructionButtons.revalidate();
         instructions.setText(string);
     }
-
-
 
     public void append(String string) {
         instructions.append(string);

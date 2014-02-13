@@ -1,7 +1,5 @@
 package org.obicere.cc.tasks.projects;
 
-
-
 public class Parameter {
 
     private final Class<?> cls;

@@ -1,43 +1,27 @@
-
-
 package org.obicere.cc.gui.projects;
 
 import javax.swing.*;
 import java.awt.*;
-
-
 public class WrapLayout extends FlowLayout {
-
-
     public WrapLayout() {
         super();
     }
-
-
     public WrapLayout(int align) {
         super(align);
     }
-
-
     public WrapLayout(int align, int hgap, int vgap) {
         super(align, hgap, vgap);
     }
-
-
     @Override
     public Dimension preferredLayoutSize(Container target) {
         return layoutSize(target, true);
     }
-
-
     @Override
     public Dimension minimumLayoutSize(Container target) {
         Dimension minimum = layoutSize(target, false);
         minimum.width -= (getHgap() + 1);
         return minimum;
     }
-
-
     private Dimension layoutSize(Container target, boolean preferred) {
         synchronized (target.getTreeLock()) {
 
@@ -107,8 +91,6 @@ public class WrapLayout extends FlowLayout {
             return dim;
         }
     }
-
-
     private void addRow(Dimension dim, int rowWidth, int rowHeight) {
         dim.width = Math.max(dim.width, rowWidth);
 

@@ -1,5 +1,3 @@
-
-
 package org.obicere.cc.tasks.projects;
 
 import org.obicere.cc.configuration.Global.Paths;
@@ -14,8 +12,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.LinkedList;
 
-
-
 public class Project {
 
     public static final String[] DIFFICULTY = new String[]{"Beginner", "Intermediate", "Advanced", "Challenging", "Legendary"};
@@ -26,16 +22,12 @@ public class Project {
     private final Class<?> runner;
     private boolean complete;
 
-
-
     public Project(final String name, final File runnerFile, final boolean complete) {
         this.name = name;
         this.complete = complete;
         this.runner = CustomClassLoader.loadClassFromFile(runnerFile);
         this.manifest = runner.getAnnotation(Manifest.class);
     }
-
-
 
     public String getName() {
         return name;
@@ -57,22 +49,14 @@ public class Project {
         return manifest.difficulty();
     }
 
-
-
     public String getSortName() {
         return manifest.difficulty() + getName();
     }
-
-
 
     @Override
     public String toString() {
         return getName();
     }
-
-
-
-
     public String getCurrentCode(final Language language) {
         try {
             final File file = getFile(language);
@@ -85,10 +69,6 @@ public class Project {
         }
         return language.getSkeleton(this);
     }
-
-
-
-
     public File getFile(final Language language) {
         return new File(language.getDirectory(), name + language.getSourceExtension());
     }
@@ -97,26 +77,18 @@ public class Project {
         return new File(language.getDirectory(), name);
     }
 
-
-
     public Class<?> getRunner() {
         return runner;
     }
-
-
 
     @Override
     public int hashCode() {
         return name.hashCode() * 31 + manifest.difficulty() * 17;
     }
 
-
-
     public boolean isComplete() {
         return complete;
     }
-
-
 
     public void setComplete(boolean complete) {
         this.complete = complete;
@@ -132,8 +104,6 @@ public class Project {
     public boolean equals(final Object o) {
         return o instanceof Project && o.hashCode() == this.hashCode();
     }
-
-
 
     public boolean save(final String code, final Language language) {
         try {

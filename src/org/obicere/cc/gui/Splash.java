@@ -1,5 +1,3 @@
-
-
 package org.obicere.cc.gui;
 
 import org.obicere.cc.configuration.Global;
@@ -9,8 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-
 
 public class Splash {
 
@@ -26,8 +22,6 @@ public class Splash {
     private static final Color TEXT_COLOR = new Color(173, 190, 210);
     private static final Font FONT = new Font("Consolas", Font.PLAIN, 14);
     private boolean should;
-
-
 
     private Splash() {
         frame = new JFrame();
@@ -80,21 +74,15 @@ public class Splash {
         return instance;
     }
 
-
-
     public void shouldDispose(boolean should) {
         this.should = should;
     }
-
-
 
     public static void setStatus(String status) {
         System.out.println(status);
         Splash.status = status;
         instance.getFrame().repaint();
     }
-
-
 
     public JFrame getFrame() {
         return frame;

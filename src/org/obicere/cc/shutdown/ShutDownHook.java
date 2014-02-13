@@ -1,6 +1,4 @@
 package org.obicere.cc.shutdown;
-
-
 public abstract class ShutDownHook extends  Thread {
 
     public static final int PRIORITY_WINDOW_CLOSING = 0x0;

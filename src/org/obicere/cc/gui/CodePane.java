@@ -1,5 +1,3 @@
-
-
 package org.obicere.cc.gui;
 
 import org.obicere.cc.executor.language.Language;
@@ -16,8 +14,6 @@ import java.nio.CharBuffer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
 public class CodePane extends JTextPane {
 
     private static final String MASTER_SPLIT = "([(\\[\\]);\\{}\0.])";
@@ -33,8 +29,6 @@ public class CodePane extends JTextPane {
     }
 
     private final Language language;
-
-
 
     public CodePane(final String content, final Language language) {
         this.language = language;
@@ -119,8 +113,6 @@ public class CodePane extends JTextPane {
         });
     }
 
-
-
     private String clearMatches(String code, final String regex) {
         final Pattern pattern = Pattern.compile(regex);
         final Matcher matcher = pattern.matcher(code);
@@ -135,8 +127,6 @@ public class CodePane extends JTextPane {
     public boolean getScrollableTracksViewportWidth() {
         return getUI().getPreferredSize(this).width <= getParent().getSize().width;
     }
-
-
 
     public void highlightKeywords() {
         String code = getText();

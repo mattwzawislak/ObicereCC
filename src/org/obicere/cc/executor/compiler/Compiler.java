@@ -6,8 +6,6 @@ import org.obicere.cc.tasks.projects.Project;
 
 import java.io.File;
 import java.util.Arrays;
-
-
 public class Compiler {
 
     private final String name;

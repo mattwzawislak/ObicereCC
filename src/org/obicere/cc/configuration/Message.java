@@ -1,10 +1,6 @@
-
-
 package org.obicere.cc.configuration;
 
 import java.util.Random;
-
-
 
 public class Message {
 
@@ -16,8 +12,6 @@ public class Message {
     };
 
     private static final Random SEED = new Random();
-
-
 
     public static String getRandom() {
         return MESSAGES[SEED.nextInt(MESSAGES.length)];

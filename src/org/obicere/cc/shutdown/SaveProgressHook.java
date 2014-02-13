@@ -6,8 +6,6 @@ import org.obicere.cc.tasks.projects.Project;
 
 import java.io.File;
 import java.math.BigInteger;
-
-
 public class SaveProgressHook extends ShutDownHook {
 
     private static final String NAME = "save.progress";

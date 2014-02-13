@@ -1,5 +1,3 @@
-
-
 package org.obicere.cc.gui;
 
 import org.obicere.cc.configuration.Global;
@@ -17,15 +15,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.LinkedList;
-
-
 public class GUI {
 
     public static final LinkedList<WindowListener> WINDOW_CLOSING_HOOKS = new LinkedList<>();
     private static JTabbedPane tabs;
     private static final Dimension TAB_SIZE = new Dimension(170, 30);
-
-
     public static void buildGUI() {
         final JFrame frame = new JFrame("Obicere Computing Challenges v" + Updater.clientVersion());
         final JPanel main = new JPanel(new BorderLayout());
@@ -85,8 +79,6 @@ public class GUI {
         Splash.setStatus("Complete");
     }
 
-
-
     public synchronized static void openProject(final Project project, final Language language) {
         if (project == null) {
             return;
@@ -101,8 +93,6 @@ public class GUI {
         tabs.setSelectedComponent(tabByName(project.getName(), language));
     }
 
-
-
     public synchronized static Editor tabByName(final String name, final Language language) {
         for (final Component c : tabs.getComponents()) {
             if (c instanceof Editor) {
@@ -114,8 +104,6 @@ public class GUI {
         }
         return null;
     }
-
-
 
     public synchronized static void removeTab(final String name, final Language language) {
         final Editor cur = tabByName(name, language);

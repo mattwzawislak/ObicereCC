@@ -1,6 +1,4 @@
 package org.obicere.cc.shutdown;
-
-
 public class HookNotFoundException extends RuntimeException {
 
     public HookNotFoundException(final String hookName){

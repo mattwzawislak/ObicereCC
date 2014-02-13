@@ -1,12 +1,8 @@
-
-
 package org.obicere.cc.gui.projects;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
-
 
 public class SearchPanel extends JPanel {
 
@@ -16,8 +12,6 @@ public class SearchPanel extends JPanel {
     private final JCheckBox complete;
     private final JCheckBox name;
     private final JCheckBox incomplete;
-
-
 
     public SearchPanel() {
         super(new BorderLayout());
@@ -91,8 +85,6 @@ public class SearchPanel extends JPanel {
         add(padding, BorderLayout.CENTER);
         add(options, BorderLayout.SOUTH);
     }
-
-
 
     public synchronized void search(final String key) {
         String fixedKey = "";

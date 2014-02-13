@@ -10,8 +10,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.Scanner;
-
-
 public abstract class Language {
 
     private final String name;

@@ -9,8 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-
-
 public class SaveLayoutHook extends ShutDownHook {
 
     public static final String NAME = "save.layout";
@@ -21,8 +19,6 @@ public class SaveLayoutHook extends ShutDownHook {
     public static final String PROPERTY_TEXTSPLIT_DIVIDER_LOCATION = "textsplit.divider.location";
 
     private static final File SAVE_FILE = new File(Global.Paths.LAYOUT_SAVE_FILE);
-
-
     private final Properties properties = new Properties();
 
     public SaveLayoutHook() {

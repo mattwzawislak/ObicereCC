@@ -1,5 +1,3 @@
-
-
 package org.obicere.cc.gui;
 
 import org.obicere.cc.configuration.Global;

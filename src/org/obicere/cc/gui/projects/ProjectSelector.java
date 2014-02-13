@@ -1,5 +1,3 @@
-
-
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.tasks.projects.Project;
@@ -10,15 +8,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-
-
 public class ProjectSelector extends JPanel {
 
     private static final long serialVersionUID = 4869219241938861949L;
     private static final ArrayList<ProjectPanel> PROJECTS = new ArrayList<>();
     private final JPanel selector;
-
-
 
     public ProjectSelector() {
         super(new BorderLayout());
@@ -43,8 +37,6 @@ public class ProjectSelector extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
     }
 
-
-
     public void refine(final String key, final boolean complete, final boolean name, final boolean incomplete) {
         selector.removeAll();
         for (final ProjectPanel p : PROJECTS) {
@@ -57,8 +49,6 @@ public class ProjectSelector extends JPanel {
         revalidate();
         updateUI();
     }
-
-
 
     public static ArrayList<ProjectPanel> getProjectList() {
         return PROJECTS;

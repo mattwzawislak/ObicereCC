@@ -1,5 +1,3 @@
-
-
 package org.obicere.cc.methods;
 
 import org.obicere.cc.configuration.Global;
@@ -16,8 +14,6 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-
-
 public class Updater {
 
     private static double updatedClientVersion = 0.0;
@@ -29,13 +25,9 @@ public class Updater {
     private Updater() {
     }
 
-
-
     public static double clientVersion() {
         return currentClientVersion;
     }
-
-
 
     public static void update() {
         Project.loadCurrent();
@@ -84,8 +76,6 @@ public class Updater {
         Project.loadCurrent();
     }
 
-
-
     private static void download(final String runnerName, final String src) {
         try {
             Splash.setStatus("Downloading " + runnerName + ".class");
@@ -100,8 +90,6 @@ public class Updater {
         }
 
     }
-
-
 
     private static void parseUpdate(final byte[] data, final String src) {
         try {
@@ -119,8 +107,6 @@ public class Updater {
         }
     }
 
-
-
     private static byte[] downloadCurrentClientInfo(final String src) {
         try {
             return IOUtils.download(new URL(src + "version.dat"));
@@ -129,8 +115,6 @@ public class Updater {
         }
         return null;
     }
-
-
 
     public static boolean isInternetReachable() {
         Splash.setStatus("Checking connection");

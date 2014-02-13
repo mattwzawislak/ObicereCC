@@ -1,10 +1,8 @@
 package org.obicere.cc.gui.projects;
 
-import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.CodePane;
-import org.obicere.cc.methods.IOUtils;
 import org.obicere.cc.shutdown.SaveLayoutHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.tasks.projects.Project;
@@ -17,8 +15,6 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
-import java.math.BigInteger;
 
 public class Editor extends JPanel {
 
@@ -145,10 +141,6 @@ public class Editor extends JPanel {
         }
         instructionButtons.revalidate();
         instructions.setText(string);
-    }
-
-    public void append(String string) {
-        instructions.append(string);
     }
 
     public Language getLanguage() {

@@ -2,7 +2,6 @@ package org.obicere.cc.shutdown;
 
 import org.obicere.cc.configuration.Global;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

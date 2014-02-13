@@ -1,7 +1,6 @@
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Global;
-import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.tasks.projects.Project;
@@ -11,7 +10,6 @@ import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

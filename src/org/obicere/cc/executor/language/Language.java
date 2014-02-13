@@ -10,6 +10,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.Scanner;
+
 public abstract class Language {
 
     private final String name;
@@ -116,10 +117,7 @@ public abstract class Language {
 
     @Override
     public boolean equals(final Object obj){
-        if(obj instanceof Language){
-            return ((Language)obj).getName().equals(getName());
-        }
-        return false;
+        return obj instanceof Language && ((Language) obj).getName().equals(getName());
     }
 
 }

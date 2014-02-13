@@ -1,11 +1,9 @@
 package org.obicere.cc.executor.compiler;
 
 import org.obicere.cc.executor.ProcessRunner;
-import org.obicere.cc.executor.Result;
-import org.obicere.cc.tasks.projects.Project;
 
 import java.io.File;
-import java.util.Arrays;
+
 public class Compiler {
 
     private final String name;

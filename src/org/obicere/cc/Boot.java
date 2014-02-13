@@ -2,7 +2,6 @@ package org.obicere.cc;
 
 import com.alee.laf.WebLookAndFeel;
 import org.obicere.cc.configuration.Global.Paths;
-import org.obicere.cc.executor.ProcessRunner;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.gui.Splash;
 import org.obicere.cc.methods.Updater;

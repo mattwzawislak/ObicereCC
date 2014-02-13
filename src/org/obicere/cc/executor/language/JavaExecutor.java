@@ -12,7 +12,7 @@ import org.obicere.cc.tasks.projects.Runner;
 import javax.swing.*;
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.Arrays;
+
 public class JavaExecutor extends Language {
 
     protected JavaExecutor() {

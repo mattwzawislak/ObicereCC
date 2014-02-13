@@ -1,7 +1,6 @@
 package org.obicere.cc.configuration;
 
 import org.obicere.cc.gui.Splash;
-import org.obicere.cc.methods.Updater;
 
 import java.awt.*;
 import java.io.File;

@@ -6,9 +6,6 @@ public class CustomClassLoader extends ClassLoader {
 
     private CustomClassLoader() {
     }
-    public static Class<?> loadClassFromFile(final String file) {
-        return loadClassFromFile(new File(file));
-    }
 
     public static Class<?> loadClassFromFile(final File file) {
         return new CustomClassLoader().loadClass(file);

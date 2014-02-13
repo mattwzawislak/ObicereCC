@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+
 public class Updater {
 
     private static double updatedClientVersion = 0.0;

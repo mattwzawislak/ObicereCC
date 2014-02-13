@@ -3,8 +3,8 @@ package org.obicere.cc.executor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.LinkedList;
+
 public class ProcessRunner {
 
     private static Process runProcess(final String command) throws IOException {

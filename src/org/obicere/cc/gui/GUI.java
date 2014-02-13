@@ -15,6 +15,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.LinkedList;
+
 public class GUI {
 
     public static final LinkedList<WindowListener> WINDOW_CLOSING_HOOKS = new LinkedList<>();

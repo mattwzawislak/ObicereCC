@@ -1,6 +1,7 @@
 package org.obicere.cc.executor;
 
 import java.util.Arrays;
+
 public class Case {
 
     private final Object expectedResult;

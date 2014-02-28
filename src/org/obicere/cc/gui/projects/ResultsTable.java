@@ -49,7 +49,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
         synchronized (getTreeLock()) {
             final DefaultTableModel m = (DefaultTableModel) getModel();
             final int rowCount = m.getRowCount();
-            for(int i = 1; i < rowCount; i++){
+            for (int i = 1; i < rowCount; i++) {
                 m.removeRow(1);
             }
             if (results != null) {
@@ -85,7 +85,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column) {
-        final JLabel label = new JLabel(value == null ? "" : value.toString());
+        final JLabel label = new JLabel(value == null ? "" : value instanceof Object[] ? Arrays.deepToString((Object[]) value) : value.toString());
         if (row == 0) {
             label.setFont(label.getFont().deriveFont(Font.BOLD));
             return label;

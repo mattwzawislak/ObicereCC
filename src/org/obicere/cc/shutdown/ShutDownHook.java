@@ -1,6 +1,12 @@
 package org.obicere.cc.shutdown;
 
-public abstract class ShutDownHook extends  Thread {
+import org.obicere.cc.configuration.Global;
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.util.Properties;
+
+public abstract class ShutDownHook extends Thread {
 
     public static final int PRIORITY_WINDOW_CLOSING = 0x0;
     public static final int PRIORITY_RUNTIME_SHUTDOWN = 0x1;
@@ -9,29 +15,99 @@ public abstract class ShutDownHook extends  Thread {
     private final String purpose;
     private final int priority;
 
-    public ShutDownHook(final String name, final int priority){
+    private final Properties properties = new Properties();
+    private boolean savingProperties = false;
+
+    public ShutDownHook(final String name, final int priority) {
         this(false, null, name, priority);
     }
 
-    public ShutDownHook(final boolean conditional, final String purpose, final String name, final int priority){
+    public ShutDownHook(final boolean conditional, final String purpose, final String name, final int priority) {
         super(name);
         this.conditional = conditional;
         this.purpose = purpose;
         this.priority = priority;
+        loadProperties();
     }
 
-    public boolean conditional(){
+    protected void loadProperties() {
+        final File file = new File(Global.Paths.DATA, getName() + ".properties");
+        try {
+            if (!file.exists() && !file.createNewFile()) {
+                return;
+            }
+            final InputStream input = new FileInputStream(file);
+            if (file.canRead()) {
+                properties.load(input);
+            }
+            final Field[] fields = getClass().getDeclaredFields();
+            for (final Field field : fields) {
+                try {
+                    if (field.isAnnotationPresent(HookValue.class)) {
+                        final HookValue annotation = field.getAnnotation(HookValue.class);
+                        properties.setProperty((String) field.get(this), properties.getProperty((String) field.get(this), annotation.defaultValue()));
+                        savingProperties = true;
+                    }
+                } catch (final IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean conditional() {
         return conditional;
     }
 
-    public String getPurpose(){
+    public String getPurpose() {
         return purpose;
     }
 
-    public int getHookPriority(){
+    public int getHookPriority() {
         return priority;
     }
 
-    public abstract void run();
+    public void setProperty(final String key, final Object value) {
+        if (savingProperties) {
+            properties.setProperty(key, String.valueOf(value));
+        }
+    }
+
+    @Override
+    public void run() {
+        if (savingProperties) {
+            final File file = new File(Global.Paths.DATA, getName() + ".properties");
+            if (file.exists() && !file.canWrite()) {
+                return;
+            }
+            try {
+                final FileOutputStream stream = new FileOutputStream(file);
+                properties.store(stream, null);
+                stream.flush();
+                stream.close();
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public int getPropertyAsInt(final String name) {
+        return Integer.parseInt(properties.getProperty(name));
+    }
+
+    public double getPropertyAsDouble(final String name) {
+        return Double.parseDouble(properties.getProperty(name));
+    }
+
+    public String getPropertyAsString(final String name) {
+        return String.valueOf(properties.get(name));
+    }
+
+    public boolean getPropertyAsBoolean(final String name) {
+        return Boolean.valueOf(properties.getProperty(name));
+    }
 
 }

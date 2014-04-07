@@ -57,7 +57,6 @@ public class Global {
         public static final String SOURCE = HOME + File.separator + "src";
         public static final String DATA = HOME + File.separator + "data";
         public static final String LANGUAGE = DATA + File.separator + "language";
-        public static final String LAYOUT_SAVE_FILE = DATA + File.separator + "layout.properties";
         public static final String[] PATHS = new String[]{APP_DATA, HOME, SOURCE, DATA, LANGUAGE};
 
         public static void build() {

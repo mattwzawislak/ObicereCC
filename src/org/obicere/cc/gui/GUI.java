@@ -1,6 +1,5 @@
 package org.obicere.cc.gui;
 
-import org.obicere.cc.configuration.Global;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.gui.projects.ProjectTabPanel;
@@ -60,12 +59,9 @@ public class GUI {
             }
         });
 
-        for (final WindowListener listener : WINDOW_CLOSING_HOOKS) {
-            frame.addWindowListener(listener);
-        }
+        WINDOW_CLOSING_HOOKS.forEach(frame::addWindowListener);
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setIconImage(Global.ICON_IMAGE);
         frame.add(main);
         frame.setVisible(true);
         frame.setMinimumSize(new Dimension(900, 600));

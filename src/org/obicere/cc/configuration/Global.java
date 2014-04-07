@@ -14,16 +14,12 @@ import java.util.Objects;
 
 public class Global {
 
-    public static final Image ICON_IMAGE;
     public static final Image CLOSE_IMAGE;
     public static final Image COMPLETE_IMAGE;
-    public static final Image ANIMATION_IMAGE;
 
     static {
-        ICON_IMAGE = loadImage(URLs.ICON);
         CLOSE_IMAGE = loadImage(URLs.CLOSE);
         COMPLETE_IMAGE = loadImage(URLs.COMPLETE);
-        ANIMATION_IMAGE = loadImage(URLs.ANIMATION);
     }
 
     private static Image loadImage(final String url) {
@@ -93,12 +89,8 @@ public class Global {
         public static final String HOME = "http://www.obicere.uni.me";
         public static final String BIN = HOME + "/ccbin/";
         public static final String RESOURCES = "resource/";
-        public static final String ICON = RESOURCES + "icon.png";
         public static final String CLOSE = RESOURCES + "close.png";
         public static final String COMPLETE = RESOURCES + "complete.png";
-        public static final String ANIMATION = RESOURCES + "gear_spin.gif";
-        public static final String COMPILERS = RESOURCES + "compilers/";
-        public static final String LANGUAGES = RESOURCES + "languages/";
     }
 
     public static enum OS {

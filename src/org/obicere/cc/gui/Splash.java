@@ -40,7 +40,6 @@ public class Splash {
                 g.drawString(status, 10, 190);
                 g.drawString("Welcome to Obicere Computing Challenges, " + name, 10, 15);
                 g.drawString(message, 10, 105);
-                g.drawImage(Global.ANIMATION_IMAGE, 409, 9, this);
             }
         };
 
@@ -50,7 +49,6 @@ public class Splash {
             name = "Mr. Anderson";
         }
 
-        frame.setIconImage(Global.ICON_IMAGE);
         frame.setUndecorated(true);
         frame.setSize(600, 200);
         frame.setLocationRelativeTo(null);

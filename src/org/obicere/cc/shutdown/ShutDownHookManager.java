@@ -17,6 +17,10 @@ public class ShutDownHookManager {
 
     }
 
+    public static ShutDownHook[] getShutDownHooks(){
+        return HOOKS;
+    }
+
     public static void setup() {
         for (final ShutDownHook hook : HOOKS) {
             System.out.println("Adding ShutDownHook: " + hook.getName());

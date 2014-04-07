@@ -3,6 +3,7 @@ package org.obicere.cc.gui;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.gui.projects.ProjectTabPanel;
+import org.obicere.cc.gui.settings.SettingsPanel;
 import org.obicere.cc.methods.Updater;
 import org.obicere.cc.shutdown.SaveLayoutHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
@@ -20,6 +21,7 @@ public class GUI {
     public static final LinkedList<WindowListener> WINDOW_CLOSING_HOOKS = new LinkedList<>();
     private static JTabbedPane tabs;
     private static final Dimension TAB_SIZE = new Dimension(170, 30);
+
     public static void buildGUI() {
         final JFrame frame = new JFrame("Obicere Computing Challenges v" + Updater.clientVersion());
         final JPanel main = new JPanel(new BorderLayout());
@@ -28,7 +30,8 @@ public class GUI {
         tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
         final JPanel[] defaultTabs = new JPanel[]{
-                ProjectTabPanel.getInstance()
+                ProjectTabPanel.getInstance(),
+                SettingsPanel.getInstance()
         };
         for (int i = 0; i < defaultTabs.length; i++) {
             final JPanel mainPane = new JPanel();

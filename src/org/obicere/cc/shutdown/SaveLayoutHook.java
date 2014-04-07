@@ -21,7 +21,7 @@ public class SaveLayoutHook extends ShutDownHook {
     private final Properties properties = new Properties();
 
     public SaveLayoutHook() {
-        super(true, "Save Layout", NAME, PRIORITY_WINDOW_CLOSING);
+        super(true, "Save Layout", NAME, "Saves the layout of the GUI components.", PRIORITY_WINDOW_CLOSING);
         final File file = new File(Global.Paths.LAYOUT_SAVE_FILE);
 
         try {
@@ -37,6 +37,9 @@ public class SaveLayoutHook extends ShutDownHook {
 
     @Override
     public void run() {
+        if(!isAllowed()){
+            return;
+        }
         try {
             if (!SAVE_FILE.exists() && !SAVE_FILE.createNewFile()) {
                 return;

@@ -16,7 +16,6 @@ public abstract class ShutDownHook extends Thread {
     private final int priority;
 
     private final Properties properties = new Properties();
-    private boolean savingProperties = false;
 
     public ShutDownHook(final String name, final int priority) {
         this(false, null, name, priority);
@@ -45,8 +44,11 @@ public abstract class ShutDownHook extends Thread {
                 try {
                     if (field.isAnnotationPresent(HookValue.class)) {
                         final HookValue annotation = field.getAnnotation(HookValue.class);
-                        properties.setProperty((String) field.get(this), properties.getProperty((String) field.get(this), annotation.defaultValue()));
-                        savingProperties = true;
+                        final String name = (String) field.get(this);
+                        final String value = properties.getProperty(name);
+                        if (value == null) {
+                            properties.setProperty(name, annotation.defaultValue());
+                        }
                     }
                 } catch (final IllegalAccessException e) {
                     e.printStackTrace();
@@ -70,28 +72,23 @@ public abstract class ShutDownHook extends Thread {
     }
 
     public void setProperty(final String key, final Object value) {
-        if (savingProperties) {
-            properties.setProperty(key, String.valueOf(value));
-        }
+        properties.setProperty(key, String.valueOf(value));
     }
 
     @Override
     public void run() {
-        if (savingProperties) {
-            final File file = new File(Global.Paths.DATA, getName() + ".properties");
-            if (file.exists() && !file.canWrite()) {
-                return;
-            }
-            try {
-                final FileOutputStream stream = new FileOutputStream(file);
-                properties.store(stream, null);
-                stream.flush();
-                stream.close();
-            } catch (final IOException e) {
-                e.printStackTrace();
-            }
+        final File file = new File(Global.Paths.DATA, getName() + ".properties");
+        if (file.exists() && !file.canWrite()) {
+            return;
         }
-
+        try {
+            final FileOutputStream stream = new FileOutputStream(file);
+            properties.store(stream, null);
+            stream.flush();
+            stream.close();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getPropertyAsInt(final String name) {

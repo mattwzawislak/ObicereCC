@@ -2,14 +2,11 @@ package org.obicere.cc.executor.language;
 
 import org.obicere.cc.executor.Case;
 import org.obicere.cc.executor.Result;
-import org.obicere.cc.gui.GUI;
-import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.methods.CustomClassLoader;
 import org.obicere.cc.tasks.projects.Parameter;
 import org.obicere.cc.tasks.projects.Project;
 import org.obicere.cc.tasks.projects.Runner;
 
-import javax.swing.*;
 import java.io.File;
 import java.lang.reflect.Method;
 

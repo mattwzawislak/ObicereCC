@@ -6,8 +6,6 @@ import org.obicere.cc.tasks.projects.Project;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class TabPane extends JPanel {
 
@@ -26,12 +24,7 @@ public class TabPane extends JPanel {
         close.setPreferredSize(new Dimension(24, 24));
         close.setContentAreaFilled(false);
         close.setOpaque(false);
-        close.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                GUI.removeTab(project.getName(), language);
-            }
-        });
+        close.addActionListener(e -> GUI.removeTab(project.getName(), language));
 
         add(buffer);
         add(close);

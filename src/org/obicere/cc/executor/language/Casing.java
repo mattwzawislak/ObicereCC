@@ -25,8 +25,7 @@ public enum Casing {
         final StringBuilder builder = new StringBuilder(word.length());
         switch (this) {
             case CAMEL_CASE:
-                for (int i = 0; i < words.length; i++) {
-                    final String token = words[i];
+                for (final String token : words) {
                     if (!token.isEmpty()) {
                         builder.append(Character.toUpperCase(token.charAt(0)));
                         builder.append(token.toLowerCase().substring(1));
@@ -43,8 +42,7 @@ public enum Casing {
                 }
                 break;
             case UPPERCASE:
-                for (int i = 0; i < words.length; i++) {
-                    final String token = words[i];
+                for (final String token : words) {
                     if (!token.isEmpty()) {
                         builder.append(token.toUpperCase());
                     }

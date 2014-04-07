@@ -18,11 +18,7 @@ public class Boot {
         LanguageHandler.load();
         ShutDownHookManager.setup();
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                public void run() {
-                    Splash.display();
-                }
-            });
+            SwingUtilities.invokeAndWait(Splash::display);
         } catch (final InterruptedException | InvocationTargetException e) {
             e.printStackTrace();
             System.exit(0);
@@ -30,16 +26,14 @@ public class Boot {
         Paths.build();
         Updater.update();
         Splash.setStatus("Loading framework");
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    UIManager.setLookAndFeel(new WebLookAndFeel());
-                    GUI.buildGUI();
-                    Splash.getInstance().shouldDispose(true);
-                    Splash.getInstance().getFrame().dispose();
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                }
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(new WebLookAndFeel());
+                GUI.buildGUI();
+                Splash.getInstance().shouldDispose(true);
+                Splash.getInstance().getFrame().dispose();
+            } catch (final Exception e) {
+                e.printStackTrace();
             }
         });
     }

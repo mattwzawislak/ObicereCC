@@ -18,12 +18,10 @@ public class SaveProgressHook extends ShutDownHook {
     @Override
     public void run() {
         final StringBuilder builder = new StringBuilder();
-        for (final Project project : Project.DATA) {
-            if (project.isComplete()) {
-                final String complete = String.format("|%040x|", new BigInteger(project.getName().getBytes()));
-                builder.append(complete);
-            }
-        }
+        Project.DATA.stream().filter(Project::isComplete).forEach(project -> {
+            final String complete = String.format("|%040x|", new BigInteger(project.getName().getBytes()));
+            builder.append(complete);
+        });
         try {
             final byte[] data = builder.toString().getBytes();
             IOUtils.write(new File(Global.Paths.DATA, "data.dat"), data);

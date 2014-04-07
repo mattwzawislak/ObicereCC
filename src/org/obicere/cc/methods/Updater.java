@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.function.Predicate;
 
 public class Updater {
 
@@ -22,6 +23,8 @@ public class Updater {
 
     private static double currentClientVersion = 1.00;
     private static LinkedHashMap<String, Double> currentRunnersList = new LinkedHashMap<>();
+
+    private static final Predicate<String> OUTDATED_FILTER = key -> !currentRunnersList.containsKey(key) || updatedRunnersList.get(key) > currentRunnersList.get(key);
 
     private Updater() {
     }
@@ -66,11 +69,7 @@ public class Updater {
             for (final Project p : Project.DATA) {
                 currentRunnersList.put(p.getName() + runner, p.getVersion());
             }
-            for (final String key : updatedRunnersList.keySet()) {
-                if (!currentRunnersList.containsKey(key) || updatedRunnersList.get(key) > currentRunnersList.get(key)) {
-                    download(key, src);
-                }
-            }
+            updatedRunnersList.keySet().stream().filter(OUTDATED_FILTER).forEach(key -> download(key, src));
         }
         currentRunnersList = null;
         updatedRunnersList = null;
@@ -123,7 +122,7 @@ public class Updater {
             final URL url = new URL(URLs.HOME);
             final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
             urlConn.connect();
-            if(urlConn.getResponseCode() != HttpURLConnection.HTTP_OK){
+            if (urlConn.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
                 while (interfaces.hasMoreElements()) {
                     if (interfaces.nextElement().isUp()) {

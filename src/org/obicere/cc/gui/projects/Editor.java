@@ -48,7 +48,6 @@ public class Editor extends JPanel {
         final JPanel rightSide = new JPanel(new BorderLayout());
         final JPanel buttons = new JPanel();
         final JPanel instructionPanel = new JPanel();
-        final JScrollPane instructionScroll = new JScrollPane(instructions);
 
         final JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsTable, rightSide);
         final JSplitPane textSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, instructionPanel, mainSplit);
@@ -56,37 +55,21 @@ public class Editor extends JPanel {
         run.setHorizontalTextPosition(SwingConstants.CENTER);
         run.setPreferredSize(new Dimension(200, run.getPreferredSize().height));
         run.setToolTipText("Runs the project. (Ctrl+R)");
-        run.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                saveAndRun();
-            }
-        });
+        run.addActionListener(e -> saveAndRun());
 
         codePane.requestFocus();
 
-        clear.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                clearSaveFiles();
+        clear.addActionListener(e -> clearSaveFiles());
+
+        textSplit.addPropertyChangeListener(evt -> {
+            if (evt.getPropertyName().equals("dividerLocation")) {
+                hook.saveProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, evt.getNewValue());
             }
         });
 
-        textSplit.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("dividerLocation")) {
-                    hook.saveProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, evt.getNewValue());
-                }
-            }
-        });
-
-        mainSplit.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("dividerLocation")) {
-                    hook.saveProperty(SaveLayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION, evt.getNewValue());
-                }
+        mainSplit.addPropertyChangeListener(evt -> {
+            if (evt.getPropertyName().equals("dividerLocation")) {
+                hook.saveProperty(SaveLayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION, evt.getNewValue());
             }
         });
 
@@ -101,19 +84,11 @@ public class Editor extends JPanel {
         instructions.setFont(CONSOLOAS_12);
         instructions.setToolTipText("Instructions and any errors will appear here.");
 
-        clearError.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setInstructionsText(project.getDescription(), false);
-            }
-        });
-        copy.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final StringSelection selection = new StringSelection(instructions.getText());
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(selection, null);
-            }
+        clearError.addActionListener(e -> setInstructionsText(project.getDescription(), false));
+        copy.addActionListener(e -> {
+            final StringSelection selection = new StringSelection(instructions.getText());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(selection, null);
         });
 
         instructionButtons.add(clearError);

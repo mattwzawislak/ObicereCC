@@ -48,10 +48,10 @@ public class Editor extends JPanel {
         final JPanel rightSide = new JPanel(new BorderLayout());
         final JPanel buttons = new JPanel();
         final JPanel instructionPanel = new JPanel();
-        final JScrollPane instructionScroll = new JScrollPane(instructionPanel);
+        final JScrollPane instructionScroll = new JScrollPane(instructions);
 
         final JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsTable, rightSide);
-        final JSplitPane textSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, instructionScroll, mainSplit);
+        final JSplitPane textSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, instructionPanel, mainSplit);
 
         run.setHorizontalTextPosition(SwingConstants.CENTER);
         run.setPreferredSize(new Dimension(200, run.getPreferredSize().height));
@@ -119,9 +119,9 @@ public class Editor extends JPanel {
         instructionButtons.add(clearError);
         instructionButtons.add(copy);
 
-        instructionPanel.setLayout(new BoxLayout(instructionPanel, BoxLayout.Y_AXIS));
-        instructionPanel.add(instructions);
-        instructionPanel.add(instructionButtons);
+        instructionPanel.setLayout(new BorderLayout());
+        instructionPanel.add(new JScrollPane(instructions), BorderLayout.CENTER);
+        instructionPanel.add(instructionButtons, BorderLayout.SOUTH);
 
         add(textSplit, BorderLayout.CENTER);
         setName(project.getName());

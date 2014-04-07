@@ -1,11 +1,17 @@
 package org.obicere.cc.configuration;
 
+import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.Splash;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Objects;
+
 public class Global {
 
     public static final Image ICON_IMAGE;
@@ -14,13 +20,13 @@ public class Global {
     public static final Image ANIMATION_IMAGE;
 
     static {
-        ICON_IMAGE = load(URLs.ICON);
-        CLOSE_IMAGE = load(URLs.CLOSE);
-        COMPLETE_IMAGE = load(URLs.COMPLETE);
-        ANIMATION_IMAGE = load(URLs.ANIMATION);
+        ICON_IMAGE = loadImage(URLs.ICON);
+        CLOSE_IMAGE = loadImage(URLs.CLOSE);
+        COMPLETE_IMAGE = loadImage(URLs.COMPLETE);
+        ANIMATION_IMAGE = loadImage(URLs.ANIMATION);
     }
 
-    private static Image load(final String url) {
+    private static Image loadImage(final String url) {
         try {
             final Toolkit tk = Toolkit.getDefaultToolkit();
             final URL path = Global.class.getClassLoader().getResource(url);
@@ -31,6 +37,21 @@ public class Global {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static File[] streamFiles(final String directory) throws FileNotFoundException, URISyntaxException {
+        final URL urlPath = Language.class.getClassLoader().getResource("");
+        Objects.requireNonNull(urlPath);
+        final URI path = urlPath.toURI();
+        final File resource = new File(new File(path), directory);
+        if (resource.exists()) {
+            if (resource.isDirectory()) {
+                return resource.listFiles();
+            } else {
+                return new File[]{resource};
+            }
+        }
+        throw new FileNotFoundException();
     }
 
     public static class Paths {
@@ -79,12 +100,15 @@ public class Global {
         public static final String COMPILERS = RESOURCES + "compilers/";
         public static final String LANGUAGES = RESOURCES + "languages/";
     }
+
     public static enum OS {
         WINDOWS, MAC, LINUX, OTHER
     }
+
     public static String getAppData() {
         return getOS() == OS.WINDOWS ? System.getenv("APPDATA") : System.getProperty("user.home");
     }
+
     public static OS getOS() {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("windows")) {

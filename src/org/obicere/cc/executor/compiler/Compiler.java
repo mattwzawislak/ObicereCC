@@ -9,22 +9,22 @@ public class Compiler {
     private final String name;
     private final String sourceExt;
     private final String compiledExt;
-    private final CompilerCommand[] commands;
+    private final Command[] commands;
 
-    private CompilerCommand workingCommand;
+    private Command workingCommand;
 
-    public Compiler(final String name, final String sourceExt, final String compiledExt, final CompilerCommand[] commands) {
+    public Compiler(final String name, final String sourceExt, final String compiledExt, final Command[] commands) {
         this.name = name;
         this.sourceExt = sourceExt;
         this.compiledExt = compiledExt;
         this.commands = commands;
     }
 
-    public CompilerCommand getCompilerCommand() {
+    public Command getCompilerCommand() {
         if (workingCommand != null) {
             return workingCommand;
         }
-        for (final CompilerCommand command : commands) {
+        for (final Command command : commands) {
             if (command.check()) {
                 workingCommand = command;
                 return workingCommand;
@@ -45,7 +45,7 @@ public class Compiler {
     }
 
     public String getCommand(final File file) {
-        final CompilerCommand command = getCompilerCommand();
+        final Command command = getCompilerCommand();
         String exec = command.getFormat();
         exec = exec.replace("$exec", command.getProgram());
         exec = exec.replace("$path", file.getParent());

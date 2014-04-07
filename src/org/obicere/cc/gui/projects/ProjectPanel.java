@@ -10,6 +10,7 @@ import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,7 +37,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
         final JButton open = new JButton("Open");
 
-        final JComboBox<String> languageChoice = new JComboBox<>(LanguageHandler.getSupportedLanguages());
+        final JComboBox<String> languageChoice = new JComboBox<>(new Vector<>(LanguageHandler.getSupportedLanguages()));
 
         final StringBuilder builder = new StringBuilder();
         final Pattern pattern = Pattern.compile("[A-Z]?[a-z]+|[0-9]+");

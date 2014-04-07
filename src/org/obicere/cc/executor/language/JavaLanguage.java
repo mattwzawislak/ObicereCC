@@ -13,10 +13,10 @@ import javax.swing.*;
 import java.io.File;
 import java.lang.reflect.Method;
 
-public class JavaExecutor extends Language {
+public class JavaLanguage extends Language {
 
-    protected JavaExecutor() {
-        super("Java");
+    protected JavaLanguage(final File file) {
+        super("Java", file);
     }
 
     @Override
@@ -36,7 +36,6 @@ public class JavaExecutor extends Language {
 
                 final File compiledFile = new File(getDirectory(), project.getName() + getCompiledExtension());
                 final Class<?> invoke = CustomClassLoader.loadClassFromFile(compiledFile);
-
                 final Method method = invoke.getDeclaredMethod(runner.getMethodName(), searchClasses);
 
                 final Result[] results = new Result[cases.length];
@@ -51,17 +50,7 @@ public class JavaExecutor extends Language {
                 return new Result[0];
             }
         }
-        final Editor editor = GUI.tabByName(project.getName(), this);
-        final StringBuilder builder = new StringBuilder();
-        for (final String str : message) {
-            builder.append(str.replace(file.getAbsolutePath(), "line"));
-            builder.append("\n");
-        }
-        if (editor != null) {
-            editor.setInstructionsText(builder.toString(), true);
-        } else {
-            JOptionPane.showMessageDialog(null, builder.toString());
-        }
+        displayError(project, message);
         return new Result[0];
     }
 

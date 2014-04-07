@@ -3,12 +3,12 @@ package org.obicere.cc.executor.compiler;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.executor.ProcessRunner;
 
-public class CompilerCommand {
+public class Command {
 
     private final String program;
     private final String format;
 
-    public CompilerCommand(final String program, final String format) {
+    public Command(final String program, final String format) {
         this.program = program;
         this.format = format;
     }
@@ -28,10 +28,10 @@ public class CompilerCommand {
             switch (Global.getOS()) {
                 case WINDOWS:
                     command = "where " + program;
-                    failure = "INFO: Could not find";
+                    failure = "INFO: Could not find files for the given pattern(s).";
                     break;
                 case MAC:
-                    command = "where " + program;
+                    command = "whereis " + program;
                     failure = ""; //TODO
                     break;
                 case LINUX:
@@ -42,7 +42,7 @@ public class CompilerCommand {
                     return false;
             }
             final String[] str = ProcessRunner.run(command);
-            return str.length != 0 && !str[0].startsWith(failure);
+            return str.length != 0 && !str[0].equals(failure);
         } catch (final Exception e) {
             e.printStackTrace();
         }

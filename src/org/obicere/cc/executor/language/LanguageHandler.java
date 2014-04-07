@@ -1,35 +1,39 @@
 package org.obicere.cc.executor.language;
 
-import java.util.LinkedList;
+import org.obicere.cc.configuration.Global;
+
+import java.io.File;
+import java.util.*;
 
 public class LanguageHandler {
 
-    private static final String[] SUPPORTED = new String[]{
-            "Java"
-    };
+    private static final Map<String, Language> SUPPORTED = new HashMap<String, Language>() {{
+    }};
 
-    private static final LinkedList<Language> LOADED_LANGUAGES = new LinkedList<>();
-
-    public static String[] getSupportedLanguages() {
-        return SUPPORTED;
+    public static Set<String> getSupportedLanguages() {
+        return SUPPORTED.keySet();
     }
 
     public static Language getLanguage(final String name) {
-        for (final Language language : LOADED_LANGUAGES) {
-            if (language.getName().equals(name)) {
-                return language;
+        return SUPPORTED.get(name);
+    }
+
+    public static void load() {
+        try {
+            final File[] languages = Global.streamFiles("/resource/languages");
+            final List<File> languageList = Arrays.asList(languages);
+            for(final File file : languageList){
+                final String name = file.getName();
+                if(name.equals("Java")){
+                    SUPPORTED.put("Java", new JavaLanguage(file));
+                    continue;
+                }
+                final CustomLanguage language = new CustomLanguage(name, file);
+                SUPPORTED.put(name, language);
             }
+        } catch (final Exception e) {
+            e.printStackTrace();
         }
-        final Language language;
-        switch (name) {
-            case "Java":
-                language = new JavaExecutor();
-                break;
-            default:
-                throw new NullPointerException("Can't find language");
-        }
-        LOADED_LANGUAGES.add(language);
-        return language;
     }
 
 }

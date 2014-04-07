@@ -1,4 +1,20 @@
-abstract assert boolean break byte case catch char class const continue default double do else enum extends false final finally float for goto if implements import instanceof int interface long native new null package private protected public return short static strictfp super switch synchronized this throw throws transient true try void volatile while
-public class $name {\n\t\n\tpublic $return $method($parameter){\n\t\t\n\t}\n}
-\"(?:[^\"\\\\\\n\\r\\u2028\\u2029]|\\\\(?:[^\\n\\rxu0-9]|0(?![0-9])|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|\\n|\\r\\n?))*\"
-(//.*+)|(?s)(/[*].*?[*]/)
+keywords=abstract,assert,boolean,break,byte,case,catch,char,class,const,continue,default,double,do,else,enum,extends,false,final,finally,float,for,goto,if,implements,import,instanceof,int,interface,long,native,new,null,package,private,protected,public,return,short,static,strictfp,super,switch,synchronized,this,throw,throws,transient,true,try,void,volatile,while
+skeleton=public class $name {\n\t\n\tpublic $return $method($parameter){\n\t\t\n\t}\n}
+
+literal=\"(?:[^\"\\\\\\n\\r\\u2028\\u2029]|\\\\(?:[^\\n\\rxu0-9]|0(?![0-9])|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|\\n|\\r\\n?))*\",(//.*+)|(?s)(/[*].*?[*]/)
+
+compiledExtension=.class
+sourceExtension=.java
+
+compilerArguments=javac; $exec -g -nowarn "$file"
+
+methodCasing=lower camel case
+fieldCasing=lower camel case
+classCasing=camel case
+includeParameters=true
+
+string=String
+character=char
+integer=int
+float=double
+array=[,]

@@ -63,13 +63,13 @@ public class Editor extends JPanel {
 
         textSplit.addPropertyChangeListener(evt -> {
             if (evt.getPropertyName().equals("dividerLocation")) {
-                hook.saveProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, evt.getNewValue());
+                hook.setProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, evt.getNewValue());
             }
         });
 
         mainSplit.addPropertyChangeListener(evt -> {
             if (evt.getPropertyName().equals("dividerLocation")) {
-                hook.saveProperty(SaveLayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION, evt.getNewValue());
+                hook.setProperty(SaveLayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION, evt.getNewValue());
             }
         });
 
@@ -102,8 +102,8 @@ public class Editor extends JPanel {
         setName(project.getName());
 
         codePane.highlightKeywords();
-        mainSplit.setDividerLocation(Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION, "300")));
-        textSplit.setDividerLocation(Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, "100")));
+        mainSplit.setDividerLocation(hook.getPropertyAsInt(SaveLayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION));
+        textSplit.setDividerLocation(hook.getPropertyAsInt(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION));
     }
 
     public void setInstructionsText(final String string, final boolean error) {

@@ -56,9 +56,9 @@ public class GUI {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
-                hook.saveProperty(SaveLayoutHook.PROPERTY_FRAME_WIDTH, frame.getWidth());
-                hook.saveProperty(SaveLayoutHook.PROPERTY_FRAME_HEIGHT, frame.getHeight());
-                hook.saveProperty(SaveLayoutHook.PROPERTY_FRAME_STATE, frame.getExtendedState());
+                hook.setProperty(SaveLayoutHook.PROPERTY_FRAME_WIDTH, frame.getWidth());
+                hook.setProperty(SaveLayoutHook.PROPERTY_FRAME_HEIGHT, frame.getHeight());
+                hook.setProperty(SaveLayoutHook.PROPERTY_FRAME_STATE, frame.getExtendedState());
             }
         });
 
@@ -68,11 +68,11 @@ public class GUI {
         frame.add(main);
         frame.setVisible(true);
         frame.setMinimumSize(new Dimension(900, 600));
-        final int state = Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_FRAME_STATE, "0"));
+        final int state = hook.getPropertyAsInt(SaveLayoutHook.PROPERTY_FRAME_STATE);
         frame.setExtendedState(state);
-        if(state != JFrame.MAXIMIZED_BOTH){
-            final int width = Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_FRAME_WIDTH, "900"));
-            final int height = Integer.parseInt((String) hook.getProperty(SaveLayoutHook.PROPERTY_FRAME_HEIGHT, "600"));
+        if (state != JFrame.MAXIMIZED_BOTH) {
+            final int width = hook.getPropertyAsInt(SaveLayoutHook.PROPERTY_FRAME_WIDTH);
+            final int height = hook.getPropertyAsInt(SaveLayoutHook.PROPERTY_FRAME_HEIGHT);
             frame.setSize(width, height);
             frame.setLocationRelativeTo(null);
         }

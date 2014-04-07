@@ -14,7 +14,6 @@ public class ShutDownHookManager {
     };
 
     private ShutDownHookManager() {
-
     }
 
     public static ShutDownHook[] getShutDownHooks(){
@@ -24,7 +23,7 @@ public class ShutDownHookManager {
     public static void setup() {
         for (final ShutDownHook hook : HOOKS) {
             System.out.println("Adding ShutDownHook: " + hook.getName());
-            switch(hook.getHookPriority()){
+            switch (hook.getHookPriority()) {
                 case ShutDownHook.PRIORITY_RUNTIME_SHUTDOWN:
                     Runtime.getRuntime().addShutdownHook(hook);
                     break;
@@ -42,7 +41,7 @@ public class ShutDownHookManager {
     }
 
     public static ShutDownHook hookByName(final String name) {
-        if(name == null){
+        if (name == null) {
             throw new NullPointerException();
         }
         for (final ShutDownHook hook : HOOKS) {

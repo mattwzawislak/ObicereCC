@@ -10,18 +10,14 @@ import java.awt.*;
  */
 public class SettingsPanel extends JPanel {
 
-    private static final Border GROUP_BORDER = new BevelBorder(BevelBorder.RAISED);
-
     private static SettingsPanel instance;
 
     public SettingsPanel() {
-        super(new FlowLayout(FlowLayout.CENTER, 25, 25));
-
+        super(new BorderLayout(25, 25));
         setName("Settings");
-        final ShutDownHookPanelGroup shutDownGroup = new ShutDownHookPanelGroup();
-        shutDownGroup.setBorder(GROUP_BORDER);
 
-        add(shutDownGroup);
+        final ShutDownHookPanelGroup shutDownGroup = new ShutDownHookPanelGroup();
+        add(shutDownGroup, BorderLayout.WEST);
 
     }
 

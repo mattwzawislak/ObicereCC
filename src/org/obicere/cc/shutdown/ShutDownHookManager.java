@@ -9,6 +9,7 @@ import java.awt.event.WindowListener;
 public class ShutDownHookManager {
 
     private static final ShutDownHook[] HOOKS = new ShutDownHook[]{
+            new NoSplashHook(),
             new SaveLayoutHook(),
             new SaveProgressHook()
     };

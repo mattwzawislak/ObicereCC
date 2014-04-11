@@ -14,6 +14,7 @@ public abstract class ShutDownHook extends Thread {
     private final boolean conditional;
     private final String purpose;
     private final int priority;
+    private boolean allowed;
 
     private final Properties properties = new Properties();
 
@@ -59,7 +60,15 @@ public abstract class ShutDownHook extends Thread {
         }
     }
 
-    public boolean conditional() {
+    public void setAllowed(final boolean allowed) {
+        this.allowed = allowed;
+    }
+
+    public boolean isAllowed() {
+        return allowed;
+    }
+
+    public boolean isConditional() {
         return conditional;
     }
 
@@ -77,6 +86,9 @@ public abstract class ShutDownHook extends Thread {
 
     @Override
     public void run() {
+        if (conditional && !allowed) {
+            return;
+        }
         final File file = new File(Global.Paths.DATA, getName() + ".properties");
         if (file.exists() && !file.canWrite()) {
             return;

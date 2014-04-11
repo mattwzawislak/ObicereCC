@@ -1,6 +1,5 @@
 package org.obicere.cc.gui;
 
-import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Message;
 
 import javax.swing.*;
@@ -77,6 +76,9 @@ public class Splash {
     }
 
     public static void setStatus(String status) {
+        if(instance == null){
+            return;
+        }
         System.out.println(status);
         Splash.status = status;
         instance.getFrame().repaint();

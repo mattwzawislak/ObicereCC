@@ -6,6 +6,7 @@ import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.gui.Splash;
 import org.obicere.cc.methods.Updater;
+import org.obicere.cc.shutdown.NoSplashHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 
 import javax.swing.*;
@@ -17,8 +18,12 @@ public class Boot {
     public static void main(final String[] args) throws URISyntaxException {
         LanguageHandler.load();
         ShutDownHookManager.setup();
+        final NoSplashHook hook = ShutDownHookManager.hookByName(NoSplashHook.class, NoSplashHook.NAME);
+        final boolean splash = !hook.getPropertyAsBoolean(NoSplashHook.NO_SPLASH);
         try {
-            SwingUtilities.invokeAndWait(Splash::display);
+            if (splash) {
+                SwingUtilities.invokeAndWait(Splash::display);
+            }
         } catch (final InterruptedException | InvocationTargetException e) {
             e.printStackTrace();
             System.exit(0);
@@ -30,8 +35,10 @@ public class Boot {
             try {
                 UIManager.setLookAndFeel(new WebLookAndFeel());
                 GUI.buildGUI();
-                Splash.getInstance().shouldDispose(true);
-                Splash.getInstance().getFrame().dispose();
+                if (splash) {
+                    Splash.getInstance().shouldDispose(true);
+                    Splash.getInstance().getFrame().dispose();
+                }
             } catch (final Exception e) {
                 e.printStackTrace();
             }

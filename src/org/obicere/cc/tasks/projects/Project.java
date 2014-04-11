@@ -4,12 +4,14 @@ import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.ProjectPanel;
 import org.obicere.cc.gui.projects.ProjectSelector;
-import org.obicere.cc.methods.CustomClassLoader;
 import org.obicere.cc.methods.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.LinkedList;
 
 public class Project {
@@ -17,15 +19,30 @@ public class Project {
     public static final String[] DIFFICULTY = new String[]{"Beginner", "Intermediate", "Advanced", "Challenging", "Legendary"};
     public static final LinkedList<Project> DATA = new LinkedList<>();
 
+    private static final File RUNNER_LOCATION = new File(Paths.SOURCE);
+    private static final ClassLoader RUNNER_CLASS_LOADER;
+
+    static {
+        ClassLoader loader = null;
+        try {
+            final URL url = RUNNER_LOCATION.toURI().toURL();
+            final URL[] urls = new URL[]{url};
+            loader = URLClassLoader.newInstance(urls);
+        } catch (final MalformedURLException e) {
+            e.printStackTrace();
+        }
+        RUNNER_CLASS_LOADER = loader;
+    }
+
     private final String name;
     private final Manifest manifest;
     private final Class<?> runner;
     private boolean complete;
 
-    public Project(final String name, final File runnerFile, final boolean complete) {
+    public Project(final String name, final boolean complete) throws ClassNotFoundException {
+        this.runner = loadRunner(name);
         this.name = name;
         this.complete = complete;
-        this.runner = CustomClassLoader.loadClassFromFile(runnerFile);
         this.manifest = runner.getAnnotation(Manifest.class);
     }
 
@@ -117,15 +134,18 @@ public class Project {
         }
     }
 
+    private Class<?> loadRunner(final String name) throws ClassNotFoundException {
+        return RUNNER_CLASS_LOADER.loadClass(name + "Runner");
+    }
+
     public static void loadCurrent() {
-        DATA.clear();
         String in;
         try {
             final File data = new File(Paths.DATA + File.separator + "data.dat");
             in = new String(IOUtils.readData(data));
         } catch (final Exception e) {
             e.printStackTrace();
-            in = "";
+            return;
         }
         final File root = new File(Paths.SOURCE);
         if (!root.exists()) {
@@ -134,14 +154,18 @@ public class Project {
         final String[] list = root.list();
         for (final String name : list) {
             if (name != null) {
-                final File file = new File(root, name);
                 final int idx = name.indexOf("Runner.class");
                 if (idx == -1) {
                     continue;
                 }
                 final String projectName = name.substring(0, idx);
                 final String data = String.format("|%040x|", new BigInteger(projectName.getBytes()));
-                DATA.add(new Project(projectName, file, in.contains(data)));
+                try {
+                    final Project project = new Project(projectName, in.contains(data));
+                    DATA.add(project);
+                } catch (final ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

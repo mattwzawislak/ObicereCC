@@ -73,6 +73,7 @@ public class Updater {
         }
         currentRunnersList = null;
         updatedRunnersList = null;
+        Project.DATA.clear();
         Project.loadCurrent();
     }
 

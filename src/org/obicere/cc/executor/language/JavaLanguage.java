@@ -2,13 +2,14 @@ package org.obicere.cc.executor.language;
 
 import org.obicere.cc.executor.Case;
 import org.obicere.cc.executor.Result;
-import org.obicere.cc.methods.CustomClassLoader;
 import org.obicere.cc.tasks.projects.Parameter;
 import org.obicere.cc.tasks.projects.Project;
 import org.obicere.cc.tasks.projects.Runner;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 public class JavaLanguage extends Language {
 
@@ -31,8 +32,9 @@ public class JavaLanguage extends Language {
                     searchClasses[i] = parameters[i].getType();
                 }
 
-                final File compiledFile = new File(getDirectory(), project.getName() + getCompiledExtension());
-                final Class<?> invoke = CustomClassLoader.loadClassFromFile(compiledFile);
+                final URL[] urls = new URL[]{getDirectory().toURI().toURL()};
+                final ClassLoader cl = new URLClassLoader(urls);
+                final Class<?> invoke = cl.loadClass(project.getName());
                 final Method method = invoke.getDeclaredMethod(runner.getMethodName(), searchClasses);
 
                 final Result[] results = new Result[cases.length];

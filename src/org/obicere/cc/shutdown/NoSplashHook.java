@@ -7,7 +7,7 @@ public class NoSplashHook extends ShutDownHook {
 
     public static final String NAME = "no.splash";
 
-    @HookValue(defaultValue = "false")
+    @HookValue("false")
     public static final String NO_SPLASH = "no.splash";
 
     public NoSplashHook() {

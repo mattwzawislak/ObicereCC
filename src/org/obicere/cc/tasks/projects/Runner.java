@@ -1,8 +1,11 @@
 package org.obicere.cc.tasks.projects;
 
 import org.obicere.cc.executor.Case;
+import org.obicere.cc.methods.SimpleRandom;
 
 public abstract class Runner {
+
+    protected final SimpleRandom random = new SimpleRandom();
 
     public abstract Case[] getCases();
 

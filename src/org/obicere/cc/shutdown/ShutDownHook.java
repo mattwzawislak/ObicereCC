@@ -48,7 +48,7 @@ public abstract class ShutDownHook extends Thread {
                         final String name = (String) field.get(this);
                         final String value = properties.getProperty(name);
                         if (value == null) {
-                            properties.setProperty(name, annotation.defaultValue());
+                            properties.setProperty(name, annotation.value());
                         }
                     }
                 } catch (final IllegalAccessException e) {

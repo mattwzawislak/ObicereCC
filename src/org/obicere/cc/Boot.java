@@ -5,9 +5,12 @@ import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.gui.Splash;
+import org.obicere.cc.methods.Reflection;
 import org.obicere.cc.methods.Updater;
 import org.obicere.cc.shutdown.NoSplashHook;
+import org.obicere.cc.shutdown.ShutDownHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
+import org.obicere.cc.tasks.projects.Manifest;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;

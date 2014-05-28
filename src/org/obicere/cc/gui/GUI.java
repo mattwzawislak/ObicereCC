@@ -4,6 +4,7 @@ import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.gui.projects.ProjectTabPanel;
 import org.obicere.cc.gui.settings.SettingsPanel;
+import org.obicere.cc.methods.Reflection;
 import org.obicere.cc.methods.Updater;
 import org.obicere.cc.shutdown.SaveLayoutHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
@@ -29,14 +30,12 @@ public class GUI {
         tabs = new JTabbedPane(SwingConstants.LEFT);
         tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        final JPanel[] defaultTabs = new JPanel[]{
-                ProjectTabPanel.getInstance(),
-                SettingsPanel.getInstance()
-        };
-        for (int i = 0; i < defaultTabs.length; i++) {
+        Reflection.hasAnnotation(MainTabPanel.class).forEach(e -> {
+            final MainTabPanel manifest = e.getAnnotation(MainTabPanel.class);
+
             final JPanel mainPane = new JPanel();
             final JPanel tabFill = new JPanel();
-            final JLabel label = new JLabel(defaultTabs[i].getName(), JLabel.CENTER);
+            final JLabel label = new JLabel(manifest.name(), JLabel.CENTER);
 
             tabFill.setLayout(new BorderLayout());
             tabFill.setPreferredSize(TAB_SIZE);
@@ -46,9 +45,9 @@ public class GUI {
             mainPane.setOpaque(false);
             mainPane.add(tabFill);
 
-            tabs.add(defaultTabs[i]);
-            tabs.setTabComponentAt(i, mainPane);
-        }
+            tabs.add((JPanel) Reflection.newInstance(e));
+            tabs.setTabComponentAt(manifest.index(), mainPane);
+        });
 
         main.add(tabs);
         main.setPreferredSize(new Dimension(1000, 600));

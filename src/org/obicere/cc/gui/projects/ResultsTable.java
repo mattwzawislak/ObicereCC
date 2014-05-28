@@ -11,7 +11,9 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ResultsTable extends JTable implements TableCellRenderer {
@@ -60,7 +62,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
                     if (!wrong && !resultsCorrect[i]) {
                         wrong = true;
                     }
-                    final Object[] arr = {results[i].getCorrectAnswer(), results[i].getResult(), Arrays.toString(results[i].getParameters())};
+                    final Object[] arr = {stringValue(results[i].getCorrectAnswer()), stringValue(results[i].getResult()), stringValue(results[i].getParameters())};
                     m.insertRow(i + 1, arr);
                 }
                 if (!wrong) {
@@ -83,9 +85,32 @@ public class ResultsTable extends JTable implements TableCellRenderer {
         }
     }
 
+    private String stringValue(final Object obj){
+        if(obj.getClass().isArray()){
+            return Arrays.deepToString(convertToObjectArray(obj));
+        }
+        return obj.toString();
+    }
+
+    private Object[] convertToObjectArray(Object array) {
+        final Class<?> ofArray = array.getClass().getComponentType();
+        if (ofArray.isPrimitive()) {
+            final ArrayList<Object> ar = new ArrayList<>();
+            final int length = Array.getLength(array);
+            for (int i = 0; i < length; i++) {
+                ar.add(Array.get(array, i));
+            }
+            return ar.toArray();
+        }
+        else {
+            return (Object[]) array;
+        }
+    }
+
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column) {
-        final JLabel label = new JLabel(value == null ? "" : value instanceof Object[] ? Arrays.deepToString((Object[]) value) : value.toString());
+        System.out.println(value.getClass().isArray());
+        final JLabel label = new JLabel(value == null ? "" : value.toString());
         if (row == 0) {
             label.setFont(label.getFont().deriveFont(Font.BOLD));
             return label;

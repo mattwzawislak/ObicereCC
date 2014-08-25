@@ -6,6 +6,8 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -15,22 +17,29 @@ import java.util.stream.Stream;
 public class Reflection {
 
     private static final ClassLoader CLASS_LOADER = Reflection.class.getClassLoader();
-    private static Stream<Class<?>> cache;
+    private static LinkedList<Class<?>> cache;
 
     static {
         cache = loadClasses();
     }
 
+    @SuppressWarnings("unchecked")
+    public static List<Class<?>> list(){
+        return (List<Class<?>>) cache.clone();
+    }
+
     public static Stream<Class<?>> stream() {
-        return cache.map(e -> e);
+        return cache.stream();
     }
 
     public static Stream<Class<?>> where(final Predicate<Class<?>> predicate) {
-        return stream().filter(predicate);
+        final Stream<Class<?>> stream = stream();
+        return stream.filter(predicate);
     }
 
     public static Stream<Class<?>> subclassOf(final Class<?> cls) {
-        return where(cls::isAssignableFrom);
+        Objects.requireNonNull(cls);
+        return where(c -> cls.isAssignableFrom(c) && !cls.equals(c));
     }
 
     public static Stream<Class<?>> hasAnnotation(final Class<? extends Annotation> cls) {
@@ -39,14 +48,19 @@ public class Reflection {
 
     public static Object newInstance(final Class<?> cls){
         try{
-            return cls.newInstance();
+            final Constructor cstr = cls.getConstructor();
+            if (cstr == null) {
+                return null;
+            }
+            cstr.setAccessible(true);
+            return cstr.newInstance();
         } catch (final Exception e){
             e.printStackTrace();
         }
         return null;
     }
 
-    private static Stream<Class<?>> loadClasses() {
+    private static LinkedList<Class<?>> loadClasses() {
         final LinkedList<Class<?>> classes = new LinkedList<>();
         try {
             final Enumeration<URL> paths = CLASS_LOADER.getResources("");
@@ -61,7 +75,7 @@ public class Reflection {
         } catch (final Exception e) {
             e.printStackTrace();
         }
-        return classes.stream();
+        return classes;
     }
 
     private static void addFiles(final LinkedList<Class<?>> list, final File folder, final String root) {
@@ -73,7 +87,10 @@ public class Reflection {
                 if (name.endsWith(".class")) {
                     final String filePath = flipSlashes(file.getPath());
                     if (filePath.startsWith(root)) {
-                        list.add(forName(normalizeClassName(filePath, root), CLASS_LOADER));
+                        final Class<?> cls = forName(normalizeClassName(filePath, root), CLASS_LOADER);
+                        if(cls != null) {
+                            list.add(cls);
+                        }
                     }
                 }
             }

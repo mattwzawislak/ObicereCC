@@ -1,28 +1,27 @@
 package org.obicere.cc.gui.projects;
 
-import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.Result;
-import org.obicere.cc.methods.IOUtils;
+import org.obicere.cc.shutdown.SaveProgressHook;
+import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.tasks.projects.Project;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Array;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ResultsTable extends JTable implements TableCellRenderer {
-    private static final long serialVersionUID = 5610470469686875396L;
 
-    private boolean[] resultsCorrect;
-    private final Project project;
-    private static final Color CORRECT = new Color(37, 133, 0);
-    private static final String[] HEADERS = new String[]{"Correct Answer", "Your Answer", "Parameters"};
+    private static final long     serialVersionUID = 5610470469686875396L;
+    private static final Color    CORRECT          = new Color(37, 133, 0);
+    private static final String[] HEADERS          = new String[]{"Correct Answer", "Your Answer", "Parameters"};
+
+    private       boolean[] resultsCorrect;
+    private final Project   project;
+    private final SaveProgressHook hook = ShutDownHookManager.hookByName(SaveProgressHook.class, SaveProgressHook.NAME);
 
     public ResultsTable(final Project project) {
         this.project = project;
@@ -66,27 +65,15 @@ public class ResultsTable extends JTable implements TableCellRenderer {
                     m.insertRow(i + 1, arr);
                 }
                 if (!wrong) {
-                    try {
-                        final File complete = new File(Paths.DATA + File.separator + "data.dat");
-                        final byte[] data = IOUtils.readData(complete);
-                        String info = new String(data);
-                        final String format = String.format("|%040x|", new BigInteger(project.getName().getBytes()));
-                        if (!info.contains(format)) {
-                            info = info.concat(format);
-                        }
-                        IOUtils.write(complete, info.getBytes());
-                        project.setComplete(true);
-                    } catch (final IOException e) {
-                        e.printStackTrace();
-                    }
+                    hook.setComplete(project.getName(), true);
                 }
             }
             setModel(m);
         }
     }
 
-    private String stringValue(final Object obj){
-        if(obj.getClass().isArray()){
+    private String stringValue(final Object obj) {
+        if (obj.getClass().isArray()) {
             return Arrays.deepToString(convertToObjectArray(obj));
         }
         return obj.toString();
@@ -101,16 +88,14 @@ public class ResultsTable extends JTable implements TableCellRenderer {
                 ar.add(Array.get(array, i));
             }
             return ar.toArray();
-        }
-        else {
+        } else {
             return (Object[]) array;
         }
     }
 
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column) {
-        System.out.println(value.getClass().isArray());
-        final JLabel label = new JLabel(value == null ? "" : value.toString());
+        final JLabel label = new JLabel(value.toString());
         if (row == 0) {
             label.setFont(label.getFont().deriveFont(Font.BOLD));
             return label;

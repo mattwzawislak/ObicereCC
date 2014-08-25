@@ -7,8 +7,8 @@ public enum Casing {
 
     LOWER_CAMEL_CASE,
     CAMEL_CASE,
-    UPPERCASE,
-    UPPERCASE_UNDERSCORE;
+    LOWERCASE,
+    LOWERCASE_UNDERSCORE;
 
     public static Casing forName(final String name) {
         final String search = name.replaceAll("[^a-zA-Z_]", "").replace(' ', '_').toUpperCase();
@@ -41,21 +41,21 @@ public enum Casing {
                     }
                 }
                 break;
-            case UPPERCASE:
+            case LOWERCASE:
                 for (final String token : words) {
                     if (!token.isEmpty()) {
-                        builder.append(token.toUpperCase());
+                        builder.append(token.toLowerCase());
                     }
                 }
                 break;
-            case UPPERCASE_UNDERSCORE:
+            case LOWERCASE_UNDERSCORE:
                 for (int i = 0; i < words.length; i++) {
                     final String token = words[i];
                     if (!token.isEmpty()) {
                         if (i != 0) {
                             builder.append('_');
                         }
-                        builder.append(token.toUpperCase());
+                        builder.append(token.toLowerCase());
                     }
                 }
                 break;

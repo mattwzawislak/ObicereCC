@@ -2,13 +2,10 @@ package org.obicere.cc.tasks.projects;
 
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.language.Language;
-import org.obicere.cc.gui.projects.ProjectPanel;
-import org.obicere.cc.gui.projects.ProjectSelector;
 import org.obicere.cc.methods.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -37,12 +34,10 @@ public class Project {
     private final String name;
     private final Manifest manifest;
     private final Class<?> runner;
-    private boolean complete;
 
-    public Project(final String name, final boolean complete) throws ClassNotFoundException {
+    public Project(final String name) throws ClassNotFoundException {
         this.runner = loadRunner(name);
         this.name = name;
-        this.complete = complete;
         this.manifest = runner.getAnnotation(Manifest.class);
     }
 
@@ -105,20 +100,6 @@ public class Project {
         return name.hashCode() * 31 + manifest.difficulty() * 17;
     }
 
-    public boolean isComplete() {
-        return complete;
-    }
-
-    public void setComplete(boolean complete) {
-        this.complete = complete;
-        for (final ProjectPanel panel : ProjectSelector.getProjectList()) {
-            if (panel.getProject().equals(this)) {
-                panel.setComplete(complete);
-                return;
-            }
-        }
-    }
-
     @Override
     public boolean equals(final Object o) {
         return o instanceof Project && o.hashCode() == this.hashCode();
@@ -139,14 +120,6 @@ public class Project {
     }
 
     public static void loadCurrent() {
-        String in;
-        try {
-            final File data = new File(Paths.DATA + File.separator + "data.dat");
-            in = new String(IOUtils.readData(data));
-        } catch (final Exception e) {
-            e.printStackTrace();
-            return;
-        }
         final File root = new File(Paths.SOURCE);
         if (!root.exists()) {
             return;
@@ -159,9 +132,8 @@ public class Project {
                     continue;
                 }
                 final String projectName = name.substring(0, idx);
-                final String data = String.format("|%040x|", new BigInteger(projectName.getBytes()));
                 try {
-                    final Project project = new Project(projectName, in.contains(data));
+                    final Project project = new Project(projectName);
                     DATA.add(project);
                 } catch (final ClassNotFoundException e) {
                     e.printStackTrace();

@@ -1,33 +1,64 @@
 package org.obicere.cc.shutdown;
 
-import org.obicere.cc.configuration.Global;
-import org.obicere.cc.methods.IOUtils;
-import org.obicere.cc.tasks.projects.Project;
+import org.obicere.cc.gui.projects.ProjectPanel;
+import org.obicere.cc.gui.projects.ProjectSelector;
 
-import java.io.File;
-import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class SaveProgressHook extends ShutDownHook {
 
-    private static final String NAME = "save.progress";
+    public static final String NAME = "save.progress";
+
+    @HookValue("")
+    public static final String PROGRESS_COMPLETE = "progress.complete";
+
+    private final Map<String, Boolean> completeList = new HashMap<>();
 
     public SaveProgressHook() {
         super(NAME, ShutDownHook.PRIORITY_RUNTIME_SHUTDOWN);
+        loadComplete();
+    }
+
+    public boolean isComplete(final String name) {
+        Objects.requireNonNull(name);
+        final Boolean complete = completeList.get(name);
+        if(complete == null){
+            return false;
+        }
+        return complete;
+    }
+
+    public void setComplete(final String name, final boolean complete){
+        Objects.requireNonNull(name);
+        completeList.put(name, complete);
+        for (final ProjectPanel panel : ProjectSelector.getProjectList()) {
+            if (panel.getProject().getName().equals(name)) {
+                panel.setComplete(complete);
+                return;
+            }
+        }
+    }
+
+    private void loadComplete(){
+        final String listing = getPropertyAsString(PROGRESS_COMPLETE);
+        final String[] tokens = listing.split(";");
+        for(final String str : tokens){
+            completeList.put(str, true);
+        }
     }
 
     @Override
     public void run() {
         final StringBuilder builder = new StringBuilder();
-        Project.DATA.stream().filter(Project::isComplete).forEach(project -> {
-            final String complete = String.format("|%040x|", new BigInteger(project.getName().getBytes()));
-            builder.append(complete);
+        completeList.forEach((name, complete) -> {
+            if (complete) {
+                final String token = String.format("%s;", name);
+                builder.append(token);
+            }
         });
-        try {
-            final byte[] data = builder.toString().getBytes();
-            IOUtils.write(new File(Global.Paths.DATA, "data.dat"), data);
-        } catch (final Exception e) {
-            System.err.println("Failed to save progress!");
-            e.printStackTrace();
-        }
+        setProperty(PROGRESS_COMPLETE, builder);
+        super.run();
     }
 }

@@ -5,12 +5,9 @@ import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.gui.Splash;
-import org.obicere.cc.methods.Reflection;
 import org.obicere.cc.methods.Updater;
-import org.obicere.cc.shutdown.NoSplashHook;
-import org.obicere.cc.shutdown.ShutDownHook;
+import org.obicere.cc.shutdown.SplashScreenHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
-import org.obicere.cc.tasks.projects.Manifest;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
@@ -21,8 +18,8 @@ public class Boot {
     public static void main(final String[] args) throws URISyntaxException {
         LanguageHandler.load();
         ShutDownHookManager.setup();
-        final NoSplashHook hook = ShutDownHookManager.hookByName(NoSplashHook.class, NoSplashHook.NAME);
-        final boolean splash = !hook.getPropertyAsBoolean(NoSplashHook.NO_SPLASH);
+        final SplashScreenHook hook = ShutDownHookManager.hookByName(SplashScreenHook.class, SplashScreenHook.NAME);
+        final boolean splash = !hook.getPropertyAsBoolean(SplashScreenHook.NO_SPLASH);
         try {
             if (splash) {
                 SwingUtilities.invokeAndWait(Splash::display);

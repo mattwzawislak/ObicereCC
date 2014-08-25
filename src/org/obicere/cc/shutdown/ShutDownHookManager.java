@@ -1,18 +1,38 @@
 package org.obicere.cc.shutdown;
 
 import org.obicere.cc.gui.GUI;
+import org.obicere.cc.methods.Reflection;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class ShutDownHookManager {
 
-    private static final ShutDownHook[] HOOKS = new ShutDownHook[]{
-            new NoSplashHook(),
-            new SaveLayoutHook(),
-            new SaveProgressHook()
-    };
+    private static final ShutDownHook[] HOOKS;
+
+    static {
+        final Stream<Class<?>> hooks = Reflection.where(c -> ShutDownHook.class.isAssignableFrom(c) && !ShutDownHook.class.equals(c) && !SettingsShutDownHook.class.equals(c));
+        final List<ShutDownHook> goodHooks = new LinkedList<>();
+        hooks.forEach(e -> {
+            if(e != null){
+                final ShutDownHook hook = (ShutDownHook) Reflection.newInstance(e);
+                if(hook == null){
+                    // Error initializing
+                }
+                goodHooks.add(hook);
+            }
+        });
+        HOOKS = new ShutDownHook[goodHooks.size()];
+        final Iterator<ShutDownHook> iterator = goodHooks.iterator();
+        for(int i = 0; iterator.hasNext(); i++){
+            HOOKS[i] = iterator.next();
+        }
+    }
 
     private ShutDownHookManager() {
     }

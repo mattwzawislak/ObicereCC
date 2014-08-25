@@ -8,8 +8,6 @@ import org.obicere.cc.tasks.projects.Project;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +21,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
     private static final Color TEXT_COLOR = new Color(0x0F0F0F);
     private final JLabel complete;
 
-    public ProjectPanel(final Project project) {
+    public ProjectPanel(final Project project, final boolean isComplete) {
         super(new BorderLayout());
 
         final JPanel rightPane = new JPanel(new BorderLayout());
@@ -57,7 +55,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
         description = "<html>".concat(description).concat("</html>");
 
         complete = new JLabel(null, null, SwingConstants.CENTER);
-        setComplete(project.isComplete());
+        setComplete(isComplete);
 
         this.project = project;
 
@@ -73,14 +71,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
         setPreferredSize(new Dimension(320, 150));
         setBorder(new BevelBorder(BevelBorder.RAISED));
 
-        open.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GUI.openProject(project, LanguageHandler.getLanguage((String) languageChoice.getSelectedItem()));
-            }
-
-        });
+        open.addActionListener(e -> GUI.openProject(project, LanguageHandler.getLanguage((String) languageChoice.getSelectedItem())));
 
         complete.setPreferredSize(new Dimension(75, 30));
 
@@ -115,7 +106,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
     }
 
     @Override
-    public int compareTo(ProjectPanel o) {
+    public int compareTo(final ProjectPanel o) {
         return getProject().getSortName().compareTo(o.getProject().getSortName());
     }
 

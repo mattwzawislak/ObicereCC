@@ -1,8 +1,11 @@
 package org.obicere.cc.shutdown;
 
-public class SaveLayoutHook extends ShutDownHook {
+public class LayoutHook extends SettingsShutDownHook {
 
     public static final String NAME = "save.layout";
+
+    @HookValue("true")
+    public static final String SAVE_LAYOUT = "save.layout";
 
     @HookValue("900")
     public static final String PROPERTY_FRAME_WIDTH = "frame.width";
@@ -19,7 +22,9 @@ public class SaveLayoutHook extends ShutDownHook {
     @HookValue("100")
     public static final String PROPERTY_TEXTSPLIT_DIVIDER_LOCATION = "textsplit.divider.location";
 
-    public SaveLayoutHook() {
-        super(true, "Save Layout", NAME, PRIORITY_WINDOW_CLOSING);
+    public LayoutHook() {
+        super("Save Layout", NAME, PRIORITY_WINDOW_CLOSING);
+
+        putDescription(SAVE_LAYOUT, "Save the layout.");
     }
 }

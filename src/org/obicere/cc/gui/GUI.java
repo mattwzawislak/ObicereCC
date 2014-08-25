@@ -2,11 +2,9 @@ package org.obicere.cc.gui;
 
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.Editor;
-import org.obicere.cc.gui.projects.ProjectTabPanel;
-import org.obicere.cc.gui.settings.SettingsPanel;
 import org.obicere.cc.methods.Reflection;
 import org.obicere.cc.methods.Updater;
-import org.obicere.cc.shutdown.SaveLayoutHook;
+import org.obicere.cc.shutdown.LayoutHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.tasks.projects.Project;
 
@@ -26,7 +24,7 @@ public class GUI {
     public static void buildGUI() {
         final JFrame frame = new JFrame("Obicere Computing Challenges v" + Updater.clientVersion());
         final JPanel main = new JPanel(new BorderLayout());
-        final SaveLayoutHook hook = ShutDownHookManager.hookByName(SaveLayoutHook.class, SaveLayoutHook.NAME);
+        final LayoutHook hook = ShutDownHookManager.hookByName(LayoutHook.class, LayoutHook.NAME);
         tabs = new JTabbedPane(SwingConstants.LEFT);
         tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
@@ -55,9 +53,11 @@ public class GUI {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
-                hook.setProperty(SaveLayoutHook.PROPERTY_FRAME_WIDTH, frame.getWidth());
-                hook.setProperty(SaveLayoutHook.PROPERTY_FRAME_HEIGHT, frame.getHeight());
-                hook.setProperty(SaveLayoutHook.PROPERTY_FRAME_STATE, frame.getExtendedState());
+                if(hook.getPropertyAsBoolean(LayoutHook.SAVE_LAYOUT)) {
+                    hook.setProperty(LayoutHook.PROPERTY_FRAME_WIDTH, frame.getWidth());
+                    hook.setProperty(LayoutHook.PROPERTY_FRAME_HEIGHT, frame.getHeight());
+                    hook.setProperty(LayoutHook.PROPERTY_FRAME_STATE, frame.getExtendedState());
+                }
             }
         });
 
@@ -67,11 +67,11 @@ public class GUI {
         frame.add(main);
         frame.setVisible(true);
         frame.setMinimumSize(new Dimension(900, 600));
-        final int state = hook.getPropertyAsInt(SaveLayoutHook.PROPERTY_FRAME_STATE);
+        final int state = hook.getPropertyAsInt(LayoutHook.PROPERTY_FRAME_STATE);
         frame.setExtendedState(state);
         if (state != JFrame.MAXIMIZED_BOTH) {
-            final int width = hook.getPropertyAsInt(SaveLayoutHook.PROPERTY_FRAME_WIDTH);
-            final int height = hook.getPropertyAsInt(SaveLayoutHook.PROPERTY_FRAME_HEIGHT);
+            final int width = hook.getPropertyAsInt(LayoutHook.PROPERTY_FRAME_WIDTH);
+            final int height = hook.getPropertyAsInt(LayoutHook.PROPERTY_FRAME_HEIGHT);
             frame.setSize(width, height);
             frame.setLocationRelativeTo(null);
         }

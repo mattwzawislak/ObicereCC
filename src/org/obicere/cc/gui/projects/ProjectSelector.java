@@ -1,5 +1,8 @@
 package org.obicere.cc.gui.projects;
 
+import org.obicere.cc.shutdown.SaveProgressHook;
+import org.obicere.cc.shutdown.ShutDownHook;
+import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.tasks.projects.Project;
 
 import javax.swing.*;
@@ -10,28 +13,20 @@ import java.util.Comparator;
 
 public class ProjectSelector extends JPanel {
 
-    private static final long serialVersionUID = 4869219241938861949L;
-    private static final ArrayList<ProjectPanel> PROJECTS = new ArrayList<>();
+    private static final long                    serialVersionUID = 4869219241938861949L;
+    private static final ArrayList<ProjectPanel> PROJECTS         = new ArrayList<>();
     private final JPanel selector;
+    private final SaveProgressHook hook = ShutDownHookManager.hookByName(SaveProgressHook.class, SaveProgressHook.NAME);
 
     public ProjectSelector() {
         super(new BorderLayout());
         selector = new JPanel(new WrapLayout(WrapLayout.LEFT));
         for (final Project project : Project.DATA) {
-            final ProjectPanel temp = new ProjectPanel(project);
+            final ProjectPanel temp = new ProjectPanel(project, hook.isComplete(project.getName()));
             PROJECTS.add(temp);
         }
-        Collections.sort(PROJECTS, new Comparator<ProjectPanel>() {
-
-            @Override
-            public int compare(ProjectPanel o1, ProjectPanel o2) {
-                return o1.compareTo(o2);
-            }
-
-        });
-        for (final ProjectPanel panel : PROJECTS) {
-            selector.add(panel);
-        }
+        Collections.sort(PROJECTS, (o1, o2) -> o1.compareTo(o2));
+        PROJECTS.forEach(selector::add);
         final JScrollPane scrollPane = new JScrollPane(selector);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
         add(scrollPane, BorderLayout.CENTER);
@@ -40,8 +35,10 @@ public class ProjectSelector extends JPanel {
     public void refine(final String key, final boolean complete, final boolean name, final boolean incomplete) {
         selector.removeAll();
         for (final ProjectPanel p : PROJECTS) {
-            if (name && p.getProject().getName().toLowerCase().contains(key.toLowerCase()) || key.isEmpty()) {
-                if (complete && p.getProject().isComplete() || incomplete && !p.getProject().isComplete()) {
+            final String pName = p.getProject().getName();
+            final boolean pComplete = hook.isComplete(pName);
+            if (name && pName.toLowerCase().contains(key.toLowerCase()) || key.isEmpty()) {
+                if (complete && pComplete || incomplete && !pComplete) {
                     selector.add(p);
                 }
             }

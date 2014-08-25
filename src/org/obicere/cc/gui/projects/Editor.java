@@ -3,7 +3,8 @@ package org.obicere.cc.gui.projects;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.CodePane;
-import org.obicere.cc.shutdown.SaveLayoutHook;
+import org.obicere.cc.shutdown.LayoutHook;
+import org.obicere.cc.shutdown.SaveProgressHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.tasks.projects.Project;
 
@@ -11,23 +12,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 
 public class Editor extends JPanel {
 
-    private static final Font CONSOLOAS_12 = new Font("Consolas", Font.PLAIN, 12);
+    private static final Font CONSOLOAS_12     = new Font("Consolas", Font.PLAIN, 12);
     private static final long serialVersionUID = 4203077483497169333L;
 
-    private final CodePane codePane;
+    private final CodePane     codePane;
     private final ResultsTable resultsTable;
-    private final JTextArea instructions;
-    private final JPanel instructionButtons;
-    private final Project project;
-    private final Font defaultInstructionFont;
-    private final Language language;
+    private final JTextArea    instructions;
+    private final JPanel       instructionButtons;
+    private final Project      project;
+    private final Font         defaultInstructionFont;
+    private final Language     language;
+    private final SaveProgressHook hook = ShutDownHookManager.hookByName(SaveProgressHook.class, SaveProgressHook.NAME);
 
     public Editor(final Project project, final Language language) {
         super(new BorderLayout());
@@ -40,7 +39,7 @@ public class Editor extends JPanel {
         this.defaultInstructionFont = instructions.getFont();
         this.language = language;
 
-        final SaveLayoutHook hook = ShutDownHookManager.hookByName(SaveLayoutHook.class, SaveLayoutHook.NAME);
+        final LayoutHook hook = ShutDownHookManager.hookByName(LayoutHook.class, LayoutHook.NAME);
         final JButton run = new JButton("Run");
         final JButton clear = new JButton("Clear Project");
         final JButton clearError = new JButton("Clear");
@@ -63,13 +62,17 @@ public class Editor extends JPanel {
 
         textSplit.addPropertyChangeListener(evt -> {
             if (evt.getPropertyName().equals("dividerLocation")) {
-                hook.setProperty(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, evt.getNewValue());
+                if (hook.getPropertyAsBoolean(LayoutHook.SAVE_LAYOUT)) {
+                    hook.setProperty(LayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION, evt.getNewValue());
+                }
             }
         });
 
         mainSplit.addPropertyChangeListener(evt -> {
             if (evt.getPropertyName().equals("dividerLocation")) {
-                hook.setProperty(SaveLayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION, evt.getNewValue());
+                if (hook.getPropertyAsBoolean(LayoutHook.SAVE_LAYOUT)) {
+                    hook.setProperty(LayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION, evt.getNewValue());
+                }
             }
         });
 
@@ -102,8 +105,8 @@ public class Editor extends JPanel {
         setName(project.getName());
 
         codePane.highlightKeywords();
-        mainSplit.setDividerLocation(hook.getPropertyAsInt(SaveLayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION));
-        textSplit.setDividerLocation(hook.getPropertyAsInt(SaveLayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION));
+        mainSplit.setDividerLocation(hook.getPropertyAsInt(LayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION));
+        textSplit.setDividerLocation(hook.getPropertyAsInt(LayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION));
     }
 
     public void setInstructionsText(final String string, final boolean error) {
@@ -129,11 +132,12 @@ public class Editor extends JPanel {
             final File compiledFile = new File(project.getFileName(language) + language.getCompiledExtension());
             final boolean deleteSource = sourceFile.exists() && sourceFile.delete();
             final boolean deleteCompiled = compiledFile.exists() && compiledFile.delete();
+            final String name = project.getName();
             if (deleteSource || deleteCompiled) {
-                if (project.isComplete()) {
+                if(hook.isComplete(name)){
                     codePane.setText(language.getSkeleton(project));
                     codePane.highlightKeywords();
-                    project.setComplete(false);
+                    hook.setComplete(name, false);
                 }
                 return;
             }
@@ -143,7 +147,7 @@ public class Editor extends JPanel {
     }
 
     public void saveAndRun() {
-        if (codePane.getText().length() == 0 || project == null) {
+        if (codePane.getText().length() == 0) {
             return;
         }
         if (!project.save(codePane.getText(), language)) {

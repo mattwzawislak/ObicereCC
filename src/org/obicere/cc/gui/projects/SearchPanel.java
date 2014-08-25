@@ -18,12 +18,7 @@ public class SearchPanel extends JPanel {
         final JPanel options = new JPanel(new FlowLayout(FlowLayout.LEADING));
         final JPanel padding = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 5));
         final JTextField search = new JTextField();
-        final ItemListener listener = new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                search(search.getText());
-            }
-        };
+        final ItemListener listener = e -> search(search.getText());
 
         complete = new JCheckBox("Complete");
         incomplete = new JCheckBox("Incomplete");
@@ -41,13 +36,9 @@ public class SearchPanel extends JPanel {
         incomplete.setSelected(true);
         name.setSelected(true);
 
-        name.addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                search.setEnabled(name.isSelected());
-                search(search.getText());
-            }
+        name.addItemListener(e -> {
+            search.setEnabled(name.isSelected());
+            search(search.getText());
         });
         complete.addItemListener(listener);
         incomplete.addItemListener(listener);

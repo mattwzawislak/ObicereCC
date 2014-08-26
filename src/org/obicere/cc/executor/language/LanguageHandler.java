@@ -26,10 +26,8 @@ public class LanguageHandler {
                 final String name = file.getName();
                 if (name.equals("Java")) {
                     SUPPORTED.put("Java", new JavaLanguage(file));
-                    continue;
+                    return; // for now
                 }
-                final CustomLanguage language = new CustomLanguage(name, file);
-                SUPPORTED.put(name, language);
             }
         } catch (final Exception e) {
             e.printStackTrace();

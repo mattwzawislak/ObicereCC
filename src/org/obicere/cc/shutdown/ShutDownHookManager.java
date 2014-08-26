@@ -1,6 +1,7 @@
 package org.obicere.cc.shutdown;
 
-import org.obicere.cc.gui.GUI;
+import com.sun.istack.internal.logging.Logger;
+import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.methods.Reflection;
 
 import java.awt.event.WindowAdapter;
@@ -9,9 +10,12 @@ import java.awt.event.WindowListener;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Stream;
 
 public class ShutDownHookManager {
+
+    private static final Logger LOGGER = Logger.getLogger(SettingsShutDownHook.class);
 
     private static final ShutDownHook[] HOOKS;
 
@@ -22,6 +26,7 @@ public class ShutDownHookManager {
             if (e != null) {
                 final ShutDownHook hook = (ShutDownHook) Reflection.newInstance(e);
                 if (hook == null) {
+                    LOGGER.log(Level.WARNING, "Failed to create hook: " + e.getName());
                     // Error initializing
                 }
                 goodHooks.add(hook);
@@ -43,7 +48,7 @@ public class ShutDownHookManager {
 
     public static void setup() {
         for (final ShutDownHook hook : HOOKS) {
-            System.out.println("Adding ShutDownHook: " + hook.getName());
+            LOGGER.log(Level.INFO, "Adding hook: " + hook.getName());
             switch (hook.getHookPriority()) {
                 case ShutDownHook.PRIORITY_RUNTIME_SHUTDOWN:
                     Runtime.getRuntime().addShutdownHook(hook);
@@ -55,7 +60,7 @@ public class ShutDownHookManager {
                             hook.start();
                         }
                     };
-                    GUI.WINDOW_CLOSING_HOOKS.add(listener);
+                    FrameManager.WINDOW_CLOSING_HOOKS.add(listener);
                     break;
             }
         }

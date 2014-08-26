@@ -130,7 +130,7 @@ public class CodePane extends JTextPane {
 
     public void highlightKeywords() {
         String code = getText();
-        for (final String literal : language.getLiteralMatchers()) {
+        for (final String literal : language.getLiteralMatches()) {
             code = clearMatches(code, literal);
         }
         code = code.replaceAll(MASTER_SPLIT, " $1 "); // create buffer.

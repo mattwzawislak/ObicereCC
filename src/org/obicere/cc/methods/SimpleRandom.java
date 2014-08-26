@@ -31,10 +31,6 @@ public class SimpleRandom {
         return seed.nextBoolean();
     }
 
-    public String nextString() {
-        return nextString(Integer.MAX_VALUE);
-    }
-
     public String nextString(final int length) {
         return nextString(length, CharSet.ALL);
     }

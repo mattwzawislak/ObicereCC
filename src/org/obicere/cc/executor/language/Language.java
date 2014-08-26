@@ -1,10 +1,11 @@
 package org.obicere.cc.executor.language;
 
+import com.sun.istack.internal.logging.Logger;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.compiler.Compiler;
-import org.obicere.cc.gui.GUI;
+import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.tasks.projects.Project;
 
@@ -12,8 +13,11 @@ import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
+import java.util.logging.Level;
 
 public abstract class Language {
+
+    private static final Logger LOGGER = Logger.getLogger(Language.class);
 
     private final boolean includeParameters;
 
@@ -41,7 +45,7 @@ public abstract class Language {
             this.name = name;
             this.directory = new File(Global.Paths.DATA, name);
             if (!directory.exists() && !directory.mkdir()) {
-                System.err.println("Failed to create directory for " + name);
+                LOGGER.log(Level.WARNING, "Failed to create directory for " + name);
             }
 
             final Properties properties = new Properties();
@@ -81,7 +85,7 @@ public abstract class Language {
 
         } catch (final Exception e) {
             e.printStackTrace();
-            System.err.println("Failed to load language: " + name);
+            LOGGER.log(Level.WARNING, "Failed to load language: " + name);
             throw new IllegalArgumentException();
         }
     }
@@ -105,7 +109,7 @@ public abstract class Language {
         return false;
     }
 
-    public String[] getLiteralMatchers() {
+    public String[] getLiteralMatches() {
         return literalsMatchers;
     }
 
@@ -184,8 +188,6 @@ public abstract class Language {
         final StringBuilder builder = new StringBuilder(size * 2);
         for (int i = 0; i < size; i++) {
             builder.append(arrayOpen);
-        }
-        for (int i = 0; i < size; i++) {
             builder.append(arrayClose);
         }
         return builder.toString();
@@ -196,7 +198,7 @@ public abstract class Language {
     }
 
     public void displayError(final Project project, final String[] error) {
-        final Editor editor = GUI.tabByName(project.getName(), this);
+        final Editor editor = FrameManager.tabByName(project.getName(), this);
         final StringBuilder builder = new StringBuilder();
         final String path = project.getFile(this).getAbsolutePath();
         for (final String str : error) {

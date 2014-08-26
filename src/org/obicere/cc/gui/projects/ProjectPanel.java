@@ -2,7 +2,7 @@ package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.executor.language.LanguageHandler;
-import org.obicere.cc.gui.GUI;
+import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.tasks.projects.Project;
 
 import javax.swing.*;
@@ -69,7 +69,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
         setPreferredSize(new Dimension(320, 150));
         setBorder(new BevelBorder(BevelBorder.RAISED));
 
-        open.addActionListener(e -> GUI.openProject(project, LanguageHandler.getLanguage((String) languageChoice.getSelectedItem())));
+        open.addActionListener(e -> FrameManager.openProject(project, LanguageHandler.getLanguage((String) languageChoice.getSelectedItem())));
 
         complete.setPreferredSize(new Dimension(75, 30));
 

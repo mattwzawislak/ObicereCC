@@ -24,7 +24,7 @@ public class TabPane extends JPanel {
         close.setPreferredSize(new Dimension(24, 24));
         close.setContentAreaFilled(false);
         close.setOpaque(false);
-        close.addActionListener(e -> GUI.removeTab(project.getName(), language));
+        close.addActionListener(e -> FrameManager.removeTab(project.getName(), language));
 
         add(buffer);
         add(close);

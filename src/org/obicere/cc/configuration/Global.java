@@ -6,7 +6,6 @@ import org.obicere.cc.gui.Splash;
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -85,21 +84,9 @@ public class Global {
             for (final String s : PATHS) {
                 final File file = new File(s);
                 if (!file.exists()) {
-                    Splash.setStatus("Creating Directory: " + s);
                     if (file.mkdir()) {
-                        System.out.println("Created " + file);
+                        Splash.setStatus("Created Directory: " + s);
                     }
-                }
-            }
-            final File complete = new File(DATA + File.separator + "data.dat");
-            if (!complete.exists()) {
-                try {
-                    if (complete.createNewFile()) {
-                        System.out.println("Created " + complete);
-                    }
-                } catch (IOException e) {
-                    System.err.println("Failed to create data file.");
-                    System.err.println("Completion progress will not be saved, code still will be.");
                 }
             }
         }

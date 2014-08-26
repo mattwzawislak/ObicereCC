@@ -1,24 +1,27 @@
 package org.obicere.cc.gui;
 
+import com.sun.istack.internal.logging.Logger;
 import org.obicere.cc.configuration.Message;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.logging.Level;
 
 public class Splash {
 
-    private static final Color BACKGROUND = new Color(51, 51, 51);
-    private static final Color BORDER     = new Color(199, 116, 49);
-    private static final Color TEXT_COLOR = new Color(173, 190, 210);
-    private static final Font  FONT       = new Font("Consolas", Font.PLAIN, 14);
+    private static final Logger LOGGER     = Logger.getLogger(Splash.class);
+    private static final Color  BACKGROUND = new Color(51, 51, 51);
+    private static final Color  BORDER     = new Color(199, 116, 49);
+    private static final Color  TEXT_COLOR = new Color(173, 190, 210);
+    private static final Font   FONT       = new Font("Consolas", Font.PLAIN, 14);
     private static Splash instance;
     private static String status = "Loading";
-    private final  JFrame frame;
-    private final String message;
-    private       String name;
-    private boolean should;
+    private final JFrame  frame;
+    private final String  message;
+    private       String  name;
+    private       boolean should;
 
     private Splash() {
         frame = new JFrame();
@@ -73,7 +76,7 @@ public class Splash {
         if (instance == null) {
             return;
         }
-        System.out.println(status);
+        LOGGER.log(Level.INFO, status);
         Splash.status = status;
         instance.getFrame().repaint();
     }

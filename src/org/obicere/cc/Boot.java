@@ -3,7 +3,7 @@ package org.obicere.cc;
 import com.alee.laf.WebLookAndFeel;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.language.LanguageHandler;
-import org.obicere.cc.gui.GUI;
+import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.gui.Splash;
 import org.obicere.cc.methods.Updater;
 import org.obicere.cc.shutdown.ShutDownHookManager;
@@ -34,7 +34,7 @@ public class Boot {
         SwingUtilities.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(new WebLookAndFeel());
-                GUI.buildGUI();
+                FrameManager.buildGUI();
                 if (splash) {
                     Splash.getInstance().shouldDispose(true);
                     Splash.getInstance().getFrame().dispose();

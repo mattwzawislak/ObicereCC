@@ -1,5 +1,6 @@
 package org.obicere.cc.methods;
 
+import com.sun.istack.internal.logging.Logger;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.configuration.Global.URLs;
@@ -15,8 +16,11 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 
 public class Updater {
+
+    private static final Logger LOGGER = Logger.getLogger(Updater.class);
 
     private static double                        updatedClientVersion = 0.0;
     private static LinkedHashMap<String, Double> updatedRunnersList   = new LinkedHashMap<>();
@@ -85,7 +89,7 @@ public class Updater {
             IOUtils.write(out, data);
 
         } catch (final IOException e) {
-            System.err.println("Unable to download " + runnerName);
+            LOGGER.log(Level.WARNING, "Failed to download class: " + runnerName);
             e.printStackTrace();
         }
 

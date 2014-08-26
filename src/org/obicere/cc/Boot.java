@@ -6,8 +6,8 @@ import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.GUI;
 import org.obicere.cc.gui.Splash;
 import org.obicere.cc.methods.Updater;
-import org.obicere.cc.shutdown.SplashScreenHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
+import org.obicere.cc.shutdown.SplashScreenHook;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;

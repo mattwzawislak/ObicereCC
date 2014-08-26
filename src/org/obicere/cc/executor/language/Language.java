@@ -26,11 +26,11 @@ public abstract class Language {
     private final String name;
     private final String skeleton;
 
-    private final File directory;
+    private final File     directory;
     private final String[] keywords;
     private final String[] literalsMatchers;
     private final Compiler compiler;
-    private final Command exectorCommand;
+    private final Command  exectorCommand;
 
     private final Casing fieldCasing;
     private final Casing methodCasing;

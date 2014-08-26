@@ -12,14 +12,7 @@ public class ProjectTabPanel extends JPanel {
 
     private final ProjectSelector projectSelector;
 
-    public static ProjectTabPanel getInstance(){
-        if(instance == null){
-            instance = new ProjectTabPanel();
-        }
-        return instance;
-    }
-
-    public ProjectTabPanel(){
+    public ProjectTabPanel() {
         super(new BorderLayout());
         final SearchPanel search = new SearchPanel();
         projectSelector = new ProjectSelector();
@@ -27,7 +20,14 @@ public class ProjectTabPanel extends JPanel {
         add(projectSelector, BorderLayout.CENTER);
     }
 
-    public ProjectSelector getProjectSelector(){
+    public static ProjectTabPanel getInstance() {
+        if (instance == null) {
+            instance = new ProjectTabPanel();
+        }
+        return instance;
+    }
+
+    public ProjectSelector getProjectSelector() {
         return projectSelector;
     }
 }

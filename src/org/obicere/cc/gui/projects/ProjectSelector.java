@@ -1,7 +1,6 @@
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.shutdown.SaveProgressHook;
-import org.obicere.cc.shutdown.ShutDownHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.tasks.projects.Project;
 
@@ -9,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 public class ProjectSelector extends JPanel {
 
@@ -32,6 +30,10 @@ public class ProjectSelector extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
     }
 
+    public static ArrayList<ProjectPanel> getProjectList() {
+        return PROJECTS;
+    }
+
     public void refine(final String key, final boolean complete, final boolean name, final boolean incomplete) {
         selector.removeAll();
         for (final ProjectPanel p : PROJECTS) {
@@ -45,9 +47,5 @@ public class ProjectSelector extends JPanel {
         }
         revalidate();
         updateUI();
-    }
-
-    public static ArrayList<ProjectPanel> getProjectList() {
-        return PROJECTS;
     }
 }

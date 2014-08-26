@@ -18,10 +18,9 @@ public class ResultsTable extends JTable implements TableCellRenderer {
     private static final long     serialVersionUID = 5610470469686875396L;
     private static final Color    CORRECT          = new Color(37, 133, 0);
     private static final String[] HEADERS          = new String[]{"Correct Answer", "Your Answer", "Parameters"};
-
-    private       boolean[] resultsCorrect;
     private final Project   project;
     private final SaveProgressHook hook = ShutDownHookManager.hookByName(SaveProgressHook.class, SaveProgressHook.NAME);
+    private       boolean[] resultsCorrect;
 
     public ResultsTable(final Project project) {
         this.project = project;

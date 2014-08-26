@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="weblaf-1.25" level="project" />
+    <orderEntry type="library" exported="" name="weblaf-1.28" level="project" />
   </component>
 </module>
 

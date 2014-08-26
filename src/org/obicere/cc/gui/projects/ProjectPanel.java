@@ -15,10 +15,8 @@ import java.util.regex.Pattern;
 public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
     private static final long serialVersionUID = -3692838815172773196L;
-
-    private final Project project;
-
     private static final Color TEXT_COLOR = new Color(0x0F0F0F);
+    private final Project project;
     private final JLabel complete;
 
     public ProjectPanel(final Project project, final boolean isComplete) {

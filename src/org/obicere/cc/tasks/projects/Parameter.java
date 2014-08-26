@@ -3,18 +3,18 @@ package org.obicere.cc.tasks.projects;
 public class Parameter {
 
     private final Class<?> cls;
-    private final String name;
+    private final String   name;
 
-    public Parameter(final Class<?> cls, final String name){
+    public Parameter(final Class<?> cls, final String name) {
         this.cls = cls;
         this.name = name;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public Class<?> getType(){
+    public Class<?> getType() {
         return cls;
     }
 

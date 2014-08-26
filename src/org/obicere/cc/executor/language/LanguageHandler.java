@@ -22,9 +22,9 @@ public class LanguageHandler {
         try {
             final File[] languages = Global.streamFiles("/resource/languages");
             final List<File> languageList = Arrays.asList(languages);
-            for(final File file : languageList){
+            for (final File file : languageList) {
                 final String name = file.getName();
-                if(name.equals("Java")){
+                if (name.equals("Java")) {
                     SUPPORTED.put("Java", new JavaLanguage(file));
                     continue;
                 }

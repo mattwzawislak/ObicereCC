@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public abstract class ShutDownHook extends Thread {
 
-    public static final int PRIORITY_WINDOW_CLOSING = 0x0;
+    public static final int PRIORITY_WINDOW_CLOSING   = 0x0;
     public static final int PRIORITY_RUNTIME_SHUTDOWN = 0x1;
 
     private final int priority;

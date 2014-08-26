@@ -18,11 +18,10 @@ import java.util.function.Predicate;
 
 public class Updater {
 
-    private static double updatedClientVersion = 0.0;
-    private static LinkedHashMap<String, Double> updatedRunnersList = new LinkedHashMap<>();
-
-    private static double currentClientVersion = 1.00;
-    private static LinkedHashMap<String, Double> currentRunnersList = new LinkedHashMap<>();
+    private static double                        updatedClientVersion = 0.0;
+    private static LinkedHashMap<String, Double> updatedRunnersList   = new LinkedHashMap<>();
+    private static double                        currentClientVersion = 1.00;
+    private static LinkedHashMap<String, Double> currentRunnersList   = new LinkedHashMap<>();
 
     private static final Predicate<String> OUTDATED_FILTER = key -> !currentRunnersList.containsKey(key) || updatedRunnersList.get(key) > currentRunnersList.get(key);
 

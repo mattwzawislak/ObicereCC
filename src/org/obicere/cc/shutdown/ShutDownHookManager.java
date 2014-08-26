@@ -19,9 +19,9 @@ public class ShutDownHookManager {
         final Stream<Class<?>> hooks = Reflection.where(c -> ShutDownHook.class.isAssignableFrom(c) && !ShutDownHook.class.equals(c) && !SettingsShutDownHook.class.equals(c));
         final List<ShutDownHook> goodHooks = new LinkedList<>();
         hooks.forEach(e -> {
-            if(e != null){
+            if (e != null) {
                 final ShutDownHook hook = (ShutDownHook) Reflection.newInstance(e);
-                if(hook == null){
+                if (hook == null) {
                     // Error initializing
                 }
                 goodHooks.add(hook);
@@ -29,7 +29,7 @@ public class ShutDownHookManager {
         });
         HOOKS = new ShutDownHook[goodHooks.size()];
         final Iterator<ShutDownHook> iterator = goodHooks.iterator();
-        for(int i = 0; iterator.hasNext(); i++){
+        for (int i = 0; iterator.hasNext(); i++) {
             HOOKS[i] = iterator.next();
         }
     }
@@ -37,7 +37,7 @@ public class ShutDownHookManager {
     private ShutDownHookManager() {
     }
 
-    public static ShutDownHook[] getShutDownHooks(){
+    public static ShutDownHook[] getShutDownHooks() {
         return HOOKS;
     }
 

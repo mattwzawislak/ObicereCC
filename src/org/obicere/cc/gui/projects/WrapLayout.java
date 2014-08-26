@@ -12,19 +12,23 @@ public class WrapLayout extends FlowLayout {
     public WrapLayout(int align) {
         super(align);
     }
+
     public WrapLayout(int align, int hgap, int vgap) {
         super(align, hgap, vgap);
     }
+
     @Override
     public Dimension preferredLayoutSize(Container target) {
         return layoutSize(target, true);
     }
+
     @Override
     public Dimension minimumLayoutSize(Container target) {
         Dimension minimum = layoutSize(target, false);
         minimum.width -= (getHgap() + 1);
         return minimum;
     }
+
     private Dimension layoutSize(Container target, boolean preferred) {
         synchronized (target.getTreeLock()) {
 
@@ -33,8 +37,9 @@ public class WrapLayout extends FlowLayout {
 
             int targetWidth = target.getSize().width;
 
-            if (targetWidth == 0)
+            if (targetWidth == 0) {
                 targetWidth = Integer.MAX_VALUE;
+            }
 
             int hgap = getHgap();
             int vgap = getVgap();
@@ -94,6 +99,7 @@ public class WrapLayout extends FlowLayout {
             return dim;
         }
     }
+
     private void addRow(Dimension dim, int rowWidth, int rowHeight) {
         dim.width = Math.max(dim.width, rowWidth);
 

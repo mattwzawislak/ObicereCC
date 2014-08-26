@@ -24,13 +24,13 @@ public class SaveProgressHook extends ShutDownHook {
     public boolean isComplete(final String name) {
         Objects.requireNonNull(name);
         final Boolean complete = completeList.get(name);
-        if(complete == null){
+        if (complete == null) {
             return false;
         }
         return complete;
     }
 
-    public void setComplete(final String name, final boolean complete){
+    public void setComplete(final String name, final boolean complete) {
         Objects.requireNonNull(name);
         completeList.put(name, complete);
         for (final ProjectPanel panel : ProjectSelector.getProjectList()) {
@@ -41,10 +41,10 @@ public class SaveProgressHook extends ShutDownHook {
         }
     }
 
-    private void loadComplete(){
+    private void loadComplete() {
         final String listing = getPropertyAsString(PROGRESS_COMPLETE);
         final String[] tokens = listing.split(";");
-        for(final String str : tokens){
+        for (final String str : tokens) {
             completeList.put(str, true);
         }
     }

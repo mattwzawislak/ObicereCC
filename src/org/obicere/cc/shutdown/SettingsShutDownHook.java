@@ -17,11 +17,11 @@ public abstract class SettingsShutDownHook extends ShutDownHook {
         this.groupName = groupName;
     }
 
-    public Map<String, String> getSettingDescriptions(){
+    public Map<String, String> getSettingDescriptions() {
         return settingDescriptions;
     }
 
-    public void putDescription(final String value, final String description){
+    public void putDescription(final String value, final String description) {
         settingDescriptions.put(value, description);
     }
 
@@ -31,7 +31,7 @@ public abstract class SettingsShutDownHook extends ShutDownHook {
         }
     }
 
-    public String getGroupName(){
+    public String getGroupName() {
         return groupName;
     }
 

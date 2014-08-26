@@ -7,6 +7,7 @@ public class IOUtils {
 
     private IOUtils() {
     }
+
     public static byte[] download(final URL url) throws IOException {
         return readData(url.openStream());
     }

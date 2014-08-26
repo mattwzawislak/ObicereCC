@@ -6,7 +6,7 @@ import java.awt.event.*;
 
 public class SearchPanel extends JPanel {
 
-    private static final String DEFAULT = "Search...";
+    private static final String    DEFAULT     = "Search...";
     private static final Dimension OPTION_SIZE = new Dimension(100, 35);
 
     private final JCheckBox complete;

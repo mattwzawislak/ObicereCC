@@ -18,8 +18,8 @@ import java.util.LinkedList;
 public class GUI {
 
     public static final LinkedList<WindowListener> WINDOW_CLOSING_HOOKS = new LinkedList<>();
-    private static JTabbedPane tabs;
     private static final Dimension TAB_SIZE = new Dimension(170, 30);
+    private static JTabbedPane tabs;
 
     public static void buildGUI() {
         final JFrame frame = new JFrame("Obicere Computing Challenges v" + Updater.clientVersion());
@@ -53,7 +53,7 @@ public class GUI {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
-                if(hook.getPropertyAsBoolean(LayoutHook.SAVE_LAYOUT)) {
+                if (hook.getPropertyAsBoolean(LayoutHook.SAVE_LAYOUT)) {
                     hook.setProperty(LayoutHook.PROPERTY_FRAME_WIDTH, frame.getWidth());
                     hook.setProperty(LayoutHook.PROPERTY_FRAME_HEIGHT, frame.getHeight());
                     hook.setProperty(LayoutHook.PROPERTY_FRAME_STATE, frame.getExtendedState());

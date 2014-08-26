@@ -13,8 +13,8 @@ import java.util.LinkedList;
 
 public class Project {
 
-    public static final String[] DIFFICULTY = new String[]{"Beginner", "Intermediate", "Advanced", "Challenging", "Legendary"};
-    public static final LinkedList<Project> DATA = new LinkedList<>();
+    public static final String[]            DIFFICULTY = new String[]{"Beginner", "Intermediate", "Advanced", "Challenging", "Legendary"};
+    public static final LinkedList<Project> DATA       = new LinkedList<>();
 
     private static final File RUNNER_LOCATION = new File(Paths.SOURCE);
     private static final ClassLoader RUNNER_CLASS_LOADER;
@@ -31,7 +31,7 @@ public class Project {
         RUNNER_CLASS_LOADER = loader;
     }
 
-    private final String name;
+    private final String   name;
     private final Manifest manifest;
     private final Class<?> runner;
 
@@ -39,6 +39,29 @@ public class Project {
         this.runner = loadRunner(name);
         this.name = name;
         this.manifest = runner.getAnnotation(Manifest.class);
+    }
+
+    public static void loadCurrent() {
+        final File root = new File(Paths.SOURCE);
+        if (!root.exists()) {
+            return;
+        }
+        final String[] list = root.list();
+        for (final String name : list) {
+            if (name != null) {
+                final int idx = name.indexOf("Runner.class");
+                if (idx == -1) {
+                    continue;
+                }
+                final String projectName = name.substring(0, idx);
+                try {
+                    final Project project = new Project(projectName);
+                    DATA.add(project);
+                } catch (final ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public String getName() {
@@ -63,11 +86,6 @@ public class Project {
 
     public String getSortName() {
         return manifest.difficulty() + getName();
-    }
-
-    @Override
-    public String toString() {
-        return getName();
     }
 
     public String getCurrentCode(final Language language) {
@@ -105,6 +123,11 @@ public class Project {
         return o instanceof Project && o.hashCode() == this.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
     public boolean save(final String code, final Language language) {
         try {
             IOUtils.write(getFile(language), code.getBytes());
@@ -117,29 +140,6 @@ public class Project {
 
     private Class<?> loadRunner(final String name) throws ClassNotFoundException {
         return RUNNER_CLASS_LOADER.loadClass(name + "Runner");
-    }
-
-    public static void loadCurrent() {
-        final File root = new File(Paths.SOURCE);
-        if (!root.exists()) {
-            return;
-        }
-        final String[] list = root.list();
-        for (final String name : list) {
-            if (name != null) {
-                final int idx = name.indexOf("Runner.class");
-                if (idx == -1) {
-                    continue;
-                }
-                final String projectName = name.substring(0, idx);
-                try {
-                    final Project project = new Project(projectName);
-                    DATA.add(project);
-                } catch (final ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
 }

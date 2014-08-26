@@ -17,6 +17,36 @@ public class JavaLanguage extends Language {
         super("Java", file);
     }
 
+    public String getSkeleton(final Project project) {
+        try {
+            final Class<?> cls = project.getRunner();
+            final Runner runner = (Runner) cls.newInstance();
+
+            final Parameter[] parameterList = runner.getParameters();
+            final String returnType = runner.getReturnType().getCanonicalName();
+            final String methodName = runner.getMethodName();
+
+            final StringBuilder parameters = new StringBuilder();
+            for (final Parameter parameter : parameterList) {
+                if (parameters.length() != 0) {
+                    parameters.append(", ");
+                }
+                parameters.append(parameter.getType().getCanonicalName());
+                parameters.append(' ');
+                parameters.append(parameter.getName());
+            }
+
+            String skeleton = getRawSkeleton();
+            skeleton = skeleton.replace("$parameter", parameters.toString());
+            skeleton = skeleton.replace("$name", project.getName());
+            skeleton = skeleton.replace("$return", returnType);
+            return skeleton.replace("$method", methodName);
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     @Override
     public Result[] compileAndRun(final Project project) {
         final File file = project.getFile(this);
@@ -51,35 +81,5 @@ public class JavaLanguage extends Language {
         }
         displayError(project, message);
         return new Result[0];
-    }
-
-    public String getSkeleton(final Project project) {
-        try {
-            final Class<?> cls = project.getRunner();
-            final Runner runner = (Runner) cls.newInstance();
-
-            final Parameter[] parameterList = runner.getParameters();
-            final String returnType = runner.getReturnType().getCanonicalName();
-            final String methodName = runner.getMethodName();
-
-            final StringBuilder parameters = new StringBuilder();
-            for (final Parameter parameter : parameterList) {
-                if (parameters.length() != 0) {
-                    parameters.append(", ");
-                }
-                parameters.append(parameter.getType().getCanonicalName());
-                parameters.append(' ');
-                parameters.append(parameter.getName());
-            }
-
-            String skeleton = getRawSkeleton();
-            skeleton = skeleton.replace("$parameter", parameters.toString());
-            skeleton = skeleton.replace("$name", project.getName());
-            skeleton = skeleton.replace("$return", returnType);
-            return skeleton.replace("$method", methodName);
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 }

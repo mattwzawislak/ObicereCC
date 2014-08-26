@@ -32,7 +32,7 @@ public class TabPane extends JPanel {
     }
 
     @Override
-    public Dimension getPreferredSize(){
+    public Dimension getPreferredSize() {
         return TAB_SIZE;
     }
 

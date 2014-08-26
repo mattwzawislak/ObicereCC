@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class Result {
 
-    private final Object result;
-    private final Object correctAnswer;
+    private final Object   result;
+    private final Object   correctAnswer;
     private final Object[] parameters;
 
     public Result(final Object result, final Object correctAnswer, final Object... parameters) {
@@ -27,7 +27,7 @@ public class Result {
     }
 
     public boolean isCorrect() {
-        if(result.getClass().isArray()){
+        if (result.getClass().isArray()) {
             return Arrays.deepEquals(new Object[]{result}, new Object[]{correctAnswer});
         }
         return result.equals(correctAnswer);

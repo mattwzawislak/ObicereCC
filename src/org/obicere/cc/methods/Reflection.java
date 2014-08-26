@@ -24,7 +24,7 @@ public class Reflection {
     }
 
     @SuppressWarnings("unchecked")
-    public static List<Class<?>> list(){
+    public static List<Class<?>> list() {
         return (List<Class<?>>) cache.clone();
     }
 
@@ -46,15 +46,15 @@ public class Reflection {
         return where(e -> e.getAnnotation(cls) != null);
     }
 
-    public static Object newInstance(final Class<?> cls){
-        try{
+    public static Object newInstance(final Class<?> cls) {
+        try {
             final Constructor cstr = cls.getConstructor();
             if (cstr == null) {
                 return null;
             }
             cstr.setAccessible(true);
             return cstr.newInstance();
-        } catch (final Exception e){
+        } catch (final Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -88,7 +88,7 @@ public class Reflection {
                     final String filePath = flipSlashes(file.getPath());
                     if (filePath.startsWith(root)) {
                         final Class<?> cls = forName(normalizeClassName(filePath, root), CLASS_LOADER);
-                        if(cls != null) {
+                        if (cls != null) {
                             list.add(cls);
                         }
                     }

@@ -16,11 +16,11 @@ import java.util.regex.Pattern;
 
 public class CodePane extends JTextPane {
 
-    private static final String MASTER_SPLIT = "([(\\[\\]);\\{}\0.])";
-    private static final SimpleAttributeSet KEYWORD_SET = new SimpleAttributeSet();
-    private static final SimpleAttributeSet NORMAL_SET = new SimpleAttributeSet();
-    private static final SimpleAttributeSet OTHER_SET = new SimpleAttributeSet();
-    private static final Font CONSOLAS = new Font("Consolas", Font.PLAIN, 14);
+    private static final String             MASTER_SPLIT = "([(\\[\\]);\\{}\0.])";
+    private static final SimpleAttributeSet KEYWORD_SET  = new SimpleAttributeSet();
+    private static final SimpleAttributeSet NORMAL_SET   = new SimpleAttributeSet();
+    private static final SimpleAttributeSet OTHER_SET    = new SimpleAttributeSet();
+    private static final Font               CONSOLAS     = new Font("Consolas", Font.PLAIN, 14);
 
     static {
         StyleConstants.setForeground(OTHER_SET, new Color(40, 116, 167));
@@ -56,7 +56,7 @@ public class CodePane extends JTextPane {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final Editor parent = (Editor) SwingUtilities.getAncestorOfClass(Editor.class, CodePane.this);
-                if(parent == null){
+                if (parent == null) {
                     JOptionPane.showMessageDialog(null, "Failed to save code!", "Error", JOptionPane.WARNING_MESSAGE);
                 } else {
                     parent.saveAndRun();

@@ -3,8 +3,6 @@ package org.obicere.cc.gui.settings;
 import org.obicere.cc.gui.MainTabPanel;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 import java.awt.*;
 
 /**

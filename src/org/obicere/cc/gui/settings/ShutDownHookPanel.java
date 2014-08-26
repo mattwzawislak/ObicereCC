@@ -15,7 +15,7 @@ public class ShutDownHookPanel extends JPanel {
 
     private static final Dimension PREFERRED_SIZE = new Dimension(200, 60);
 
-    public ShutDownHookPanel(final SettingsShutDownHook hook){
+    public ShutDownHookPanel(final SettingsShutDownHook hook) {
         super(new WrapLayout(WrapLayout.LEFT));
         setBorder(new TitledBorder(hook.getGroupName()));
 
@@ -35,12 +35,12 @@ public class ShutDownHookPanel extends JPanel {
     }
 
     @Override
-    public Dimension getPreferredSize(){
+    public Dimension getPreferredSize() {
         return PREFERRED_SIZE;
     }
 
     @Override
-    public Dimension getMinimumSize(){
+    public Dimension getMinimumSize() {
         return PREFERRED_SIZE;
     }
 

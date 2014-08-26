@@ -6,9 +6,9 @@ import java.io.File;
 
 public class Compiler {
 
-    private final String name;
-    private final String sourceExt;
-    private final String compiledExt;
+    private final String    name;
+    private final String    sourceExt;
+    private final String    compiledExt;
     private final Command[] commands;
 
     private Command workingCommand;
@@ -60,11 +60,11 @@ public class Compiler {
         return name;
     }
 
-    public String getSourceExtension(){
+    public String getSourceExtension() {
         return sourceExt;
     }
 
-    public String getCompiledExtension(){
+    public String getCompiledExtension() {
         return compiledExt;
     }
 

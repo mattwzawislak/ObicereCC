@@ -1,15 +1,10 @@
 package org.obicere.cc.configuration;
 
-import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.Splash;
 
 import java.awt.*;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Objects;
 
 public class Global {
 
@@ -32,21 +27,6 @@ public class Global {
             e.printStackTrace();
             return null;
         }
-    }
-
-    public static File[] streamFiles(final String directory) throws FileNotFoundException, URISyntaxException {
-        final URL urlPath = Language.class.getClassLoader().getResource("");
-        Objects.requireNonNull(urlPath);
-        final URI path = urlPath.toURI();
-        final File resource = new File(new File(path), directory);
-        if (resource.exists()) {
-            if (resource.isDirectory()) {
-                return resource.listFiles();
-            } else {
-                return new File[]{resource};
-            }
-        }
-        throw new FileNotFoundException();
     }
 
     public static String getAppData() {

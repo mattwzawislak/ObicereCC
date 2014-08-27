@@ -11,10 +11,51 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+@LanguageIdentifier
 public class JavaLanguage extends Language {
 
-    protected JavaLanguage(final File file) {
-        super("Java", file);
+    //keywords
+    public static final String KEYWORDS = "abstract,assert,boolean,break,byte,case,catch,char,class,const,continue,default,double,do,else,enum,extends,false,final,finally,float,for,goto,if,implements,import,instanceof,int,interface,long,native,new,null,package,private,protected,public,return,short,static,strictfp,super,switch,synchronized,this,throw,throws,transient,true,try,void,volatile,while";
+    //skeleton
+    public static final String SKELETON = "public class $name {\n\t\n\tpublic $return $method($parameter){\n\t\t\n\t}\n}";
+
+    //literal
+    public static final String LITERAL ="\"(?:[^\"\\\\\\n\\r\\u2028\\u2029]|\\\\(?:[^\\n\\rxu0-9]|0(?![0-9])|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|\\n|\\r\\n?))*\",(//.*+)|(?s)(/[*].*?[*]/)";
+
+    //compiledExtension
+    public static final String COMPILED_EXTENSION =".class";
+    //sourceExtension
+    public static final String SOURCE_EXTENSION =".java";
+
+    //compilerArguments
+    public static final String COMPILER_ARGUMENTS ="javac; $exec -g -nowarn \"$file\"";
+
+    //methodCasing
+    public static final String METHOD_CASING ="lower camel case";
+    //fieldCasing
+    public static final String FIELD_CASING="lower camel case";
+    //classCasing
+    public static final String CLASS_CASING="camel case";
+    //includeParameters
+    public static final String INCLUDE_PARAMETERS="true";
+
+    //executorCommand
+    public static final String EXECUTOR_COMMAND = " ; ";
+
+    //string
+    public static final String STRING="String";
+    //character
+    public static final String CHARACTER="char";
+    //integer
+    public static final String INTEGER="int";
+    //float
+    public static final String FLOAT="double";
+    //array
+    public static final String ARRAY ="[,]";
+
+
+    public JavaLanguage() {
+        super("Java", JavaLanguage.class);
     }
 
     public String getSkeleton(final Project project) {

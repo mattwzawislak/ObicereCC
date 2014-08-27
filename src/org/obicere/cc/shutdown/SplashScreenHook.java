@@ -5,7 +5,7 @@ package org.obicere.cc.shutdown;
  */
 public class SplashScreenHook extends SettingsShutDownHook {
 
-    public static final String NAME = "no.splash";
+    public static final String NAME = "splash.screen";
 
     @HookValue("false")
     public static final String NO_SPLASH = "no.splash";

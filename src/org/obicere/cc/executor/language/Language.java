@@ -7,18 +7,18 @@ import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.compiler.Compiler;
 import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.gui.projects.Editor;
+import org.obicere.cc.methods.Reflection;
 import org.obicere.cc.tasks.projects.Project;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
 import java.util.logging.Level;
 
 public abstract class Language {
 
     private static final Logger LOGGER = Logger.getLogger(Language.class);
 
+    private final Class<? extends Language> subclass;
     private final boolean includeParameters;
 
     private final String stringType;
@@ -34,47 +34,45 @@ public abstract class Language {
     private final String[] keywords;
     private final String[] literalsMatchers;
     private final Compiler compiler;
-    private final Command  exectorCommand;
+    private final Command  executorCommand;
 
     private final Casing fieldCasing;
     private final Casing methodCasing;
     private final Casing classCasing;
 
-    protected Language(final String name, final File file) {
+    protected Language(final String name, final Class<? extends Language> subclass) {
         try {
+            this.subclass = subclass;
             this.name = name;
             this.directory = new File(Global.Paths.DATA, name);
             if (!directory.exists() && !directory.mkdir()) {
                 LOGGER.log(Level.WARNING, "Failed to create directory for " + name);
             }
 
-            final Properties properties = new Properties();
-            properties.load(new FileInputStream(file));
+            this.keywords = loadField("KEYWORDS").split(",");
+            this.literalsMatchers = loadField("LITERAL").split(",");
+            this.skeleton = loadField("SKELETON").replace("\\n", "\n").replace("\\t", "\t");
 
-            this.keywords = properties.getProperty("keywords", "").split(",");
-            this.literalsMatchers = properties.getProperty("literal", "").split(",");
-            this.skeleton = properties.getProperty("skeleton", "").replace("\\n", "\n").replace("\\t", "\t");
+            this.fieldCasing = Casing.forName(loadField("FIELD_CASING"));
+            this.methodCasing = Casing.forName(loadField("METHOD_CASING"));
+            this.classCasing = Casing.forName(loadField("CLASS_CASING"));
+            this.includeParameters = Boolean.valueOf(loadField("INCLUDE_PARAMETERS"));
 
-            this.fieldCasing = Casing.forName(properties.getProperty("fieldCasing", ""));
-            this.methodCasing = Casing.forName(properties.getProperty("methodCasing", ""));
-            this.classCasing = Casing.forName(properties.getProperty("classCasing", ""));
-            this.includeParameters = Boolean.valueOf(properties.getProperty("includeParameters", "false"));
+            this.stringType = loadField("STRING");
+            this.characterType = loadField("CHARACTER");
+            this.integerType = loadField("INTEGER");
+            this.floatType = loadField("FLOAT");
 
-            this.stringType = properties.getProperty("string", "");
-            this.characterType = properties.getProperty("character", "");
-            this.integerType = properties.getProperty("integer", "");
-            this.floatType = properties.getProperty("float", "");
+            final String[] executor = loadField("EXECUTOR_COMMAND").split(";");
+            this.executorCommand = new Command(executor[0], executor[1]);
 
-            final String[] executor = properties.getProperty("executorCommand", " ; ").split(";");
-            this.exectorCommand = new Command(executor[0], executor[1]);
-
-            final String[] array = properties.getProperty("array", ",").split(",");
+            final String[] array = loadField("ARRAY").split(",");
             this.arrayOpen = array[0];
             this.arrayClose = array[1];
 
-            final String compiledExt = properties.getProperty("compiledExtension", "");
-            final String sourceExt = properties.getProperty("sourceExtension", "");
-            final String[] commandValues = properties.getProperty("compilerArguments").split(",");
+            final String compiledExt = loadField("COMPILED_EXTENSION");
+            final String sourceExt = loadField("SOURCE_EXTENSION");
+            final String[] commandValues = loadField("COMPILER_ARGUMENTS").split(",");
             final Command[] commands = new Command[commandValues.length];
             for (int i = 0; i < commandValues.length; i++) {
                 final String[] command = commandValues[i].split(";", 2);
@@ -88,6 +86,10 @@ public abstract class Language {
             LOGGER.log(Level.WARNING, "Failed to load language: " + name);
             throw new IllegalArgumentException();
         }
+    }
+
+    private String loadField(final String name){
+        return (String) Reflection.getStaticField(subclass, name);
     }
 
     public boolean isKeyword(final String word) {
@@ -194,7 +196,7 @@ public abstract class Language {
     }
 
     public Command getExecutorCommand() {
-        return exectorCommand;
+        return executorCommand;
     }
 
     public void displayError(final Project project, final String[] error) {

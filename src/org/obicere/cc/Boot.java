@@ -1,6 +1,5 @@
 package org.obicere.cc;
 
-import com.alee.laf.WebLookAndFeel;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.FrameManager;
@@ -15,7 +14,7 @@ import java.net.URISyntaxException;
 
 public class Boot {
 
-    public static void main(final String[] args) throws URISyntaxException {
+    public static void main(final String[] args) throws URISyntaxException, ClassNotFoundException {
         LanguageHandler.load();
         ShutDownHookManager.setup();
         final SplashScreenHook hook = ShutDownHookManager.hookByName(SplashScreenHook.class, SplashScreenHook.NAME);
@@ -33,7 +32,7 @@ public class Boot {
         Splash.setStatus("Loading framework");
         SwingUtilities.invokeLater(() -> {
             try {
-                UIManager.setLookAndFeel(new WebLookAndFeel());
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 FrameManager.buildGUI();
                 if (splash) {
                     Splash.getInstance().shouldDispose(true);

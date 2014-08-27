@@ -14,10 +14,18 @@ import java.util.stream.Stream;
  */
 public class Reflection {
 
+    private static final ClassLoader LOADER = ClassLoader.getSystemClassLoader();
     private static LinkedList<Class<?>> cache;
 
     static {
         cache = loadClasses();
+    }
+
+    private static ClassLoader getTopLevelLoader(ClassLoader loader) {
+        while (loader.getParent() != null) {
+            loader = loader.getParent();
+        }
+        return loader;
     }
 
     @SuppressWarnings("unchecked")
@@ -75,11 +83,11 @@ public class Reflection {
             loader.forEach(path -> {
                 try {
                     final Class<?> cls = forName(path);
-                    if(cls != null) {
+                    if (cls != null) {
                         classes.add(cls);
                     }
                 } catch (final Exception ignored) {
-
+                    ignored.printStackTrace();
                 }
             });
         } catch (final Exception e) {
@@ -88,13 +96,13 @@ public class Reflection {
         return classes;
     }
 
-    private static Class<?> forName(final String name) {
-        try {
-            return ClassLoader.getSystemClassLoader().loadClass(name);
-        } catch (final Exception e) {
-            e.printStackTrace();
-            return null;
+    private static Class<?> forName(final String name) throws Exception {
+        final Class<?> cls = LOADER.loadClass(name);
+        if (cls != null) {
+            return cls;
         }
+        // todo: implement a system where it actually tries to find the class...
+        throw new ClassNotFoundException("Class not found for: " + name);
     }
 
 }

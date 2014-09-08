@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 public class Boot {
 
     public static void main(final String[] args) throws URISyntaxException, ClassNotFoundException {
+        Paths.build();
         LanguageHandler.load();
         ShutDownHookManager.setup();
         final SplashScreenHook hook = ShutDownHookManager.hookByName(SplashScreenHook.class, SplashScreenHook.NAME);
@@ -27,7 +28,6 @@ public class Boot {
             e.printStackTrace();
             System.exit(0);
         }
-        Paths.build();
         Updater.update();
         Splash.setStatus("Loading framework");
         SwingUtilities.invokeLater(() -> {

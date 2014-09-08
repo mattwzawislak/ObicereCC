@@ -6,6 +6,8 @@ import java.io.File;
 
 public class Compiler {
 
+    private static final String ERROR_NO_JDK = "Could not find JAVAC. Make sure your path is set correctly.";
+
     private final String    name;
     private final String    sourceExt;
     private final String    compiledExt;
@@ -37,6 +39,9 @@ public class Compiler {
     public String[] compile(final File file) {
         try {
             final String command = getCommand(file);
+            if (command == ERROR_NO_JDK) {
+                return new String[]{ERROR_NO_JDK};
+            }
             return ProcessRunner.run(command);
         } catch (final Exception e) {
             e.printStackTrace();
@@ -46,6 +51,9 @@ public class Compiler {
 
     public String getCommand(final File file) {
         final Command command = getCompilerCommand();
+        if (command == null) {
+            return ERROR_NO_JDK;
+        }
         String exec = command.getFormat();
         exec = exec.replace("$exec", command.getProgram());
         exec = exec.replace("$path", file.getParent());

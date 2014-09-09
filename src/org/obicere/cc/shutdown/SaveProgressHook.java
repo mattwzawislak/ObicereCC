@@ -59,6 +59,10 @@ public class SaveProgressHook extends ShutDownHook {
             }
         });
         setProperty(PROGRESS_COMPLETE, builder);
+
+        // Be sure to update the properties accordingly before writing them.
+        // Somewhat detrimental for now.
+        // TODO: create a before-run-after-run system
         super.run();
     }
 }

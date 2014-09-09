@@ -2,7 +2,8 @@ package org.obicere.cc.shutdown;
 
 import org.obicere.cc.configuration.Global;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
@@ -13,24 +14,19 @@ public abstract class ShutDownHook extends Thread {
 
     private final int priority;
 
+    private final File propertiesFile;
     private final Properties properties = new Properties();
 
     public ShutDownHook(final String name, final int priority) {
         super(name);
         this.priority = priority;
+        this.propertiesFile = new File(Global.Paths.DATA, name.concat(".properties"));
         loadProperties();
     }
 
     protected void loadProperties() {
-        final File file = new File(Global.Paths.DATA, getName() + ".properties");
         try {
-            if (!file.exists() && !file.createNewFile()) {
-                return;
-            }
-            final InputStream input = new FileInputStream(file);
-            if (file.canRead()) {
-                properties.load(input);
-            }
+            Global.readProperties(properties, propertiesFile);
             final Field[] fields = getClass().getDeclaredFields();
             for (final Field field : fields) {
                 try {
@@ -61,15 +57,8 @@ public abstract class ShutDownHook extends Thread {
 
     @Override
     public void run() {
-        final File file = new File(Global.Paths.DATA, getName() + ".properties");
-        if (file.exists() && !file.canWrite()) {
-            return;
-        }
         try {
-            final FileOutputStream stream = new FileOutputStream(file);
-            properties.store(stream, null);
-            stream.flush();
-            stream.close();
+            Global.writeProperties(properties, propertiesFile);
         } catch (final IOException e) {
             e.printStackTrace();
         }

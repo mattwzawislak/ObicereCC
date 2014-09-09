@@ -2,6 +2,8 @@ package org.obicere.cc.gui;
 
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.Editor;
+import org.obicere.cc.shutdown.EditorHook;
+import org.obicere.cc.shutdown.ShutDownHookManager;
 
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
@@ -19,14 +21,20 @@ public class CodePane extends JTextPane {
     private static final String             MASTER_SPLIT = "([(\\[\\]);\\{}\0.])";
     private static final SimpleAttributeSet KEYWORD_SET  = new SimpleAttributeSet();
     private static final SimpleAttributeSet NORMAL_SET   = new SimpleAttributeSet();
-    private static final SimpleAttributeSet OTHER_SET    = new SimpleAttributeSet();
-    private static final Font               CONSOLAS     = new Font("Consolas", Font.PLAIN, 14);
+    private static final SimpleAttributeSet STRING_SET   = new SimpleAttributeSet();
+    private static Font editorFont;
+
+    private static final EditorHook HOOK = ShutDownHookManager.hookByName(EditorHook.class, EditorHook.NAME);
 
     static {
-        StyleConstants.setForeground(OTHER_SET, new Color(40, 116, 167));
-        StyleConstants.setForeground(KEYWORD_SET, new Color(120, 43, 8));
-        StyleConstants.setForeground(NORMAL_SET, new Color(36, 36, 36));
+        StyleConstants.setForeground(STRING_SET, HOOK.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));
+        StyleConstants.setForeground(KEYWORD_SET, HOOK.getPropertyAsColor(EditorHook.KEYWORD_HIGHLIGHT_COLOR));
+        StyleConstants.setForeground(NORMAL_SET, HOOK.getPropertyAsColor(EditorHook.NORMAL_HIGHLIGHT_COLOR));
+
+        editorFont = new Font(HOOK.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, HOOK.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
     }
+
+    private long lastUpdate;
 
     private final Language language;
 
@@ -37,7 +45,7 @@ public class CodePane extends JTextPane {
         final ActionMap actionMap = getActionMap();
         final StyleContext sc = StyleContext.getDefaultStyleContext();
         final TabStop[] tabs = new TabStop[50];
-        final FontMetrics metrics = getFontMetrics(CONSOLAS);
+        final FontMetrics metrics = getFontMetrics(editorFont);
         final int width = metrics.stringWidth("    ");
         for (int i = 0; i < tabs.length; i++) {
             tabs[i] = new TabStop(width * i);
@@ -45,7 +53,7 @@ public class CodePane extends JTextPane {
         final TabSet tabSet = new TabSet(tabs);
         final AttributeSet paraSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.TabSet, tabSet);
         setContentType("java");
-        setFont(CONSOLAS);
+        setFont(editorFont);
         setParagraphAttributes(paraSet, false);
         setText(content);
 
@@ -128,7 +136,21 @@ public class CodePane extends JTextPane {
         return getUI().getPreferredSize(this).width <= getParent().getSize().width;
     }
 
+    private void checkForUpdates() {
+        final long editorUpdate = HOOK.getLastEditorUpdate();
+        if (lastUpdate != editorUpdate) {
+            StyleConstants.setForeground(STRING_SET, HOOK.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));
+            StyleConstants.setForeground(KEYWORD_SET, HOOK.getPropertyAsColor(EditorHook.KEYWORD_HIGHLIGHT_COLOR));
+            StyleConstants.setForeground(NORMAL_SET, HOOK.getPropertyAsColor(EditorHook.NORMAL_HIGHLIGHT_COLOR));
+
+            editorFont = new Font(HOOK.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, HOOK.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
+            lastUpdate = editorUpdate;
+            setFont(editorFont);
+        }
+    }
+
     public void highlightKeywords() {
+        checkForUpdates(); // Be sure to get the latest changes.
         String code = getText();
         for (final String literal : language.getLiteralMatches()) {
             code = clearMatches(code, literal);
@@ -147,7 +169,7 @@ public class CodePane extends JTextPane {
                 i--;
             }
             if (word.matches("(\u0000)+")) { // an empty String buffer
-                style.setCharacterAttributes(i, word.length(), OTHER_SET, true);
+                style.setCharacterAttributes(i, word.length(), STRING_SET, true);
             } else {
                 final boolean keyword = language.isKeyword(word);
                 style.setCharacterAttributes(i, word.length(), keyword ? KEYWORD_SET : NORMAL_SET, true);

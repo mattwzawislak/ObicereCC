@@ -19,7 +19,7 @@ public abstract class Language {
     private static final Logger LOGGER = Logger.getLogger(Language.class);
 
     private final Class<? extends Language> subclass;
-    private final boolean includeParameters;
+    private final boolean                   includeParameters;
 
     private final String stringType;
     private final String characterType;
@@ -88,7 +88,7 @@ public abstract class Language {
         }
     }
 
-    private String loadField(final String name){
+    private String loadField(final String name) {
         return (String) Reflection.getStaticField(subclass, name);
     }
 

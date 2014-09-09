@@ -15,7 +15,7 @@ public class SettingsPanel extends JPanel {
         super(new BorderLayout(25, 25));
 
         final ShutDownHookPanelGroup shutDownGroup = new ShutDownHookPanelGroup();
-        add(shutDownGroup, BorderLayout.WEST);
+        add(shutDownGroup);
 
     }
 }

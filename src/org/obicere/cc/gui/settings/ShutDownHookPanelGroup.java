@@ -13,9 +13,13 @@ import java.awt.*;
 public class ShutDownHookPanelGroup extends JPanel {
 
     public ShutDownHookPanelGroup() {
+        super(new FlowLayout());
+
         final JPanel panel = new JPanel();
         final JScrollPane scroll = new JScrollPane(panel);
+
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+
         final ShutDownHook[] hooks = ShutDownHookManager.getShutDownHooks();
         for (final ShutDownHook hook : hooks) {
             if (hook instanceof SettingsShutDownHook) {

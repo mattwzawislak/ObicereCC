@@ -1,6 +1,5 @@
 package org.obicere.cc.shutdown;
 
-import com.sun.istack.internal.logging.Logger;
 import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.methods.Reflection;
 
@@ -11,11 +10,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class ShutDownHookManager {
 
-    private static final Logger LOGGER = Logger.getLogger(SettingsShutDownHook.class);
+    private static final Logger LOGGER = Logger.getLogger(SettingsShutDownHook.class.getCanonicalName());
 
     private static final ShutDownHook[] HOOKS;
 

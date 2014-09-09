@@ -1,6 +1,5 @@
 package org.obicere.cc.gui;
 
-import com.sun.istack.internal.logging.Logger;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.methods.Reflection;
@@ -16,12 +15,16 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.LinkedList;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FrameManager {
 
-    private static final Logger                     LOGGER               = Logger.getLogger(FrameManager.class);
-    public static final  LinkedList<WindowListener> WINDOW_CLOSING_HOOKS = new LinkedList<>();
-    private static final Dimension                  TAB_SIZE             = new Dimension(170, 30);
+    private static final Logger LOGGER = Logger.getLogger(FrameManager.class.getCanonicalName());
+
+    public static final LinkedList<WindowListener> WINDOW_CLOSING_HOOKS = new LinkedList<>();
+
+    private static final Dimension TAB_SIZE = new Dimension(170, 30);
+
     private static JTabbedPane tabs;
 
     public static void buildGUI() {

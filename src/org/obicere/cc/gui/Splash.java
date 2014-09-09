@@ -1,6 +1,5 @@
 package org.obicere.cc.gui;
 
-import com.sun.istack.internal.logging.Logger;
 import org.obicere.cc.configuration.Message;
 
 import javax.swing.*;
@@ -11,10 +10,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Splash {
 
-    private static final Logger LOGGER = Logger.getLogger(Splash.class);
+    private static final Logger LOGGER = Logger.getLogger(Splash.class.getCanonicalName());
 
     private static final int CENTER_X = 500;
     private static final int CENTER_Y = 100;

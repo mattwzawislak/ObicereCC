@@ -1,6 +1,5 @@
 package org.obicere.cc.methods;
 
-import com.sun.istack.internal.logging.Logger;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.configuration.Global.URLs;
@@ -17,10 +16,11 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.function.Predicate;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Updater {
 
-    private static final Logger LOGGER = Logger.getLogger(Updater.class);
+    private static final Logger LOGGER = Logger.getLogger(Updater.class.getCanonicalName());
 
     private static double                        updatedClientVersion = 0.0;
     private static LinkedHashMap<String, Double> updatedRunnersList   = new LinkedHashMap<>();

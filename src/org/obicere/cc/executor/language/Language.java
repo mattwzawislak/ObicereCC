@@ -1,6 +1,5 @@
 package org.obicere.cc.executor.language;
 
-import com.sun.istack.internal.logging.Logger;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
@@ -13,10 +12,11 @@ import org.obicere.cc.tasks.projects.Project;
 import javax.swing.*;
 import java.io.File;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Language {
 
-    private static final Logger LOGGER = Logger.getLogger(Language.class);
+    private static final Logger LOGGER = Logger.getLogger(Language.class.getCanonicalName());
 
     private final Class<? extends Language> subclass;
     private final boolean                   includeParameters;

@@ -19,13 +19,6 @@ public class Reflection {
         cache = loadClasses();
     }
 
-    private static ClassLoader getTopLevelLoader(ClassLoader loader) {
-        while (loader.getParent() != null) {
-            loader = loader.getParent();
-        }
-        return loader;
-    }
-
     @SuppressWarnings("unchecked")
     public static List<Class<?>> list() {
         return (List<Class<?>>) cache.clone();

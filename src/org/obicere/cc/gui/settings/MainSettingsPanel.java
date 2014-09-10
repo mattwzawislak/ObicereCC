@@ -1,5 +1,7 @@
 package org.obicere.cc.gui.settings;
 
+import org.obicere.cc.gui.MainTabPanel;
+import org.obicere.cc.gui.VerticalFlowLayout;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 import org.obicere.cc.shutdown.ShutDownHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
@@ -10,25 +12,25 @@ import java.awt.*;
 /**
  * @author Obicere
  */
-public class ShutDownHookPanelGroup extends JPanel {
+@MainTabPanel(name = "Settings", index = 1)
+public class MainSettingsPanel extends JPanel {
 
-    public ShutDownHookPanelGroup() {
-        super(new FlowLayout());
+    public MainSettingsPanel() {
+        super(new FlowLayout(FlowLayout.LEFT));
 
-        final JPanel panel = new JPanel();
+        final VerticalFlowLayout layout = new VerticalFlowLayout();
+        layout.setMaximizeOtherDimension(true);
+        final JPanel panel = new JPanel(layout);
         final JScrollPane scroll = new JScrollPane(panel);
-
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
         final ShutDownHook[] hooks = ShutDownHookManager.getShutDownHooks();
         for (final ShutDownHook hook : hooks) {
             if (hook instanceof SettingsShutDownHook) {
                 final ShutDownHookPanel content = new ShutDownHookPanel((SettingsShutDownHook) hook);
-                content.setAlignmentX(Component.LEFT_ALIGNMENT);
                 panel.add(content);
             }
         }
         add(scroll);
-    }
 
+    }
 }

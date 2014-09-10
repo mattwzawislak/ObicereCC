@@ -10,10 +10,10 @@ import java.util.Properties;
 
 public abstract class ShutDownHook extends Thread {
 
-    private static final String DYNAMIC_MATCHER_BOOLEAN     = "true|false";
+    private static final String DYNAMIC_MATCHER_BOOLEAN     = "(?i)true|false";
     private static final String DYNAMIC_MATCHER_OCTAL       = "[+-]?0[0-7]{1,11}";
     private static final String DYNAMIC_MATCHER_DECIMAL     = "[+-]?[0-9]{1,10}";
-    private static final String DYNAMIC_MATCHER_HEXADECIMAL = "[+-]?0x[0-9a-fA-F]{1,9}";
+    private static final String DYNAMIC_MATCHER_HEXADECIMAL = "(?i)[+-]?0x[0-9a-f]{1,9}";
     private static final String DYNAMIC_MATCHER_DOUBLE      = "[+-]?([0-9]{1,10})((\\.)?[0-9]{0,10}?)([eE][+-]?[0-9]{1,10})?";
     private static final String DYNAMIC_MATCHER_COLOR       = "java\\.awt\\.Color\\[r=([0-9]{1,3}),g=([0-9]{1,3}),b=([0-9]{1,3})\\]";
 

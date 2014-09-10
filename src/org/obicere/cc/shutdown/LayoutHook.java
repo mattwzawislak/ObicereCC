@@ -1,11 +1,14 @@
 package org.obicere.cc.shutdown;
 
+import org.obicere.cc.gui.settings.BooleanSetting;
+
 public class LayoutHook extends SettingsShutDownHook {
 
     public static final String NAME = "save.layout";
 
     @HookValue("true")
     public static final String SAVE_LAYOUT = "save.layout";
+    public static final String SAVE_LAYOUT_DESCRIPTION = "Save the layout: ";
 
     @HookValue("900")
     public static final String PROPERTY_FRAME_WIDTH = "frame.width";
@@ -25,6 +28,6 @@ public class LayoutHook extends SettingsShutDownHook {
     public LayoutHook() {
         super("Save Layout", NAME, PRIORITY_WINDOW_CLOSING);
 
-        putDescription(SAVE_LAYOUT, "Save the layout.");
+        providePanel(SAVE_LAYOUT, new BooleanSetting(this, SAVE_LAYOUT, SAVE_LAYOUT_DESCRIPTION));
     }
 }

@@ -10,7 +10,7 @@ import java.awt.*;
  */
 public class BooleanSetting extends SettingPanel {
 
-    protected BooleanSetting(final SettingsShutDownHook hook, final String value, final String description) {
+    public BooleanSetting(final SettingsShutDownHook hook, final String value, final String description) {
         super(hook, value, description);
     }
 
@@ -19,12 +19,18 @@ public class BooleanSetting extends SettingPanel {
         final SettingsShutDownHook hook = getHook();
         final String value = getKey();
 
-        final JCheckBox allowed = new JCheckBox(getDescriptor());
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+
+        final JLabel label = new JLabel(getDescriptor());
+        final JCheckBox allowed = new JCheckBox();
         allowed.setSelected(hook.getPropertyAsBoolean(value));
         allowed.addChangeListener(e -> {
             final boolean selected = allowed.isSelected();
             hook.toggleSetting(value, selected);
         });
+
+        add(label);
+        add(Box.createHorizontalGlue());
         add(allowed);
     }
 }

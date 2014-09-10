@@ -3,6 +3,8 @@ package org.obicere.cc.gui.settings;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -15,7 +17,7 @@ public class ColorSetting extends SettingPanel {
 
     private Color selectedColor;
 
-    protected ColorSetting(final SettingsShutDownHook hook, final String value, final String description) {
+    public ColorSetting(final SettingsShutDownHook hook, final String value, final String description) {
         super(hook, value, description);
         this.selectedColor = hook.getPropertyAsColor(getKey());
     }
@@ -24,7 +26,7 @@ public class ColorSetting extends SettingPanel {
     protected void buildPanel() {
         final SettingsShutDownHook hook = getHook();
 
-        final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         final JLabel label = new JLabel(getDescriptor());
         final JButton selectColor = new JButton(null, createIcon(selectedColor));
 
@@ -39,10 +41,9 @@ public class ColorSetting extends SettingPanel {
             hook.setProperty(getKey(), selectedColor);
         });
 
-        panel.add(label);
-        panel.add(selectColor);
-
-        add(panel);
+        add(label);
+        add(Box.createHorizontalGlue());
+        add(selectColor);
     }
 
     private Icon createIcon(final Color color) {

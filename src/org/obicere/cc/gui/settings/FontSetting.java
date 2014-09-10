@@ -17,7 +17,7 @@ public class FontSetting extends SettingPanel {
         FONT_LISTING = env.getAvailableFontFamilyNames();
     }
 
-    protected FontSetting(SettingsShutDownHook hook, String value, String description) {
+    public FontSetting(SettingsShutDownHook hook, String value, String description) {
         super(hook, value, description);
     }
 
@@ -27,9 +27,9 @@ public class FontSetting extends SettingPanel {
         final SettingsShutDownHook hook = getHook();
         final String key = getKey();
 
-        final JPanel panel = new JPanel();
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         final JLabel description = new JLabel(getDescriptor());
-        final JComboBox<String> fontSelection = new JComboBox<String>(FONT_LISTING);
+        final JComboBox<String> fontSelection = new JComboBox<>(FONT_LISTING);
 
         fontSelection.setSelectedItem(hook.getPropertyAsString(key));
         fontSelection.addItemListener(e -> {
@@ -37,9 +37,8 @@ public class FontSetting extends SettingPanel {
             hook.setProperty(key, selected);
         });
 
-        panel.add(description);
-        panel.add(fontSelection);
-
-        add(panel);
+        add(description);
+        add(Box.createHorizontalGlue());
+        add(fontSelection);
     }
 }

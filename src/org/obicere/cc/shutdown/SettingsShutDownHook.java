@@ -1,6 +1,9 @@
 package org.obicere.cc.shutdown;
 
+import org.obicere.cc.gui.settings.SettingPanel;
+
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -8,7 +11,7 @@ import java.util.Map;
  */
 public abstract class SettingsShutDownHook extends ShutDownHook {
 
-    private final Map<String, String> settingDescriptions = new HashMap<>();
+    private final Map<String, SettingPanel> settingPanels = new LinkedHashMap<>();
 
     private final String groupName;
 
@@ -17,12 +20,12 @@ public abstract class SettingsShutDownHook extends ShutDownHook {
         this.groupName = groupName;
     }
 
-    public Map<String, String> getSettingDescriptions() {
-        return settingDescriptions;
+    public Map<String, SettingPanel> getSettingPanels() {
+        return settingPanels;
     }
 
-    public void putDescription(final String value, final String description) {
-        settingDescriptions.put(value, description);
+    public void providePanel(final String value, final SettingPanel panel) {
+        settingPanels.put(value, panel);
     }
 
     public void toggleSetting(final String name, final boolean value) {

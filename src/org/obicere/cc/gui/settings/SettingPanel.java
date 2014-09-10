@@ -3,6 +3,7 @@ package org.obicere.cc.gui.settings;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 /**

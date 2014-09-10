@@ -8,11 +8,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Obicere
  */
 public class FileLoader {
+
+    private static final Logger LOGGER = Logger.getLogger(FileLoader.class.getCanonicalName());
 
     private final LinkedList<String> list;
 
@@ -41,11 +45,13 @@ public class FileLoader {
 
         final File dir = new File(prefix);
         if (dir.isDirectory()) {
+            LOGGER.log(Level.INFO, "Analyzing directory {0}.", dir);
             lookInDirectory("", dir);
         }
         if (dir.isFile()) {
             final String name = dir.getName().toLowerCase();
             if (name.endsWith(".zip") || name.endsWith(".jar")) {
+                LOGGER.log(Level.INFO, "Analyzing archive {0}.", dir);
                 this.lookInArchive(dir);
             }
         }

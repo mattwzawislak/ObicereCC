@@ -11,10 +11,15 @@ import org.obicere.cc.shutdown.SplashScreenHook;
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Boot {
 
+    private static final Logger LOGGER = Logger.getLogger(Boot.class.getCanonicalName());
+
     public static void main(final String[] args) throws URISyntaxException, ClassNotFoundException {
+        final long startBoot = System.currentTimeMillis();
         Paths.build();
         LanguageHandler.load();
         ShutDownHookManager.setup();
@@ -36,11 +41,13 @@ public class Boot {
                 FrameManager.buildGUI();
                 if (splash) {
                     Splash.getInstance().shouldDispose(true);
-                    Splash.getInstance().getFrame().dispose();
+                    Splash.getInstance().dispose();
                 }
             } catch (final Exception e) {
                 e.printStackTrace();
             }
         });
+        final long bootTime = System.currentTimeMillis() - startBoot;
+        LOGGER.log(Level.INFO, "Boot time: {0}ms", bootTime);
     }
 }

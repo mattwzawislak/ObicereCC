@@ -125,20 +125,21 @@ public class Updater {
         try {
             final URL url = new URL(URLs.HOME);
             final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+            final long responseStart = System.currentTimeMillis();
             urlConn.connect();
-            if (urlConn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-                while (interfaces.hasMoreElements()) {
-                    if (interfaces.nextElement().isUp()) {
-                        Splash.setStatus("Site is down at this time.");
-                        Thread.sleep(1000); // Allow time so user can see the message
-                        return false;
-                    }
-                }
-                Splash.setStatus("Not connected to the internet");
-                Thread.sleep(1000); // Allow time so user can see the message
+            if (urlConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                final long responseTime = System.currentTimeMillis() - responseStart;
+                LOGGER.log(Level.INFO, "Response from the server took {0}ms.", responseTime);
+                return true;
             }
-            return true;
+            final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                if (interfaces.nextElement().isUp()) {
+                    LOGGER.log(Level.WARNING, "Site may be down at the moment.");
+                    return false;
+                }
+            }
+            LOGGER.log(Level.WARNING, "Not connected to internet. Unable to get updates.");
         } catch (final Exception e) {
             e.printStackTrace();
         }

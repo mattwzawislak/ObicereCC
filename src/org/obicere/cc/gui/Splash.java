@@ -132,7 +132,11 @@ public class Splash {
         this.should = should;
     }
 
-    public JFrame getFrame() {
+    public void dispose() {
+        frame.dispose();
+    }
+
+    private JFrame getFrame() {
         return frame;
     }
 

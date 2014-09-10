@@ -1,7 +1,6 @@
-package org.obicere.cc.gui;
+package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.executor.language.Language;
-import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.shutdown.EditorHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 

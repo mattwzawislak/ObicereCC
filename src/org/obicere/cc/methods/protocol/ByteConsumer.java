@@ -47,10 +47,10 @@ public class ByteConsumer {
 
     public static void main(final String[] args) {
         final ByteConsumer consumer = new ByteConsumer();
-        final Integer[] i = {1, 2, 34, 5, 6};
+        final int[][] i = {{1, 2, 3}, {4, 5, 6}};
         consumer.write(i);
         System.out.println(Arrays.toString(consumer.toOutputArray()));
-        final Integer[] newI = consumer.readArray(Integer[].class);
+        final int[][] newI = consumer.readArray(int[][].class);
         System.out.println(Arrays.deepToString(newI));
     }
 
@@ -199,8 +199,10 @@ public class ByteConsumer {
         writeIdentifier(identifier);
         writeRawIntValue(length);
         for (final Object t : value) {
+            System.out.println("Writing: " + t);
             writeFor(cls, t);
         }
+        System.out.println("Done writing");
     }
 
     public synchronized void write(final boolean[] value) {
@@ -360,94 +362,84 @@ public class ByteConsumer {
         return new String(chars);
     }
 
-    public boolean readBoolean() {
+    public synchronized boolean readBoolean() {
         if (next() != IDENTIFIER_BOOLEAN) {
-            // THROW A FUCKING ERROR
+            throw new InvalidProtocolException(lastReadIndex);
         }
         return readRawByte() != 0;
     }
 
-    public byte readByte() {
+    public synchronized byte readByte() {
         if (next() != IDENTIFIER_BYTE) {
-
+            throw new InvalidProtocolException(lastReadIndex);
         }
         return readRawByte();
     }
 
-    public short readShort() {
+    public synchronized short readShort() {
         if (next() != IDENTIFIER_SHORT) {
-
+            throw new InvalidProtocolException(lastReadIndex);
         }
         return readRawShort();
     }
 
-    public char readChar() {
+    public synchronized char readChar() {
         if (next() != IDENTIFIER_CHAR) {
-
+            throw new InvalidProtocolException(lastReadIndex);
         }
         return (char) readRawShort();
     }
 
-    public int readInt() {
+    public synchronized int readInt() {
         if (next() != IDENTIFIER_INT) {
-
+            throw new InvalidProtocolException(lastReadIndex);
         }
         return readRawInt();
     }
 
-    public long readLong() {
+    public synchronized long readLong() {
         if (next() != IDENTIFIER_LONG) {
-
+            throw new InvalidProtocolException(lastReadIndex);
         }
         return readRawLong();
     }
 
-    public float readFloat() {
+    public synchronized float readFloat() {
         if (next() != IDENTIFIER_FLOAT) {
-
+            throw new InvalidProtocolException(lastReadIndex);
         }
         return Float.intBitsToFloat(readRawInt());
     }
 
-    public double readDouble() {
+    public synchronized double readDouble() {
         if (next() != IDENTIFIER_DOUBLE) {
-
+            throw new InvalidProtocolException(lastReadIndex);
         }
         return Double.longBitsToDouble(readRawLong());
     }
 
-    public String readString() {
+    public synchronized String readString() {
         if (next() != IDENTIFIER_STRING) {
-
+            throw new InvalidProtocolException(lastReadIndex);
         }
         return readRawString();
     }
 
-    public <T> T[] readArray(final Class<T[]> cls) {
+    public synchronized <T> T[] readArray(final Class<T[]> cls) {
         if (next() != IDENTIFIER_ARRAY) {
-
+            throw new InvalidProtocolException(lastReadIndex);
         }
         final int nextID = next();
         final int length = readRawInt();
-        if (nextID == IDENTIFIER_ARRAY) {
-            final T[] array = (T[]) Array.newInstance(cls, length);
-            for (int i = 0; i < length; i++) {
-                //array[i] = (T) readArray(cls.getComponentType());
-            }
-            return array;
-        }
-        return readFor(cls, nextID, length);
-    }
-
-    private <T> T[] readFor(final Class<T[]> cls, final int id, final int length) {
-        final T[] array = (T[]) Array.newInstance(cls, length);
-        for (int i = 0; i < array.length; i++) {
-            array[i] = (T) readMethodFor(id);
+        final Class<?> component = cls.getComponentType();
+        final T[] array = (T[]) Array.newInstance(cls.getComponentType(), length);
+        for (int i = 0; i < length; i++) {
+            array[i] = (T) readMethodFor(cls, nextID);
         }
         return array;
     }
 
-    private Object readMethodFor(final int id) {
+    private <T> Object readMethodFor(final Class<T[]> cls, final int id) {
         switch (id) {
             case IDENTIFIER_BOOLEAN:
                 return readRawByte() != 0;
@@ -467,6 +459,8 @@ public class ByteConsumer {
                 return Double.longBitsToDouble(readRawLong());
             case IDENTIFIER_STRING:
                 return readRawString();
+            case IDENTIFIER_ARRAY:
+                return readArray(cls);
         }
         return null;
     }

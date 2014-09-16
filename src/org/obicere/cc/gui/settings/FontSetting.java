@@ -1,21 +1,14 @@
 package org.obicere.cc.gui.settings;
 
+import org.obicere.cc.methods.FontUtils;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * @author Obicere
  */
 public class FontSetting extends SettingPanel {
-
-    private static final String[] FONT_LISTING;
-
-    static {
-        final GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        FONT_LISTING = env.getAvailableFontFamilyNames();
-    }
 
     public FontSetting(SettingsShutDownHook hook, String value, String description) {
         super(hook, value, description);
@@ -29,9 +22,14 @@ public class FontSetting extends SettingPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         final JLabel description = new JLabel(getDescriptor());
-        final JComboBox<String> fontSelection = new JComboBox<>(FONT_LISTING);
+        final JComboBox<String> fontSelection = new JComboBox<>(FontUtils.getLoadedFonts());
 
-        fontSelection.setSelectedItem(hook.getPropertyAsString(key));
+        final String selectedFont = hook.getPropertyAsString(key);
+        if (FontUtils.isFont(selectedFont)) {
+            fontSelection.setSelectedItem(hook.getPropertyAsString(key));
+        } else {
+            fontSelection.setSelectedItem(hook.getDefaultValue(key));
+        }
         fontSelection.addItemListener(e -> {
             final String selected = (String) e.getItem();
             hook.setProperty(key, selected);

@@ -6,6 +6,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Objects;
 import java.util.Properties;
 
 public abstract class ShutDownHook extends Thread {
@@ -53,6 +54,29 @@ public abstract class ShutDownHook extends Thread {
         } catch (final Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getDefaultValue(final String key) {
+        Objects.requireNonNull(key);
+        try {
+            final Field[] fields = getClass().getDeclaredFields();
+            for (final Field field : fields) {
+                try {
+                    if (field.isAnnotationPresent(HookValue.class)) {
+                        final HookValue annotation = field.getAnnotation(HookValue.class);
+                        final String name = (String) field.get(this);
+                        if (name.equals(key)) {
+                            return annotation.value();
+                        }
+                    }
+                } catch (final IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+        throw new HookNotFoundException("No hook value found for key: " + key);
     }
 
     public int getHookPriority() {

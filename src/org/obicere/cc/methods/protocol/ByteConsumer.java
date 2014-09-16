@@ -1,34 +1,150 @@
 package org.obicere.cc.methods.protocol;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
 
 /**
+ * Dear Future Self,
+ * <p>
+ * You probably don't like me right now, but I had to do this. Chances are you are reading this
+ * because the protocol finally broke. Well, it ain't getting fixed. Better start rewriting it now,
+ * because there is nothing here salvageable.
+ * <p>
+ * Sincerely, Past Self.
+ * <p>
+ * P.S: While I have you, I'm also sorry I probably made you fat. Go hit the gym you loser.
+ *
  * @author Obicere
  */
 public class ByteConsumer {
 
-    private static final int IDENTIFIER_BOOLEAN = 0x00;
-    private static final int IDENTIFIER_BYTE    = 0x01;
-    private static final int IDENTIFIER_SHORT   = 0x03;
-    private static final int IDENTIFIER_CHAR    = 0x05;
-    private static final int IDENTIFIER_INT     = 0x06;
-    private static final int IDENTIFIER_LONG    = 0x08;
-    private static final int IDENTIFIER_FLOAT   = 0x0A;
-    private static final int IDENTIFIER_DOUBLE  = 0x0C;
-    private static final int IDENTIFIER_STRING  = 0x0E;
-    private static final int IDENTIFIER_ARRAY   = 0x0F;
+    /**
+     * The basic identifier for a <tt>boolean</tt>,
+     *
+     * @see ByteConsumer#identifierFor(Class)
+     */
+    private static final int IDENTIFIER_BOOLEAN = 0x01;
+
+    /**
+     * The basic identifier for a signed <tt>byte</tt>. Unless otherwise specified, the unsigned
+     * type would be <tt>IDENTIFIER_BYTE + 1</tt>.
+     *
+     * @see ByteConsumer#identifierFor(Class)
+     */
+    private static final int IDENTIFIER_BYTE = 0x02;
+
+    /**
+     * The basic identifier for a signed <tt>short</tt>. Unless otherwise specified, the unsigned
+     * type would be <tt>IDENTIFIER_SHORT + 1</tt>.
+     *
+     * @see ByteConsumer#identifierFor(Class)
+     */
+    private static final int IDENTIFIER_SHORT = 0x04;
+
+    /**
+     * The basic identifier for a UTF-16 <tt>char</tt>. All characters added to this protocol should
+     * be in a UTF-16 format.
+     *
+     * @see ByteConsumer#identifierFor(Class)
+     */
+    private static final int IDENTIFIER_CHAR = 0x06;
+
+    /**
+     * The basic identifier for a signed <tt>int</tt>. Unless otherwise specified, the unsigned type
+     * would be <tt>IDENTIFIER_INT + 1</tt>.
+     *
+     * @see ByteConsumer#identifierFor(Class)
+     */
+    private static final int IDENTIFIER_INT = 0x07;
+
+    /**
+     * The basic identifier for a signed <tt>long</tt>. Unless otherwise specified, the unsigned
+     * type would be <tt>IDENTIFIER_LONG + 1</tt>.
+     *
+     * @see ByteConsumer#identifierFor(Class)
+     */
+    private static final int IDENTIFIER_LONG = 0x09;
+
+    /**
+     * The basic identifier for a signed <tt>float</tt>. Unless otherwise specified, the unsigned
+     * type would be <tt>IDENTIFIER_FLOAT + 1</tt>.
+     *
+     * @see ByteConsumer#identifierFor(Class)
+     */
+    private static final int IDENTIFIER_FLOAT = 0x0B;
+
+    /**
+     * The basic identifier for a signed <tt>double</tt>. Unless otherwise specified, the unsigned
+     * type would be <tt>IDENTIFIER_DOUBLE + 1</tt>.
+     *
+     * @see ByteConsumer#identifierFor(Class)
+     */
+    private static final int IDENTIFIER_DOUBLE = 0x0D;
+
+    /**
+     * The basic identifier for a UTF-16 <tt>String</tt>. All characters added to this protocol
+     * should be in a UTF-16 format.
+     *
+     * @see ByteConsumer#identifierFor(Class)
+     */
+    private static final int IDENTIFIER_STRING = 0x0F;
+
+    /**
+     * The basic identifier for an array of a designed type. Revision 1.0 of the protocol dictates
+     * that a generic array is impossible and that a one-dimensional array must have a defined
+     * component type specified by an identifier.
+     *
+     * @see ByteConsumer#IDENTIFIER_BOOLEAN
+     * @see ByteConsumer#IDENTIFIER_BYTE
+     * @see ByteConsumer#IDENTIFIER_SHORT
+     * @see ByteConsumer#IDENTIFIER_CHAR
+     * @see ByteConsumer#IDENTIFIER_INT
+     * @see ByteConsumer#IDENTIFIER_LONG
+     * @see ByteConsumer#IDENTIFIER_FLOAT
+     * @see ByteConsumer#IDENTIFIER_DOUBLE
+     * @see ByteConsumer#identifierFor(Class)
+     */
+    private static final int IDENTIFIER_ARRAY = 0x10;
+
+    /**
+     * Used to define the buffer size of an identifier flag. Revision 1.0 of the protocol dictates
+     * that the default identifier flag is an 8-bit integer, occupying 1 <tt>byte</tt>.
+     */
 
     private static final int IDENTIFIER_SIZE = 1;
 
-    private static final int BUFFER_SIZE_8_BIT  = (1 << 0) + IDENTIFIER_SIZE;
+    /**
+     * The default buffer size required to store an 8-bit value, or a <tt>boolean</tt>, in the
+     * protocol. This size includes the identifier size.
+     */
+    private static final int BUFFER_SIZE_8_BIT = (1 << 0) + IDENTIFIER_SIZE;
+
+    /**
+     * The default buffer size required to store a 16-bit value, or a <tt>character</tt>, in the
+     * protocol. This size includes the identifier size.
+     */
     private static final int BUFFER_SIZE_16_BIT = (1 << 1) + IDENTIFIER_SIZE;
+
+    /**
+     * The default buffer size required to store a 32-bit value, length of an array, or a length
+     * of a <tt>String</tt>, in the protocol. This size includes the identifier size.
+     */
     private static final int BUFFER_SIZE_32_BIT = (1 << 2) + IDENTIFIER_SIZE;
+
+    /**
+     * The default buffer size required to store a 64-bit value in the protocol. This size includes
+     * the identifier size.
+     */
     private static final int BUFFER_SIZE_64_BIT = (1 << 3) + IDENTIFIER_SIZE;
 
-    private static final int MAXIMUM_BUFFER_SIZE = 1 << 30; //  allows maximum of 134,217,728 bytes. (128MB)
+    /**
+     * The maximum size for the buffer. This values corresponds to the largest positive power of two
+     * available in indexing.
+     * <p>
+     * The maximum size corresponds to: <tt>134,217,728 bytes (128MB)</tt>.
+     */
+    private static final int MAXIMUM_BUFFER_SIZE = 1 << 30;
 
     private static final float DEFAULT_GROWTH = 2.0f;
 
@@ -44,15 +160,6 @@ public class ByteConsumer {
     private final float growth;
 
     private byte[] buffer;
-
-    public static void main(final String[] args) {
-        final ByteConsumer consumer = new ByteConsumer();
-        final int[][] i = {{1, 2, 3}, {4, 5, 6}};
-        consumer.write(i);
-        System.out.println(Arrays.toString(consumer.toOutputArray()));
-        final int[][] newI = consumer.readArray(int[][].class);
-        System.out.println(Arrays.deepToString(newI));
-    }
 
     protected ByteConsumer() {
         this.growth = DEFAULT_GROWTH;
@@ -92,8 +199,35 @@ public class ByteConsumer {
         this.bufferSize = newLength;
     }
 
+    public synchronized boolean shouldClear() {
+        return buffer.length == MAXIMUM_BUFFER_SIZE;
+    }
+
+    public synchronized void clearReadBuffer() {
+        final int lastRead = lastReadIndex;
+        final int lastWrite = lastWriteIndex;
+        if (lastRead == 0) {
+            // No content read yet.
+            return;
+        }
+        final int newContent = lastWrite - lastRead;
+        final byte[] newBuffer = new byte[newContent * 2]; // create a new buffer to avoid continuous clear
+        System.arraycopy(buffer, lastRead, newBuffer, 0, newContent);
+        this.lastReadIndex = 0; // Reset last read
+        this.lastWriteIndex = newContent;
+        this.buffer = newBuffer;
+    }
+
+    public synchronized void streamInput(final byte[] input) {
+        Objects.requireNonNull(input);
+        final int length = input.length;
+        checkWriteSize(length);
+        System.arraycopy(input, 0, buffer, lastWriteIndex, length);
+        lastWriteIndex += length; // We just wrote n bytes where n=length
+    }
+
     private void checkWriteSize(final int newWrite) {
-        if (lastWriteIndex + newWrite > bufferSize) {
+        while (lastWriteIndex + newWrite > bufferSize) {
             expand();
         }
     }
@@ -106,12 +240,20 @@ public class ByteConsumer {
 
     private void writeIdentifier(final int identifier) {
         checkWriteSize(1);
-        buffer[lastWriteIndex++] = (byte) identifier;
+        try {
+            buffer[lastWriteIndex++] = (byte) identifier;
+        } catch (final ArrayIndexOutOfBoundsException e) {
+            throw new OutOfMemoryError("Buffer is full.");
+        }
     }
 
     private void writeRawByteValue(final int b) {
-        checkWriteSize(1);
-        buffer[lastWriteIndex++] = (byte) (b & 0xFF);
+        try {
+            checkWriteSize(1);
+            buffer[lastWriteIndex++] = (byte) (b & 0xFF);
+        } catch (final ArrayIndexOutOfBoundsException e) {
+            throw new OutOfMemoryError("Buffer is full.");
+        }
     }
 
     private void writeRawShortValue(final int s) {
@@ -199,10 +341,8 @@ public class ByteConsumer {
         writeIdentifier(identifier);
         writeRawIntValue(length);
         for (final Object t : value) {
-            System.out.println("Writing: " + t);
             writeFor(cls, t);
         }
-        System.out.println("Done writing");
     }
 
     public synchronized void write(final boolean[] value) {
@@ -210,8 +350,8 @@ public class ByteConsumer {
         writeIdentifier(IDENTIFIER_ARRAY);
         writeIdentifier(IDENTIFIER_BOOLEAN);
         writeRawIntValue(value.length);
-        for (int i = 0; i < value.length; i++) {
-            writeRawByteValue(value[i] ? 1 : 0);
+        for (final boolean aValue : value) {
+            writeRawByteValue(aValue ? 1 : 0);
         }
     }
 
@@ -220,8 +360,8 @@ public class ByteConsumer {
         writeIdentifier(IDENTIFIER_ARRAY);
         writeIdentifier(IDENTIFIER_BYTE);
         writeRawIntValue(value.length);
-        for (int i = 0; i < value.length; i++) {
-            writeRawByteValue(value[i]);
+        for (final byte aValue : value) {
+            writeRawByteValue(aValue);
         }
     }
 
@@ -230,8 +370,8 @@ public class ByteConsumer {
         writeIdentifier(IDENTIFIER_ARRAY);
         writeIdentifier(IDENTIFIER_CHAR);
         writeRawIntValue(value.length);
-        for (int i = 0; i < value.length; i++) {
-            writeRawShortValue(value[i]);
+        for (final char aValue : value) {
+            writeRawShortValue(aValue);
         }
     }
 
@@ -240,8 +380,8 @@ public class ByteConsumer {
         writeIdentifier(IDENTIFIER_ARRAY);
         writeIdentifier(IDENTIFIER_SHORT);
         writeRawIntValue(value.length);
-        for (int i = 0; i < value.length; i++) {
-            writeRawShortValue(value[i]);
+        for (final short aValue : value) {
+            writeRawShortValue(aValue);
         }
     }
 
@@ -250,8 +390,8 @@ public class ByteConsumer {
         writeIdentifier(IDENTIFIER_ARRAY);
         writeIdentifier(IDENTIFIER_INT);
         writeRawIntValue(value.length);
-        for (int i = 0; i < value.length; i++) {
-            writeRawIntValue(value[i]);
+        for (final int aValue : value) {
+            writeRawIntValue(aValue);
         }
     }
 
@@ -270,8 +410,8 @@ public class ByteConsumer {
         writeIdentifier(IDENTIFIER_ARRAY);
         writeIdentifier(IDENTIFIER_FLOAT);
         writeRawIntValue(value.length);
-        for (int i = 0; i < value.length; i++) {
-            writeRawIntValue(Float.floatToIntBits(value[i]));
+        for (final float aValue : value) {
+            writeRawIntValue(Float.floatToIntBits(aValue));
         }
     }
 
@@ -280,17 +420,28 @@ public class ByteConsumer {
         writeIdentifier(IDENTIFIER_ARRAY);
         writeIdentifier(IDENTIFIER_DOUBLE);
         writeRawIntValue(value.length);
-        for (int i = 0; i < value.length; i++) {
-            writeRawLongValue(Double.doubleToLongBits(value[i]));
+        for (final double aValue : value) {
+            writeRawLongValue(Double.doubleToLongBits(aValue));
         }
     }
 
     private synchronized byte peekNext() {
+        if (buffer.length <= lastReadIndex) {
+            return -1; // Waiting on more input
+        }
         return buffer[lastReadIndex];
     }
 
     private synchronized byte next() {
         return buffer[lastReadIndex++];
+    }
+
+    private synchronized int nextIdentifier() {
+        return buffer[lastReadIndex++];
+    }
+
+    public boolean hasNext() {
+        return peekNext() != 0;
     }
 
     public boolean hasBoolean() {
@@ -339,18 +490,18 @@ public class ByteConsumer {
 
     private short readRawShort() {
         return (short) (
-                readRawByte() << 8 |
-                readRawByte() << 0);
+                (0xFF & readRawByte()) << 8 |
+                (0xFF & readRawByte()) << 0);
     }
 
     private int readRawInt() {
-        return (readRawShort() << 16 |
-                readRawShort() << 0);
+        return ((0xFFFF & readRawShort()) << 16 |
+                (0xFFFF & readRawShort()) << 0);
     }
 
     private long readRawLong() {
-        return ((long) readRawInt() << 32 |
-                (long) readRawInt() << 0);
+        return ((0xFFFFFFFFL & readRawInt()) << 32 |
+                (0xFFFFFFFFL & readRawInt()) << 0);
     }
 
     private String readRawString() {
@@ -363,83 +514,232 @@ public class ByteConsumer {
     }
 
     public synchronized boolean readBoolean() {
-        if (next() != IDENTIFIER_BOOLEAN) {
+        if (nextIdentifier() != IDENTIFIER_BOOLEAN) {
             throw new InvalidProtocolException(lastReadIndex);
         }
         return readRawByte() != 0;
     }
 
     public synchronized byte readByte() {
-        if (next() != IDENTIFIER_BYTE) {
+        if (nextIdentifier() != IDENTIFIER_BYTE) {
             throw new InvalidProtocolException(lastReadIndex);
         }
         return readRawByte();
     }
 
     public synchronized short readShort() {
-        if (next() != IDENTIFIER_SHORT) {
+        if (nextIdentifier() != IDENTIFIER_SHORT) {
             throw new InvalidProtocolException(lastReadIndex);
         }
         return readRawShort();
     }
 
     public synchronized char readChar() {
-        if (next() != IDENTIFIER_CHAR) {
+        if (nextIdentifier() != IDENTIFIER_CHAR) {
             throw new InvalidProtocolException(lastReadIndex);
         }
         return (char) readRawShort();
     }
 
     public synchronized int readInt() {
-        if (next() != IDENTIFIER_INT) {
+        if (nextIdentifier() != IDENTIFIER_INT) {
             throw new InvalidProtocolException(lastReadIndex);
         }
         return readRawInt();
     }
 
     public synchronized long readLong() {
-        if (next() != IDENTIFIER_LONG) {
+        if (nextIdentifier() != IDENTIFIER_LONG) {
             throw new InvalidProtocolException(lastReadIndex);
         }
         return readRawLong();
     }
 
     public synchronized float readFloat() {
-        if (next() != IDENTIFIER_FLOAT) {
+        if (nextIdentifier() != IDENTIFIER_FLOAT) {
             throw new InvalidProtocolException(lastReadIndex);
         }
         return Float.intBitsToFloat(readRawInt());
     }
 
     public synchronized double readDouble() {
-        if (next() != IDENTIFIER_DOUBLE) {
+        if (nextIdentifier() != IDENTIFIER_DOUBLE) {
             throw new InvalidProtocolException(lastReadIndex);
         }
         return Double.longBitsToDouble(readRawLong());
     }
 
     public synchronized String readString() {
-        if (next() != IDENTIFIER_STRING) {
+        if (nextIdentifier() != IDENTIFIER_STRING) {
             throw new InvalidProtocolException(lastReadIndex);
         }
         return readRawString();
     }
 
-    public synchronized <T> T[] readArray(final Class<T[]> cls) {
-        if (next() != IDENTIFIER_ARRAY) {
+    @SuppressWarnings("unchecked") // This is all checked - not really though
+    public synchronized <T, S> T readArray(final Class<T> cls) {
+        if (nextIdentifier() != IDENTIFIER_ARRAY) {
             throw new InvalidProtocolException(lastReadIndex);
         }
-        final int nextID = next();
+        final int nextID = nextIdentifier();
         final int length = readRawInt();
-        final Class<?> component = cls.getComponentType();
-        final T[] array = (T[]) Array.newInstance(cls.getComponentType(), length);
+        final Class<S> component = (Class<S>) cls.getComponentType();
+        if (component.isPrimitive()) {
+            switch (component.getCanonicalName()) {
+                case "boolean":
+                    return (T) readRawBooleanArray(length);
+                case "byte":
+                    return (T) readRawByteArray(length);
+                case "short":
+                    return (T) readRawShortArray(length);
+                case "char":
+                    return (T) readRawCharArray(length);
+                case "int":
+                    return (T) readRawIntArray(length);
+                case "float":
+                    return (T) readRawFloatArray(length);
+                case "long":
+                    return (T) readRawLongArray(length);
+                case "double":
+                    return (T) readRawDoubleArray(length);
+            }
+        }
+        final S[] array = (S[]) Array.newInstance(component, length);
         for (int i = 0; i < length; i++) {
-            array[i] = (T) readMethodFor(cls, nextID);
+            array[i] = (S) readMethodFor(component, nextID);
+        }
+        return (T) array;
+    }
+
+    private boolean[] readRawBooleanArray(final int length) {
+        final boolean[] array = new boolean[length];
+        for (int i = 0; i < length; i++) {
+            array[i] = readRawByte() != 0;
         }
         return array;
     }
 
-    private <T> Object readMethodFor(final Class<T[]> cls, final int id) {
+    private byte[] readRawByteArray(final int length) {
+        final byte[] array = new byte[length];
+        for (int i = 0; i < length; i++) {
+            array[i] = readRawByte();
+        }
+        return array;
+    }
+
+    private short[] readRawShortArray(final int length) {
+        final short[] array = new short[length];
+        for (int i = 0; i < length; i++) {
+            array[i] = readRawShort();
+        }
+        return array;
+    }
+
+    private char[] readRawCharArray(final int length) {
+        final char[] array = new char[length];
+        for (int i = 0; i < length; i++) {
+            array[i] = (char) readRawShort();
+        }
+        return array;
+    }
+
+    private int[] readRawIntArray(final int length) {
+        final int[] array = new int[length];
+        for (int i = 0; i < length; i++) {
+            array[i] = readRawInt();
+        }
+        return array;
+    }
+
+    private float[] readRawFloatArray(final int length) {
+        final float[] array = new float[length];
+        for (int i = 0; i < length; i++) {
+            array[i] = Float.intBitsToFloat(readRawInt());
+        }
+        return array;
+    }
+
+    private long[] readRawLongArray(final int length) {
+        final long[] array = new long[length];
+        for (int i = 0; i < length; i++) {
+            array[i] = readRawLong();
+        }
+        return array;
+    }
+
+    private double[] readRawDoubleArray(final int length) {
+        final double[] array = new double[length];
+        for (int i = 0; i < length; i++) {
+            array[i] = Double.longBitsToDouble(readRawLong());
+        }
+        return array;
+    }
+
+    public synchronized boolean[] readBooleanArray() {
+        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_BOOLEAN) {
+            throw new InvalidProtocolException(lastReadIndex);
+        }
+        final int length = readRawInt();
+        return readRawBooleanArray(length);
+    }
+
+    public synchronized byte[] readByteArray() {
+        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_BYTE) {
+            throw new InvalidProtocolException(lastReadIndex);
+        }
+        final int length = readRawInt();
+        return readRawByteArray(length);
+    }
+
+    public synchronized short[] readShortArray() {
+        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_SHORT) {
+            throw new InvalidProtocolException(lastReadIndex);
+        }
+        final int length = readRawInt();
+        return readRawShortArray(length);
+    }
+
+    public synchronized char[] readCharArray() {
+        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_CHAR) {
+            throw new InvalidProtocolException(lastReadIndex);
+        }
+        final int length = readRawInt();
+        return readRawCharArray(length);
+    }
+
+    public synchronized int[] readIntArray() {
+        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_INT) {
+            throw new InvalidProtocolException(lastReadIndex);
+        }
+        final int length = readRawInt();
+        return readRawIntArray(length);
+    }
+
+    public synchronized float[] readFloatArray() {
+        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_FLOAT) {
+            throw new InvalidProtocolException(lastReadIndex);
+        }
+        final int length = readRawInt();
+        return readRawFloatArray(length);
+    }
+
+    public synchronized long[] readLongArray() {
+        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_LONG) {
+            throw new InvalidProtocolException(lastReadIndex);
+        }
+        final int length = readRawInt();
+        return readRawLongArray(length);
+    }
+
+    public synchronized double[] readDoubleArray() {
+        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_DOUBLE) {
+            throw new InvalidProtocolException(lastReadIndex);
+        }
+        final int length = readRawInt();
+        return readRawDoubleArray(length);
+    }
+
+    private <T> Object readMethodFor(final Class<T> component, final int id) {
         switch (id) {
             case IDENTIFIER_BOOLEAN:
                 return readRawByte() != 0;
@@ -460,33 +760,7 @@ public class ByteConsumer {
             case IDENTIFIER_STRING:
                 return readRawString();
             case IDENTIFIER_ARRAY:
-                return readArray(cls);
-        }
-        return null;
-    }
-
-    private Class<?> classFor(final int identifier) {
-        switch (identifier) {
-            case IDENTIFIER_BOOLEAN:
-                return Boolean.class;
-            case IDENTIFIER_BYTE:
-                return Byte.class;
-            case IDENTIFIER_SHORT:
-                return Short.class;
-            case IDENTIFIER_CHAR:
-                return Character.class;
-            case IDENTIFIER_INT:
-                return Integer.class;
-            case IDENTIFIER_FLOAT:
-                return Float.class;
-            case IDENTIFIER_LONG:
-                return Long.class;
-            case IDENTIFIER_DOUBLE:
-                return Double.class;
-            case IDENTIFIER_STRING:
-                return String.class;
-            case IDENTIFIER_ARRAY:
-                return Object[].class;
+                return readArray(component);
         }
         return null;
     }
@@ -523,7 +797,7 @@ public class ByteConsumer {
                         write((double[]) obj);
                         return;
                 }
-            } else if (component.isArray()) {
+            } else {
                 write((Object[]) obj);
             }
             return;
@@ -626,7 +900,7 @@ public class ByteConsumer {
     private int sizeFor(final Class<?> cls) {
         Objects.requireNonNull(cls);
         if (cls.isArray()) {
-            return BUFFER_SIZE_32_BIT; // Only lastWriteIndex (int) is recorded in array header
+            return BUFFER_SIZE_32_BIT + 1; // Allocate length (32-bit int) and array type (8-bit int)
         }
         switch (cls.getCanonicalName()) {
             case "boolean":
@@ -643,7 +917,7 @@ public class ByteConsumer {
 
             case "int":
             case "float":
-            case "java.lang.String": // Like the array, only lastWriteIndex is in header
+            case "java.lang.String": // Technically an array - record the length
             case "java.lang.Integer":
             case "java.lang.Float":
                 return BUFFER_SIZE_32_BIT;

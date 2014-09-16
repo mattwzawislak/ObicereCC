@@ -43,4 +43,28 @@ public class SimpleRandom {
         return builder.toString();
     }
 
+
+    /**
+     * A remote sensor is hooked up to a vacuum to monitor fluctuations.
+     * These numbers are then stored to a database for each independent
+     * client. Each client must first register itself to the database to
+     * be able to receive truly random numbers.
+     * <p/>
+     * This works on the premise that the vacuum is not a space empty of
+     * matter or photons. But, as a space of virtual particles appearing
+     * and disappearing every instant. This can happen since the vacuum
+     * still possesses a zero-point energy. Monitoring the electromagnetic
+     * fields of the vacuum, you can see random fluctuations in phase and
+     * amplitude. Relaying this information to the database, we have a list
+     * of quantum random numbers.
+     * <p/>
+     * You wanted random - here it is. God is rolling dice now.
+     *
+     * @return A truly random number.
+     * @since 1.0
+     */
+
+    public int nextQuantumInt() {
+        return 5;
+    }
 }

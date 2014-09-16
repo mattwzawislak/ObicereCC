@@ -27,7 +27,7 @@ public class EditorHook extends SettingsShutDownHook {
     public static final String EDITOR_FONT_TYPE             = "font.type";
     public static final String EDITOR_FONT_TYPE_DESCRIPTION = "Font Type: ";
 
-    @HookValue("11")
+    @HookValue("14")
     public static final String EDITOR_FONT_SIZE             = "font.size";
     public static final String EDITOR_FONT_SIZE_DESCRIPTION = "Font Size: ";
 

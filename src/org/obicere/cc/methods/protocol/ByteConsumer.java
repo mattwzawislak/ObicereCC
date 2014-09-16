@@ -1,8 +1,8 @@
 package org.obicere.cc.methods.protocol;
 
 import java.lang.reflect.Array;
+import java.util.InputMismatchException;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * Dear Future Self,
@@ -400,8 +400,8 @@ public class ByteConsumer {
         writeIdentifier(IDENTIFIER_ARRAY);
         writeIdentifier(IDENTIFIER_LONG);
         writeRawIntValue(value.length);
-        for (int i = 0; i < value.length; i++) {
-            writeRawLongValue(value[i]);
+        for (final long aValue : value) {
+            writeRawLongValue(aValue);
         }
     }
 
@@ -433,11 +433,19 @@ public class ByteConsumer {
     }
 
     private synchronized byte next() {
-        return buffer[lastReadIndex++];
+        try {
+            return buffer[lastReadIndex++];
+        } catch (final ArrayIndexOutOfBoundsException e) {
+            throw new InvalidProtocolException("Next byte is missing. Index: " + lastReadIndex);
+        }
     }
 
     private synchronized int nextIdentifier() {
-        return buffer[lastReadIndex++];
+        try {
+            return buffer[lastReadIndex++];
+        } catch (final ArrayIndexOutOfBoundsException e) {
+            throw new InvalidProtocolException("Next identifier is missing. Index: " + lastReadIndex);
+        }
     }
 
     public boolean hasNext() {
@@ -515,71 +523,72 @@ public class ByteConsumer {
 
     public synchronized boolean readBoolean() {
         if (nextIdentifier() != IDENTIFIER_BOOLEAN) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         return readRawByte() != 0;
     }
 
     public synchronized byte readByte() {
         if (nextIdentifier() != IDENTIFIER_BYTE) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         return readRawByte();
     }
 
     public synchronized short readShort() {
         if (nextIdentifier() != IDENTIFIER_SHORT) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         return readRawShort();
     }
 
     public synchronized char readChar() {
         if (nextIdentifier() != IDENTIFIER_CHAR) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         return (char) readRawShort();
     }
 
     public synchronized int readInt() {
         if (nextIdentifier() != IDENTIFIER_INT) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         return readRawInt();
     }
 
     public synchronized long readLong() {
         if (nextIdentifier() != IDENTIFIER_LONG) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         return readRawLong();
     }
 
     public synchronized float readFloat() {
         if (nextIdentifier() != IDENTIFIER_FLOAT) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         return Float.intBitsToFloat(readRawInt());
     }
 
     public synchronized double readDouble() {
         if (nextIdentifier() != IDENTIFIER_DOUBLE) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         return Double.longBitsToDouble(readRawLong());
     }
 
     public synchronized String readString() {
         if (nextIdentifier() != IDENTIFIER_STRING) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         return readRawString();
     }
 
-    @SuppressWarnings("unchecked") // This is all checked - not really though
+    @SuppressWarnings("unchecked")
+    // This is all checked - not really though
     public synchronized <T, S> T readArray(final Class<T> cls) {
         if (nextIdentifier() != IDENTIFIER_ARRAY) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         final int nextID = nextIdentifier();
         final int length = readRawInt();
@@ -677,7 +686,7 @@ public class ByteConsumer {
 
     public synchronized boolean[] readBooleanArray() {
         if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_BOOLEAN) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         final int length = readRawInt();
         return readRawBooleanArray(length);
@@ -685,7 +694,7 @@ public class ByteConsumer {
 
     public synchronized byte[] readByteArray() {
         if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_BYTE) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         final int length = readRawInt();
         return readRawByteArray(length);
@@ -693,7 +702,7 @@ public class ByteConsumer {
 
     public synchronized short[] readShortArray() {
         if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_SHORT) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         final int length = readRawInt();
         return readRawShortArray(length);
@@ -701,7 +710,7 @@ public class ByteConsumer {
 
     public synchronized char[] readCharArray() {
         if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_CHAR) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         final int length = readRawInt();
         return readRawCharArray(length);
@@ -709,7 +718,7 @@ public class ByteConsumer {
 
     public synchronized int[] readIntArray() {
         if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_INT) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         final int length = readRawInt();
         return readRawIntArray(length);
@@ -717,7 +726,7 @@ public class ByteConsumer {
 
     public synchronized float[] readFloatArray() {
         if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_FLOAT) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         final int length = readRawInt();
         return readRawFloatArray(length);
@@ -725,7 +734,7 @@ public class ByteConsumer {
 
     public synchronized long[] readLongArray() {
         if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_LONG) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         final int length = readRawInt();
         return readRawLongArray(length);
@@ -733,7 +742,7 @@ public class ByteConsumer {
 
     public synchronized double[] readDoubleArray() {
         if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_DOUBLE) {
-            throw new InvalidProtocolException(lastReadIndex);
+            throw new InputMismatchException();
         }
         final int length = readRawInt();
         return readRawDoubleArray(length);

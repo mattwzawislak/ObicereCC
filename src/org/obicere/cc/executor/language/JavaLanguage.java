@@ -2,6 +2,7 @@ package org.obicere.cc.executor.language;
 
 import org.obicere.cc.executor.Case;
 import org.obicere.cc.executor.Result;
+import org.obicere.cc.methods.StringSubstitute;
 import org.obicere.cc.tasks.projects.Parameter;
 import org.obicere.cc.tasks.projects.Project;
 import org.obicere.cc.tasks.projects.Runner;
@@ -10,6 +11,8 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @LanguageIdentifier
 public class JavaLanguage extends Language {
@@ -17,7 +20,7 @@ public class JavaLanguage extends Language {
     //keywords
     public static final String KEYWORDS = "abstract,assert,boolean,break,byte,case,catch,char,class,const,continue,default,double,do,else,enum,extends,false,final,finally,float,for,goto,if,implements,import,instanceof,int,interface,long,native,new,null,package,private,protected,public,return,short,static,strictfp,super,switch,synchronized,this,throw,throws,transient,true,try,void,volatile,while";
     //skeleton
-    public static final String SKELETON = "public class $name {\n\t\n\tpublic $return $method($parameter){\n\t\t\n\t}\n}";
+    public static final String SKELETON = "public class ${name} {\n\t\n\tpublic ${return} ${method}(${parameter}){\n\t\t\n\t}\n}";
 
     //literal
     public static final String LITERAL = "\"(?:[^\"\\\\\\n\\r\\u2028\\u2029]|\\\\(?:[^\\n\\rxu0-9]|0(?![0-9])|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|\\n|\\r\\n?))*\",(//.*+)|(?s)(/[*].*?[*]/)";
@@ -28,7 +31,7 @@ public class JavaLanguage extends Language {
     public static final String SOURCE_EXTENSION   = ".java";
 
     //compilerArguments
-    public static final String COMPILER_ARGUMENTS = "javac; $exec -g -nowarn \"$file\"";
+    public static final String COMPILER_ARGUMENTS = "javac; ${exec} -g -nowarn \"${file}\"";
 
     //methodCasing
     public static final String METHOD_CASING      = "lower camel case";
@@ -53,7 +56,6 @@ public class JavaLanguage extends Language {
     //array
     public static final String ARRAY     = "[,]";
 
-
     public JavaLanguage() {
         super("Java", JavaLanguage.class);
     }
@@ -77,11 +79,15 @@ public class JavaLanguage extends Language {
                 parameters.append(parameter.getName());
             }
 
-            String skeleton = getRawSkeleton();
-            skeleton = skeleton.replace("$parameter", parameters.toString());
-            skeleton = skeleton.replace("$name", project.getName());
-            skeleton = skeleton.replace("$return", returnType);
-            return skeleton.replace("$method", methodName);
+            final String skeleton = getRawSkeleton();
+            final StringSubstitute substitute = new StringSubstitute();
+
+            substitute.put("parameter", parameters.toString());
+            substitute.put("name", project.getName());
+            substitute.put("return", returnType);
+            substitute.put("method", methodName);
+
+            return substitute.apply(skeleton);
         } catch (final Exception e) {
             e.printStackTrace();
         }

@@ -32,7 +32,7 @@ public class Command {
                     break;
                 case MAC:
                     command = "whereis " + program;
-                    failure = "";
+                    failure = ""; //TODO
                     break;
                 case LINUX:
                     command = "whereis " + program;

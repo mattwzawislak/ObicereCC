@@ -3,7 +3,6 @@ package org.obicere.cc.gui.settings;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * @author Obicere

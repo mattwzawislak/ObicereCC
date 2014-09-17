@@ -11,7 +11,6 @@ import javax.swing.event.DocumentListener;
  */
 public class StringSetting extends SettingPanel {
 
-
     public StringSetting(final SettingsShutDownHook hook, final String key, final String description) {
         super(hook, key, description);
     }

@@ -3,8 +3,6 @@ package org.obicere.cc.gui.settings;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 

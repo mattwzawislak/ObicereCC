@@ -35,7 +35,11 @@ public class ColorSetting extends SettingPanel {
 
         selectColor.addActionListener(e -> {
 
-            selectedColor = JColorChooser.showDialog(null, "Select new color.", selectedColor);
+            final Color color = JColorChooser.showDialog(null, "Select new color.", selectedColor);
+            if (color == null) {
+                return;
+            }
+            selectedColor = color;
             selectColor.setIcon(createIcon(selectedColor));
 
             hook.setProperty(getKey(), selectedColor);

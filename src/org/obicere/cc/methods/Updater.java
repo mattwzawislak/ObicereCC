@@ -4,6 +4,8 @@ import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.configuration.Global.URLs;
 import org.obicere.cc.gui.Splash;
+import org.obicere.cc.shutdown.RunnerSourceHook;
+import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.tasks.projects.Project;
 
 import javax.swing.*;
@@ -29,6 +31,8 @@ public class Updater {
 
     private static final Predicate<String> OUTDATED_FILTER = key -> !currentRunnersList.containsKey(key) || updatedRunnersList.get(key) > currentRunnersList.get(key);
 
+    private static final RunnerSourceHook HOOK = ShutDownHookManager.hookByName(RunnerSourceHook.class, RunnerSourceHook.NAME);
+
     private Updater() {
     }
 
@@ -42,7 +46,10 @@ public class Updater {
             return;
         }
         final HashSet<String> sources = new HashSet<>();
-        sources.add(URLs.BIN);
+        final boolean downloadMain = HOOK.getPropertyAsBoolean(RunnerSourceHook.DOWNLOAD_FROM_MAIN_SOURCE);
+        if (downloadMain) { // Note that this will shut off updates
+            sources.add(URLs.BIN);
+        }
         try {
             final File sourceFile = new File(Paths.DATA, "sources.txt");
             if (sourceFile.exists() || sourceFile.createNewFile()) {

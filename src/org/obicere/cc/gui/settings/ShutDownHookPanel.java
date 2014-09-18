@@ -13,7 +13,7 @@ import java.util.Map;
 public class ShutDownHookPanel extends JPanel {
 
     public ShutDownHookPanel(final SettingsShutDownHook hook) {
-        final VerticalFlowLayout layout = new VerticalFlowLayout();
+        final VerticalFlowLayout layout = new VerticalFlowLayout(VerticalFlowLayout.CENTER, 10, 10);
         layout.setMaximizeOtherDimension(true);
         setLayout(layout);
         setBorder(new TitledBorder(hook.getGroupName()));

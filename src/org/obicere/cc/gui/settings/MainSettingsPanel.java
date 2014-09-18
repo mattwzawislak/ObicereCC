@@ -18,7 +18,7 @@ public class MainSettingsPanel extends JPanel {
     public MainSettingsPanel() {
         super(new FlowLayout(FlowLayout.LEFT));
 
-        final VerticalFlowLayout layout = new VerticalFlowLayout();
+        final VerticalFlowLayout layout = new VerticalFlowLayout(VerticalFlowLayout.CENTER, 5, 10);
         layout.setMaximizeOtherDimension(true);
         final JPanel panel = new JPanel(layout);
         final JScrollPane scroll = new JScrollPane(panel);

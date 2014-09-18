@@ -12,10 +12,12 @@ public class Global {
 
     public static final Image CLOSE_IMAGE;
     public static final Image COMPLETE_IMAGE;
+    public static final Image ICON;
 
     static {
         CLOSE_IMAGE = loadImage(URLs.CLOSE);
         COMPLETE_IMAGE = loadImage(URLs.COMPLETE);
+        ICON = loadImage(URLs.ICON);
     }
 
     private static Image loadImage(final String url) {
@@ -103,5 +105,7 @@ public class Global {
         public static final String RESOURCES = "resource/";
         public static final String CLOSE     = RESOURCES + "close.png";
         public static final String COMPLETE  = RESOURCES + "complete.png";
+        public static final String ICON      = RESOURCES + "icon.png";
+
     }
 }

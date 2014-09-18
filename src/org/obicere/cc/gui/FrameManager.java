@@ -1,5 +1,6 @@
 package org.obicere.cc.gui;
 
+import org.obicere.cc.configuration.Global;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.methods.Reflection;
@@ -69,6 +70,7 @@ public class FrameManager {
 
         WINDOW_CLOSING_HOOKS.forEach(frame::addWindowListener);
 
+        frame.setIconImage(Global.ICON);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.add(main);
         frame.setVisible(true);

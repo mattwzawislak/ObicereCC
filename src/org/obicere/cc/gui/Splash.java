@@ -1,5 +1,6 @@
 package org.obicere.cc.gui;
 
+import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Message;
 
 import javax.swing.*;
@@ -31,9 +32,9 @@ public class Splash {
     };
 
     private static final float[] ALPHA = new float[]{
-            0.0f,
-            0.0f,
-            0.0f
+            1,
+            1,
+            1
     };
 
     private static final Stroke OUTLINE    = new BasicStroke(1.25f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
@@ -96,6 +97,7 @@ public class Splash {
             name = "Mr. Anderson";
         }
 
+        frame.setIconImage(Global.ICON);
         frame.setUndecorated(true);
         frame.setSize(600, 200);
         frame.setLocationRelativeTo(null);
@@ -149,7 +151,7 @@ public class Splash {
 
         public void mouseExited(final MouseEvent e) {
             for (int i = 0; i < 3; i++) {
-                ALPHA[i] = 0;
+                ALPHA[i] = 1;
             }
             frame.repaint();
         }

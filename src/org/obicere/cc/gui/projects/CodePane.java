@@ -5,8 +5,6 @@ import org.obicere.cc.shutdown.EditorHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 
 import javax.swing.*;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -100,34 +98,36 @@ public class CodePane extends JTextPane {
                 highlightKeywords();
             }
         });
-        addCaretListener(new CaretListener() {
-
-            public void caretUpdate(final CaretEvent e) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        try {
-                            final JTextComponent component = (JTextComponent) e.getSource();
-                            final int position = component.getCaretPosition();
-                            final Rectangle r = component.modelToView(position);
-                            r.x += 2;
-                            component.scrollRectToVisible(r);
-                            highlightKeywords(); // Whenever a new character gets added, caret updates.
-                        } catch (Exception ignored) {
-                        }
-                    }
-                });
+        addCaretListener(e -> SwingUtilities.invokeLater(() -> {
+            try {
+                final JTextComponent component = (JTextComponent) e.getSource();
+                final int position = component.getCaretPosition();
+                final Rectangle r = component.modelToView(position);
+                r.x += 2;
+                component.scrollRectToVisible(r);
+                highlightKeywords(); // Whenever a new character gets added, caret updates.
+            } catch (Exception ignored) {
             }
-        });
+        }));
     }
 
-    private String clearMatches(String code, final String regex) {
+    private String clearMatches(final String code, final String regex) {
         final Pattern pattern = Pattern.compile(regex);
         final Matcher matcher = pattern.matcher(code);
-        while (matcher.find()) {
-            final String match = matcher.group();
-            code = code.replace(match, CharBuffer.allocate(match.length()).toString());
+        final StringBuilder builder = new StringBuilder(code);
+        while (matcher.find()) { // For each match
+            final String key = matcher.group();
+            int start = builder.indexOf(key);
+            final int length = key.length();
+            while (start > -1) { // For each instance
+                final int end = start + key.length();
+                final int nextSearchStart = start + length;
+                builder.replace(start, end, CharBuffer.allocate(length).toString());
+                start = builder.indexOf(key, nextSearchStart);
+                // replace the instance
+            }
         }
-        return code;
+        return builder.toString();
     }
 
     @Override

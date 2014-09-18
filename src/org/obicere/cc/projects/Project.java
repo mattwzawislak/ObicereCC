@@ -1,4 +1,4 @@
-package org.obicere.cc.tasks.projects;
+package org.obicere.cc.projects;
 
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.language.Language;

@@ -1,4 +1,4 @@
-package org.obicere.cc.tasks.projects;
+package org.obicere.cc.projects;
 
 import org.obicere.cc.executor.Case;
 import org.obicere.cc.methods.SimpleRandom;

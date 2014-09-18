@@ -1,4 +1,4 @@
-package org.obicere.cc.tasks.projects;
+package org.obicere.cc.projects;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,4 +1,4 @@
-package org.obicere.cc.tasks.projects;
+package org.obicere.cc.projects;
 
 public class Parameter {
 

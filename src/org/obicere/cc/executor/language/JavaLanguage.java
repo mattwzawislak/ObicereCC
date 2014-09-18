@@ -3,16 +3,14 @@ package org.obicere.cc.executor.language;
 import org.obicere.cc.executor.Case;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.methods.StringSubstitute;
-import org.obicere.cc.tasks.projects.Parameter;
-import org.obicere.cc.tasks.projects.Project;
-import org.obicere.cc.tasks.projects.Runner;
+import org.obicere.cc.projects.Parameter;
+import org.obicere.cc.projects.Project;
+import org.obicere.cc.projects.Runner;
 
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @LanguageIdentifier
 public class JavaLanguage extends Language {

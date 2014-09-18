@@ -7,7 +7,7 @@ import org.obicere.cc.methods.Reflection;
 import org.obicere.cc.methods.Updater;
 import org.obicere.cc.shutdown.LayoutHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
-import org.obicere.cc.tasks.projects.Project;
+import org.obicere.cc.projects.Project;
 
 import javax.swing.*;
 import java.awt.*;

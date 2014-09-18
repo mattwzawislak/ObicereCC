@@ -5,7 +5,7 @@ import org.obicere.cc.configuration.Global.URLs;
 import org.obicere.cc.gui.Splash;
 import org.obicere.cc.shutdown.RunnerSourceHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
-import org.obicere.cc.tasks.projects.Project;
+import org.obicere.cc.projects.Project;
 
 import javax.swing.*;
 import java.io.*;

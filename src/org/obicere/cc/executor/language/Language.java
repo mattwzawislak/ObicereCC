@@ -7,7 +7,7 @@ import org.obicere.cc.executor.compiler.Compiler;
 import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.methods.Reflection;
-import org.obicere.cc.tasks.projects.Project;
+import org.obicere.cc.projects.Project;
 
 import javax.swing.*;
 import java.io.File;

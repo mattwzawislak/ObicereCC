@@ -3,7 +3,7 @@ package org.obicere.cc.gui.projects;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.shutdown.SaveProgressHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
-import org.obicere.cc.tasks.projects.Project;
+import org.obicere.cc.projects.Project;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -18,9 +18,9 @@ public class ResultsTable extends JTable implements TableCellRenderer {
     private static final long     serialVersionUID = 5610470469686875396L;
     private static final Color    CORRECT          = new Color(37, 133, 0);
     private static final String[] HEADERS          = new String[]{"Correct Answer", "Your Answer", "Parameters"};
-    private final Project   project;
+    private final Project project;
     private final SaveProgressHook hook = ShutDownHookManager.hookByClass(SaveProgressHook.class);
-    private       boolean[] resultsCorrect;
+    private boolean[] resultsCorrect;
 
     public ResultsTable(final Project project) {
         this.project = project;

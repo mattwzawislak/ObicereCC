@@ -10,7 +10,7 @@ import java.util.Objects;
 public class StringSubstitute implements Cloneable {
 
     private static final String WORD_FORMAT  = "${%s}";
-    private static final String MATCH_FORMAT = "$\\{.*?\\}";
+    private static final String MATCH_FORMAT = "\\$\\{.+\\}";
 
     private final Map<String, String> words;
 

@@ -2,6 +2,8 @@ package org.obicere.cc.gui;
 
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Message;
+import org.obicere.cc.shutdown.ShutDownHookManager;
+import org.obicere.cc.shutdown.SplashScreenHook;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +18,8 @@ import java.util.logging.Logger;
 public class Splash {
 
     private static final Logger LOGGER = Logger.getLogger(Splash.class.getCanonicalName());
+
+    private static final SplashScreenHook HOOK = ShutDownHookManager.hookByClass(SplashScreenHook.class);
 
     private static final int CENTER_X = 500;
     private static final int CENTER_Y = 100;
@@ -48,8 +52,8 @@ public class Splash {
 
     private final JFrame frame;
     private final String message;
+    private final String name;
 
-    private String  name;
     private boolean should;
 
     private Splash() {
@@ -92,9 +96,11 @@ public class Splash {
         splash.addMouseMotionListener(mouse);
 
         message = Message.getRandom();
-        name = System.getProperty("user.name");
-        if (name == null || name.length() == 0) {
-            name = "Mr. Anderson";
+        final String username = HOOK.getPropertyAsString(SplashScreenHook.USER_NAME);
+        if (username == null || username.length() == 0) {
+            name = System.getProperty("user.name");
+        } else {
+            name = username;
         }
 
         frame.setIconImage(Global.ICON);

@@ -3,12 +3,10 @@ package org.obicere.cc.tasks.projects;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.methods.IOUtils;
+import org.obicere.cc.methods.Reflection;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.LinkedList;
 
 public class Project {
@@ -16,51 +14,30 @@ public class Project {
     public static final String[]            DIFFICULTY = new String[]{"Beginner", "Intermediate", "Advanced", "Challenging", "Legendary"};
     public static final LinkedList<Project> DATA       = new LinkedList<>();
 
-    private static final File RUNNER_LOCATION = new File(Paths.SOURCE);
-    private static final ClassLoader RUNNER_CLASS_LOADER;
-
-    static {
-        ClassLoader loader = null;
-        try {
-            final URL url = RUNNER_LOCATION.toURI().toURL();
-            final URL[] urls = new URL[]{url};
-            loader = URLClassLoader.newInstance(urls);
-        } catch (final MalformedURLException e) {
-            e.printStackTrace();
-        }
-        RUNNER_CLASS_LOADER = loader;
-    }
-
     private final String   name;
     private final Manifest manifest;
     private final Class<?> runner;
 
-    public Project(final String name) throws ClassNotFoundException {
-        this.runner = loadRunner(name);
+    public Project(final Class<?> runner, final String name) throws ClassNotFoundException {
+        this.runner = runner;
         this.name = name;
         this.manifest = runner.getAnnotation(Manifest.class);
     }
 
+    // TODO: change this to use the reflections API
     public static void loadCurrent() {
-        final File root = new File(Paths.SOURCE);
-        if (!root.exists()) {
-            return;
-        }
-        final String[] list = root.list();
-        for (final String name : list) {
-            if (name != null) {
-                final int idx = name.indexOf("Runner.class");
-                if (idx == -1) {
-                    continue;
-                }
-                final String projectName = name.substring(0, idx);
-                try {
-                    final Project project = new Project(projectName);
-                    DATA.add(project);
-                } catch (final ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
+        final LinkedList<Class<?>> list = Reflection.loadClassesFrom(Paths.SOURCE);
+        final Class<Runner> cls = Runner.class;
+        Reflection.filterAsSubclassOf(cls, list);
+        list.forEach(Project::add);
+    }
+
+    private static void add(final Class<?> cls) {
+        try {
+            final String name = cls.getSimpleName();
+            DATA.add(new Project(cls, name.substring(0, name.length() - 6)));  // Remove Runner
+        } catch (final Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -137,9 +114,4 @@ public class Project {
             return false;
         }
     }
-
-    private Class<?> loadRunner(final String name) throws ClassNotFoundException {
-        return RUNNER_CLASS_LOADER.loadClass(name + "Runner");
-    }
-
 }

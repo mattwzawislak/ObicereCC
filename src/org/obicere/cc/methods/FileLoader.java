@@ -18,15 +18,24 @@ public class FileLoader {
 
     private static final Logger LOGGER = Logger.getLogger(FileLoader.class.getCanonicalName());
 
-    private final LinkedList<String> list;
+    private final LinkedList<String> list = new LinkedList<>();
 
     private final String extension;
     private final String prefix;
 
     private FileLoader(final String extension) {
         this.extension = extension;
-        this.prefix = normalizeSlashes(this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile());
-        this.list = new LinkedList<>();
+        this.prefix = this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
+    }
+
+    private FileLoader(final String prefix, final String extension) {
+        this.extension = extension;
+        this.prefix = prefix;
+    }
+
+    public static List<String> searchClassPath(final String path, final String extension) {
+        final FileLoader loader = new FileLoader(path, extension);
+        return loader.find();
     }
 
     public static List<String> searchClassPath(final String extension) {
@@ -64,15 +73,11 @@ public class FileLoader {
         for (final File file : files) {
             final String fileName = file.getName();
             if (file.isFile() && fileName.toLowerCase().endsWith(extension)) {
-                try {
-                    if (extension.equalsIgnoreCase(".class")) {
-                        final String className = fileName.substring(0, fileName.length() - 6);
-                        list.add(name + className);
-                    } else {
-                        list.add(name.replace('.', File.separatorChar) + fileName);
-                    }
-                } catch (NoClassDefFoundError | ExceptionInInitializerError e) {
-                    e.printStackTrace();
+                if (extension.equalsIgnoreCase(".class")) {
+                    final String className = fileName.substring(0, fileName.length() - 6);
+                    list.add(name + className);
+                } else {
+                    list.add(name.replace('.', File.separatorChar) + fileName);
                 }
             }
             if (file.isDirectory()) {

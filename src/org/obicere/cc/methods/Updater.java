@@ -1,6 +1,5 @@
 package org.obicere.cc.methods;
 
-import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.configuration.Global.URLs;
 import org.obicere.cc.gui.Splash;
@@ -33,6 +32,8 @@ public class Updater {
 
     private static final RunnerSourceHook HOOK = ShutDownHookManager.hookByName(RunnerSourceHook.class, RunnerSourceHook.NAME);
 
+    private static final String RUNNER = "Runner";
+
     private Updater() {
     }
 
@@ -47,7 +48,7 @@ public class Updater {
         }
         final HashSet<String> sources = new HashSet<>();
         final boolean downloadMain = HOOK.getPropertyAsBoolean(RunnerSourceHook.DOWNLOAD_FROM_MAIN_SOURCE);
-        if (downloadMain) { // Note that this will shut off updates
+        if (downloadMain) { // Note that this will allow updates
             sources.add(URLs.BIN);
         }
         try {
@@ -65,6 +66,7 @@ public class Updater {
         } catch (final Exception e) {
             e.printStackTrace();
         }
+        // Halley's Comment
         for (final String src : sources) {
             final byte[] updatedClientInfo = downloadCurrentClientInfo(src);
             if (updatedClientInfo == null) {
@@ -75,11 +77,12 @@ public class Updater {
                 JOptionPane.showMessageDialog(null, "Update available - Please download again.", "Update", JOptionPane.INFORMATION_MESSAGE);
                 System.exit(0);
             }
-            final String runner = "Runner";
             for (final Project p : Project.DATA) {
-                currentRunnersList.put(p.getName() + runner, p.getVersion());
+                currentRunnersList.put(p.getRunner().getCanonicalName(), p.getVersion());
             }
-            updatedRunnersList.keySet().stream().filter(OUTDATED_FILTER).forEach(key -> download(key, src));
+            updatedRunnersList.keySet().stream().filter(OUTDATED_FILTER).forEach(key -> {
+                download(key, src);
+            });
         }
         currentRunnersList = null;
         updatedRunnersList = null;
@@ -87,16 +90,39 @@ public class Updater {
         Project.loadCurrent();
     }
 
-    private static void download(final String runnerName, final String src) {
+    private static void download(final String name, final String src) {
         try {
-            Splash.setStatus("Downloading " + runnerName + ".class");
+            final String runnerName;
+            if (name.endsWith(".class")) {
+                runnerName = name.substring(0, name.length() - 6);
+            } else {
+                runnerName = name;
+            }
+            Splash.setStatus("Downloading " + name);
 
-            final byte[] data = IOUtils.download(new URL(src + runnerName + ".class"));
-            final File out = new File(Global.Paths.SOURCE, runnerName + ".class");
+            final byte[] data = IOUtils.download(new URL(src + runnerName.replace(".", "/") + ".class"));
+
+            final int dotIndex = runnerName.lastIndexOf('.');
+
+            final String directory;
+            final String fileName;
+            if (dotIndex >= 0) {
+                directory = runnerName.substring(0, dotIndex);
+                fileName = runnerName.substring(dotIndex + 1, runnerName.length());
+            } else {
+                directory = "";
+                fileName = runnerName;
+            }
+
+            final File packageDirectory = new File(Paths.SOURCE, directory.replace(".", File.separator));
+            if (!packageDirectory.exists() && !packageDirectory.mkdirs()) {
+                throw new IOException("Failed to create proper package: " + packageDirectory);
+            }
+            final File out = new File(packageDirectory, fileName + ".class");
             IOUtils.write(out, data);
 
         } catch (final IOException e) {
-            LOGGER.log(Level.WARNING, "Failed to download class: " + runnerName);
+            LOGGER.log(Level.WARNING, "Failed to download class: " + name);
             e.printStackTrace();
         }
 

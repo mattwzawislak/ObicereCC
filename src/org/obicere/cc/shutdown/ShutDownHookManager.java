@@ -9,6 +9,7 @@ import java.awt.event.WindowListener;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -67,9 +68,7 @@ public class ShutDownHookManager {
     }
 
     public static ShutDownHook hookByName(final String name) {
-        if (name == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(name);
         for (final ShutDownHook hook : HOOKS) {
             if (name.equals(hook.getName())) {
                 return hook;
@@ -78,8 +77,14 @@ public class ShutDownHookManager {
         throw new HookNotFoundException(name);
     }
 
-    public static <T extends ShutDownHook> T hookByName(final Class<T> clz, final String name) {
-        return clz.cast(hookByName(name));
+    public static <T extends ShutDownHook> T hookByClass(final Class<T> cls) {
+        Objects.requireNonNull(cls);
+        for (final ShutDownHook hook : HOOKS) {
+            if (cls.isInstance(hook)) {
+                return cls.cast(hook);
+            }
+        }
+        throw new HookNotFoundException(cls.getCanonicalName());
     }
 
 }

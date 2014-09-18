@@ -23,7 +23,7 @@ public class Boot {
         Paths.build();
         LanguageHandler.load();
         ShutDownHookManager.setup();
-        final SplashScreenHook hook = ShutDownHookManager.hookByName(SplashScreenHook.class, SplashScreenHook.NAME);
+        final SplashScreenHook hook = ShutDownHookManager.hookByClass(SplashScreenHook.class);
         final boolean splash = !hook.getPropertyAsBoolean(SplashScreenHook.NO_SPLASH);
         try {
             if (splash) {

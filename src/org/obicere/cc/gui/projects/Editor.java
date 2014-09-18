@@ -25,7 +25,7 @@ public class Editor extends JPanel {
     private final Project      project;
     private final Font         defaultInstructionFont;
     private final Language     language;
-    private final SaveProgressHook hook = ShutDownHookManager.hookByName(SaveProgressHook.class, SaveProgressHook.NAME);
+    private final SaveProgressHook hook = ShutDownHookManager.hookByClass(SaveProgressHook.class);
 
     public Editor(final Project project, final Language language) {
         super(new BorderLayout());
@@ -38,7 +38,7 @@ public class Editor extends JPanel {
         this.defaultInstructionFont = instructions.getFont();
         this.language = language;
 
-        final LayoutHook hook = ShutDownHookManager.hookByName(LayoutHook.class, LayoutHook.NAME);
+        final LayoutHook hook = ShutDownHookManager.hookByClass(LayoutHook.class);
         final JButton run = new JButton("Run");
         final JButton clear = new JButton("Clear Project");
         final JButton clearError = new JButton("Clear");

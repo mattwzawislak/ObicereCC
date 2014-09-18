@@ -23,16 +23,15 @@ public class Updater {
 
     private static final Logger LOGGER = Logger.getLogger(Updater.class.getCanonicalName());
 
-    private static double                        updatedClientVersion = 0.0;
-    private static LinkedHashMap<String, Double> updatedRunnersList   = new LinkedHashMap<>();
-    private static double                        currentClientVersion = 1.00;
-    private static LinkedHashMap<String, Double> currentRunnersList   = new LinkedHashMap<>();
+    private static double updatedClientVersion = 0.0;
+    private static double currentClientVersion = 1.00;
+
+    private static LinkedHashMap<String, Double> updatedRunnersList = new LinkedHashMap<>();
+    private static LinkedHashMap<String, Double> currentRunnersList = new LinkedHashMap<>();
 
     private static final Predicate<String> OUTDATED_FILTER = key -> !currentRunnersList.containsKey(key) || updatedRunnersList.get(key) > currentRunnersList.get(key);
 
-    private static final RunnerSourceHook HOOK = ShutDownHookManager.hookByName(RunnerSourceHook.class, RunnerSourceHook.NAME);
-
-    private static final String RUNNER = "Runner";
+    private static final RunnerSourceHook HOOK = ShutDownHookManager.hookByClass(RunnerSourceHook.class);
 
     private Updater() {
     }
@@ -80,9 +79,7 @@ public class Updater {
             for (final Project p : Project.DATA) {
                 currentRunnersList.put(p.getRunner().getCanonicalName(), p.getVersion());
             }
-            updatedRunnersList.keySet().stream().filter(OUTDATED_FILTER).forEach(key -> {
-                download(key, src);
-            });
+            updatedRunnersList.keySet().stream().filter(OUTDATED_FILTER).forEach(key -> download(key, src));
         }
         currentRunnersList = null;
         updatedRunnersList = null;

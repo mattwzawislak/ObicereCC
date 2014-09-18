@@ -23,7 +23,7 @@ public class CodePane extends JTextPane {
     private static final SimpleAttributeSet STRING_SET   = new SimpleAttributeSet();
     private static Font editorFont;
 
-    private static final EditorHook HOOK = ShutDownHookManager.hookByName(EditorHook.class, EditorHook.NAME);
+    private static final EditorHook HOOK = ShutDownHookManager.hookByClass(EditorHook.class);
 
     static {
         StyleConstants.setForeground(STRING_SET, HOOK.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));

@@ -14,7 +14,7 @@ public class ProjectSelector extends JPanel {
     private static final long                    serialVersionUID = 4869219241938861949L;
     private static final ArrayList<ProjectPanel> PROJECTS         = new ArrayList<>();
     private final JPanel selector;
-    private final SaveProgressHook hook = ShutDownHookManager.hookByName(SaveProgressHook.class, SaveProgressHook.NAME);
+    private final SaveProgressHook hook = ShutDownHookManager.hookByClass(SaveProgressHook.class);
 
     public ProjectSelector() {
         super(new BorderLayout());

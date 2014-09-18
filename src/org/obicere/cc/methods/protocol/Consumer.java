@@ -17,12 +17,12 @@ import java.util.Objects;
  *
  * @author Obicere
  */
-public class ByteConsumer {
+public class Consumer {
 
     /**
      * The basic identifier for a <tt>boolean</tt>,
      *
-     * @see ByteConsumer#identifierFor(Class)
+     * @see Consumer#identifierFor(Class)
      */
     private static final int IDENTIFIER_BOOLEAN = 0x01;
 
@@ -30,7 +30,7 @@ public class ByteConsumer {
      * The basic identifier for a signed <tt>byte</tt>. Unless otherwise specified, the unsigned
      * type would be <tt>IDENTIFIER_BYTE + 1</tt>.
      *
-     * @see ByteConsumer#identifierFor(Class)
+     * @see Consumer#identifierFor(Class)
      */
     private static final int IDENTIFIER_BYTE = 0x02;
 
@@ -38,7 +38,7 @@ public class ByteConsumer {
      * The basic identifier for a signed <tt>short</tt>. Unless otherwise specified, the unsigned
      * type would be <tt>IDENTIFIER_SHORT + 1</tt>.
      *
-     * @see ByteConsumer#identifierFor(Class)
+     * @see Consumer#identifierFor(Class)
      */
     private static final int IDENTIFIER_SHORT = 0x04;
 
@@ -46,7 +46,7 @@ public class ByteConsumer {
      * The basic identifier for a UTF-16 <tt>char</tt>. All characters added to this protocol should
      * be in a UTF-16 format.
      *
-     * @see ByteConsumer#identifierFor(Class)
+     * @see Consumer#identifierFor(Class)
      */
     private static final int IDENTIFIER_CHAR = 0x06;
 
@@ -54,7 +54,7 @@ public class ByteConsumer {
      * The basic identifier for a signed <tt>int</tt>. Unless otherwise specified, the unsigned type
      * would be <tt>IDENTIFIER_INT + 1</tt>.
      *
-     * @see ByteConsumer#identifierFor(Class)
+     * @see Consumer#identifierFor(Class)
      */
     private static final int IDENTIFIER_INT = 0x07;
 
@@ -62,7 +62,7 @@ public class ByteConsumer {
      * The basic identifier for a signed <tt>long</tt>. Unless otherwise specified, the unsigned
      * type would be <tt>IDENTIFIER_LONG + 1</tt>.
      *
-     * @see ByteConsumer#identifierFor(Class)
+     * @see Consumer#identifierFor(Class)
      */
     private static final int IDENTIFIER_LONG = 0x09;
 
@@ -70,7 +70,7 @@ public class ByteConsumer {
      * The basic identifier for a signed <tt>float</tt>. Unless otherwise specified, the unsigned
      * type would be <tt>IDENTIFIER_FLOAT + 1</tt>.
      *
-     * @see ByteConsumer#identifierFor(Class)
+     * @see Consumer#identifierFor(Class)
      */
     private static final int IDENTIFIER_FLOAT = 0x0B;
 
@@ -78,7 +78,7 @@ public class ByteConsumer {
      * The basic identifier for a signed <tt>double</tt>. Unless otherwise specified, the unsigned
      * type would be <tt>IDENTIFIER_DOUBLE + 1</tt>.
      *
-     * @see ByteConsumer#identifierFor(Class)
+     * @see Consumer#identifierFor(Class)
      */
     private static final int IDENTIFIER_DOUBLE = 0x0D;
 
@@ -86,7 +86,7 @@ public class ByteConsumer {
      * The basic identifier for a UTF-16 <tt>String</tt>. All characters added to this protocol
      * should be in a UTF-16 format.
      *
-     * @see ByteConsumer#identifierFor(Class)
+     * @see Consumer#identifierFor(Class)
      */
     private static final int IDENTIFIER_STRING = 0x0F;
 
@@ -95,15 +95,15 @@ public class ByteConsumer {
      * that a generic array is impossible and that a one-dimensional array must have a defined
      * component type specified by an identifier.
      *
-     * @see ByteConsumer#IDENTIFIER_BOOLEAN
-     * @see ByteConsumer#IDENTIFIER_BYTE
-     * @see ByteConsumer#IDENTIFIER_SHORT
-     * @see ByteConsumer#IDENTIFIER_CHAR
-     * @see ByteConsumer#IDENTIFIER_INT
-     * @see ByteConsumer#IDENTIFIER_LONG
-     * @see ByteConsumer#IDENTIFIER_FLOAT
-     * @see ByteConsumer#IDENTIFIER_DOUBLE
-     * @see ByteConsumer#identifierFor(Class)
+     * @see Consumer#IDENTIFIER_BOOLEAN
+     * @see Consumer#IDENTIFIER_BYTE
+     * @see Consumer#IDENTIFIER_SHORT
+     * @see Consumer#IDENTIFIER_CHAR
+     * @see Consumer#IDENTIFIER_INT
+     * @see Consumer#IDENTIFIER_LONG
+     * @see Consumer#IDENTIFIER_FLOAT
+     * @see Consumer#IDENTIFIER_DOUBLE
+     * @see Consumer#identifierFor(Class)
      */
     private static final int IDENTIFIER_ARRAY = 0x10;
 
@@ -161,13 +161,13 @@ public class ByteConsumer {
 
     private byte[] buffer;
 
-    protected ByteConsumer() {
+    protected Consumer() {
         this.growth = DEFAULT_GROWTH;
         this.buffer = new byte[DEFAULT_SIZE];
         this.bufferSize = DEFAULT_SIZE;
     }
 
-    protected ByteConsumer(final int initialBuffer) {
+    protected Consumer(final int initialBuffer) {
         if (initialBuffer <= 0) {
             throw new IllegalArgumentException("Initial buffer size must be > 0; given size: " + initialBuffer);
         }
@@ -176,7 +176,7 @@ public class ByteConsumer {
         this.bufferSize = initialBuffer;
     }
 
-    protected ByteConsumer(final int initialBuffer, final float growth) {
+    protected Consumer(final int initialBuffer, final float growth) {
         if (initialBuffer <= 0) {
             throw new IllegalArgumentException("Initial buffer size must be > 0; given size: " + initialBuffer);
         }

@@ -24,7 +24,6 @@ public class Project {
         this.manifest = runner.getAnnotation(Manifest.class);
     }
 
-    // TODO: change this to use the reflections API
     public static void loadCurrent() {
         final LinkedList<Class<?>> list = Reflection.loadClassesFrom(Paths.SOURCE);
         final Class<Runner> cls = Runner.class;

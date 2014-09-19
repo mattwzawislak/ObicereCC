@@ -5,9 +5,9 @@ import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.methods.Reflection;
 import org.obicere.cc.methods.Updater;
+import org.obicere.cc.projects.Project;
 import org.obicere.cc.shutdown.LayoutHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
-import org.obicere.cc.projects.Project;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +25,8 @@ public class FrameManager {
     public static final LinkedList<WindowListener> WINDOW_CLOSING_HOOKS = new LinkedList<>();
 
     private static final Dimension TAB_SIZE = new Dimension(170, 30);
+
+    private static final LinkedList<JPanel> MAIN_TABS = new LinkedList<>();
 
     private static JTabbedPane tabs;
 
@@ -50,7 +52,9 @@ public class FrameManager {
             mainPane.setOpaque(false);
             mainPane.add(tabFill);
 
-            tabs.add((JPanel) Reflection.newInstance(e));
+            final JPanel tab = (JPanel) Reflection.newInstance(e);
+            MAIN_TABS.add(tab);
+            tabs.add(tab);
             tabs.setTabComponentAt(manifest.index(), mainPane);
         });
 
@@ -98,6 +102,15 @@ public class FrameManager {
             tabs.setTabComponentAt(index, new TabPane(project, language));
         }
         tabs.setSelectedComponent(tabByName(project.getName(), language));
+    }
+
+    public static <T> T getTab(final Class<T> cls){
+        for(final JPanel tab : MAIN_TABS){
+            if(tab.getClass().equals(cls)){
+                return (T) tab;
+            }
+        }
+        return null;
     }
 
     public synchronized static Editor tabByName(final String name, final Language language) {

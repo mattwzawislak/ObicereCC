@@ -1,5 +1,7 @@
 package org.obicere.cc.gui.projects;
 
+import org.obicere.cc.gui.FrameManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -83,7 +85,7 @@ public class SearchPanel extends JPanel {
             fixedKey = key.replaceAll("\\s+", "");
             fixedKey = fixedKey.replace(DEFAULT, "");
         }
-        final ProjectSelector projectSelector = ProjectTabPanel.getInstance().getProjectSelector();
+        final ProjectSelector projectSelector = FrameManager.getTab(ProjectTabPanel.class).getProjectSelector();
         projectSelector.refine(fixedKey, complete.isSelected(), name.isSelected(), incomplete.isSelected());
     }
 

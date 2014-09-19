@@ -1,14 +1,16 @@
 package org.obicere.cc.configuration;
 
-import org.obicere.cc.gui.Splash;
-
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Global {
+
+    private static final Logger LOGGER = Logger.getLogger(Global.class.getCanonicalName());
 
     public static final Image CLOSE_IMAGE;
     public static final Image COMPLETE_IMAGE;
@@ -89,10 +91,8 @@ public class Global {
         public static void build() {
             for (final String s : PATHS) {
                 final File file = new File(s);
-                if (!file.exists()) {
-                    if (file.mkdir()) {
-                        Splash.setStatus("Created Directory: " + s);
-                    }
+                if (!file.exists() && !file.mkdir()) {
+                    LOGGER.log(Level.WARNING, "Failed to create folder {0}.", file);
                 }
             }
         }

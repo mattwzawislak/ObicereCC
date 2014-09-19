@@ -2,13 +2,10 @@ package org.obicere.cc.methods;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -17,6 +14,36 @@ import java.util.logging.Logger;
 public class FileLoader {
 
     private static final Logger LOGGER = Logger.getLogger(FileLoader.class.getCanonicalName());
+
+    private static final HashSet<String> IGNORED_JARS = new HashSet<>();
+
+    static {
+        IGNORED_JARS.add("charsets.jar");
+        IGNORED_JARS.add("deploy.jar");
+        IGNORED_JARS.add("javaws.jar");
+        IGNORED_JARS.add("jce.jar");
+        IGNORED_JARS.add("jfr.jar");
+        IGNORED_JARS.add("jfxswt.jar");
+        IGNORED_JARS.add("jsse.jar");
+        IGNORED_JARS.add("management-agent.jar");
+        IGNORED_JARS.add("plugin.jar");
+        IGNORED_JARS.add("resources.jar");
+        IGNORED_JARS.add("rt.jar");
+        IGNORED_JARS.add("access-bridge-64.jar");
+        IGNORED_JARS.add("cldrdata.jar");
+        IGNORED_JARS.add("dnsns.jar");
+        IGNORED_JARS.add("jaccess.jar");
+        IGNORED_JARS.add("jfxrt.jar");
+        IGNORED_JARS.add("localedata.jar");
+        IGNORED_JARS.add("nashorn.jar");
+        IGNORED_JARS.add("sunec.jar");
+        IGNORED_JARS.add("sunjce_provider.jar");
+        IGNORED_JARS.add("sunmscapi.jar");
+        IGNORED_JARS.add("sunpkcs11.jar");
+        IGNORED_JARS.add("zipfs.jar");
+        IGNORED_JARS.add("idea_rt.jar");
+
+    }
 
     private final LinkedList<String> list = new LinkedList<>();
 
@@ -52,19 +79,43 @@ public class FileLoader {
             return list;
         }
 
-        final File dir = new File(prefix);
+        String classpath = null;
+
+        try {
+            final ClassLoader loader = ClassLoader.getSystemClassLoader();
+            final Method method = loader.getClass().getMethod("getClassPath", (Class<?>) null);
+            if (method != null) {
+                classpath = (String) method.invoke(loader, (Object) null);
+            }
+        } catch (final Exception ignored) {
+            classpath = System.getProperty("java.class.path");
+        }
+
+        if (prefix != null) {
+            search(prefix);
+        }
+
+        final StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
+        while (tokenizer.hasMoreTokens()) {
+            search(tokenizer.nextToken());
+        }
+        return this.list;
+    }
+
+    private void search(final String token) {
+        final File dir = new File(token);
         if (dir.isDirectory()) {
-            LOGGER.log(Level.INFO, "Analyzing directory {0}.", dir);
             lookInDirectory("", dir);
         }
         if (dir.isFile()) {
             final String name = dir.getName().toLowerCase();
+            if (IGNORED_JARS.contains(name)) {
+                return;
+            }
             if (name.endsWith(".zip") || name.endsWith(".jar")) {
-                LOGGER.log(Level.INFO, "Analyzing archive {0}.", dir);
                 this.lookInArchive(dir);
             }
         }
-        return this.list;
     }
 
     private void lookInDirectory(final String name, final File dir) {

@@ -4,7 +4,10 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -35,10 +38,16 @@ public class Reflection {
         return stream.filter(predicate);
     }
 
-    public static Stream<Class<?>> filterAsSubclassOf(final Class<?> cls, final List<Class<?>> list) {
+    public static void filterAsSubclassOf(final Class<?> cls, final List<Class<?>> list) {
         Objects.requireNonNull(cls);
         Objects.requireNonNull(list);
-        return list.stream().filter(c -> cls.isAssignableFrom(c) && !cls.equals(c));
+        final ListIterator<Class<?>> listIterator = list.listIterator();
+        while (listIterator.hasNext()) {
+            final Class<?> next = listIterator.next();
+            if (!cls.isAssignableFrom(next) || cls.equals(next)) {
+                listIterator.remove();
+            }
+        }
     }
 
     public static Stream<Class<?>> subclassOf(final Class<?> cls) {
@@ -82,15 +91,13 @@ public class Reflection {
             loader.forEach(path -> {
                 try {
                     final Class<?> cls = forName(directory, path);
-                    if (cls != null) {
+                    if (cls != null && !classes.contains(cls)) {
                         classes.add(cls);
                     }
-                } catch (final Exception ignored) {
-                    ignored.printStackTrace();
+                } catch (final Exception | Error ignored) {
                 }
             });
         } catch (final Exception e) {
-            e.printStackTrace();
         }
         return classes;
     }
@@ -102,15 +109,13 @@ public class Reflection {
             loader.forEach(path -> {
                 try {
                     final Class<?> cls = forName(path);
-                    if (cls != null) {
+                    if (cls != null && !classes.contains(cls)) {
                         classes.add(cls);
                     }
-                } catch (final Exception ignored) {
-                    ignored.printStackTrace();
+                } catch (final Error | Exception ignored) {
                 }
             });
         } catch (final Exception e) {
-            e.printStackTrace();
         }
         return classes;
     }
@@ -119,20 +124,20 @@ public class Reflection {
         return forName("", name);
     }
 
-    private static Class<?> forName(final String directory, final String name) throws Exception {
+    private static Class<?> forName(final String directory, final String name) {
         try {
             final Class<?> cls = LOADER.loadClass(name);
             if (cls != null) {
                 return cls;
             }
-        } catch (final Exception ignored) { // Try to define the class
+        } catch (final Error | Exception ignored) {
         }
         final Class<?> defined = DEFINER.attemptDefine(directory, name);
         if (defined != null) {
             return defined;
         }
         // todo: implement a system where it actually tries to find the class...
-        throw new ClassNotFoundException("Class not found for: " + name);
+        return null;
     }
 
     private static class ClassDefiner extends ClassLoader {
@@ -147,7 +152,7 @@ public class Reflection {
                 }
                 return defineClass(name, content, 0, content.length);
             } catch (final Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             return null;
         }

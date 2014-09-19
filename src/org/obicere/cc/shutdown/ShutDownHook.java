@@ -35,6 +35,9 @@ public abstract class ShutDownHook extends Thread {
 
     protected void loadProperties() {
         try {
+            if (!propertiesFile.exists() && !propertiesFile.createNewFile()) {
+                throw new AssertionError("Could not create properties file.");
+            }
             Global.readProperties(properties, propertiesFile);
             final Field[] fields = getClass().getDeclaredFields();
             for (final Field field : fields) {

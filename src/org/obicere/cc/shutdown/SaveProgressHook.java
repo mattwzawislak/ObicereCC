@@ -33,12 +33,13 @@ public class SaveProgressHook extends ShutDownHook {
     public void setComplete(final String name, final boolean complete) {
         Objects.requireNonNull(name);
         completeList.put(name, complete);
-        for (final ProjectPanel panel : ProjectSelector.getProjectList()) {
+        ProjectSelector.setComplete(name, complete);
+        /*for (final ProjectPanel panel : ProjectSelector.getProjectList()) {
             if (panel.getProject().getName().equals(name)) {
                 panel.setComplete(complete);
                 return;
             }
-        }
+        }*/
     }
 
     private void loadComplete() {

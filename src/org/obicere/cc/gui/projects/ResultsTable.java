@@ -52,7 +52,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
             for (int i = 1; i < rowCount; i++) {
                 m.removeRow(1);
             }
-            if (results != null) {
+            if (results != null && results.length > 0) {
                 resultsCorrect = new boolean[results.length];
                 boolean wrong = false;
                 for (int i = 0; i < results.length; i++) {

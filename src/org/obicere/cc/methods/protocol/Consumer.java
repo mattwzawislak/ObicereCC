@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Objects;
 
@@ -346,16 +345,16 @@ public class Consumer {
     public synchronized <T> void write(final T[] value) {
         Objects.requireNonNull(value);
         final int length = value.length;
-        final Class<?> cls = value.getClass().getComponentType();
-        final int identifier = identifierFor(cls);
-        final int size = sizeFor(cls);
-        if (identifier == -1 || size == -1) {
-            throw new IllegalArgumentException("Non-supported class: " + cls);
-        }
         writeIdentifier(IDENTIFIER_ARRAY);
-        writeIdentifier(identifier);
         writeRawIntValue(length);
         for (final Object t : value) {
+            final Class cls = t.getClass();
+            final int identifier = identifierFor(t.getClass());
+            final int size = sizeFor(cls);
+            if (identifier == -1 || size == -1) {
+                throw new IllegalArgumentException("Non-supported class: " + cls);
+            }
+            writeIdentifier(identifier);
             writeFor(cls, t);
         }
     }
@@ -363,80 +362,72 @@ public class Consumer {
     public synchronized void write(final boolean[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
-        writeIdentifier(IDENTIFIER_BOOLEAN);
         writeRawIntValue(value.length);
         for (final boolean aValue : value) {
-            writeRawByteValue(aValue ? 1 : 0);
+            write(aValue);
         }
     }
 
     public synchronized void write(final byte[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
-        writeIdentifier(IDENTIFIER_BYTE);
         writeRawIntValue(value.length);
         for (final byte aValue : value) {
-            writeRawByteValue(aValue);
+            write(aValue);
         }
     }
 
     public synchronized void write(final char[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
-        writeIdentifier(IDENTIFIER_CHAR);
         writeRawIntValue(value.length);
         for (final char aValue : value) {
-            writeRawShortValue(aValue);
+            write(aValue);
         }
     }
 
     public synchronized void write(final short[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
-        writeIdentifier(IDENTIFIER_SHORT);
         writeRawIntValue(value.length);
         for (final short aValue : value) {
-            writeRawShortValue(aValue);
+            write(aValue);
         }
     }
 
     public synchronized void write(final int[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
-        writeIdentifier(IDENTIFIER_INT);
         writeRawIntValue(value.length);
         for (final int aValue : value) {
-            writeRawIntValue(aValue);
+            write(aValue);
         }
     }
 
     public synchronized void write(final long[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
-        writeIdentifier(IDENTIFIER_LONG);
         writeRawIntValue(value.length);
         for (final long aValue : value) {
-            writeRawLongValue(aValue);
+            write(aValue);
         }
     }
 
     public synchronized void write(final float[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
-        writeIdentifier(IDENTIFIER_FLOAT);
         writeRawIntValue(value.length);
         for (final float aValue : value) {
-            writeRawIntValue(Float.floatToIntBits(aValue));
+            write(aValue);
         }
     }
 
     public synchronized void write(final double[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
-        writeIdentifier(IDENTIFIER_DOUBLE);
         writeRawIntValue(value.length);
         for (final double aValue : value) {
-            writeRawLongValue(Double.doubleToLongBits(aValue));
+            write(aValue);
         }
     }
 
@@ -602,10 +593,7 @@ public class Consumer {
     @SuppressWarnings("unchecked")
     // This is all checked - not really though
     public synchronized <T, S> T readArray(final Class<T> cls) {
-        if (nextIdentifier() != IDENTIFIER_ARRAY) {
-            throw new InputMismatchException();
-        }
-        final int nextID = nextIdentifier();
+        checkArray();
         final int length = readRawInt();
         final Class<S> component = (Class<S>) cls.getComponentType();
         if (component.isPrimitive()) {
@@ -630,7 +618,7 @@ public class Consumer {
         }
         final S[] array = (S[]) Array.newInstance(component, length);
         for (int i = 0; i < length; i++) {
-            array[i] = (S) readMethodFor(component, nextID);
+            array[i] = (S) readMethodFor(component, nextIdentifier());
         }
         return (T) array;
     }
@@ -638,7 +626,7 @@ public class Consumer {
     private boolean[] readRawBooleanArray(final int length) {
         final boolean[] array = new boolean[length];
         for (int i = 0; i < length; i++) {
-            array[i] = readRawByte() != 0;
+            array[i] = readBoolean();
         }
         return array;
     }
@@ -646,7 +634,7 @@ public class Consumer {
     private byte[] readRawByteArray(final int length) {
         final byte[] array = new byte[length];
         for (int i = 0; i < length; i++) {
-            array[i] = readRawByte();
+            array[i] = readByte();
         }
         return array;
     }
@@ -654,7 +642,7 @@ public class Consumer {
     private short[] readRawShortArray(final int length) {
         final short[] array = new short[length];
         for (int i = 0; i < length; i++) {
-            array[i] = readRawShort();
+            array[i] = readShort();
         }
         return array;
     }
@@ -662,7 +650,7 @@ public class Consumer {
     private char[] readRawCharArray(final int length) {
         final char[] array = new char[length];
         for (int i = 0; i < length; i++) {
-            array[i] = (char) readRawShort();
+            array[i] = readChar();
         }
         return array;
     }
@@ -670,7 +658,7 @@ public class Consumer {
     private int[] readRawIntArray(final int length) {
         final int[] array = new int[length];
         for (int i = 0; i < length; i++) {
-            array[i] = readRawInt();
+            array[i] = readInt();
         }
         return array;
     }
@@ -678,7 +666,7 @@ public class Consumer {
     private float[] readRawFloatArray(final int length) {
         final float[] array = new float[length];
         for (int i = 0; i < length; i++) {
-            array[i] = Float.intBitsToFloat(readRawInt());
+            array[i] = readFloat();
         }
         return array;
     }
@@ -686,7 +674,7 @@ public class Consumer {
     private long[] readRawLongArray(final int length) {
         final long[] array = new long[length];
         for (int i = 0; i < length; i++) {
-            array[i] = readRawLong();
+            array[i] = readLong();
         }
         return array;
     }
@@ -694,71 +682,61 @@ public class Consumer {
     private double[] readRawDoubleArray(final int length) {
         final double[] array = new double[length];
         for (int i = 0; i < length; i++) {
-            array[i] = Double.longBitsToDouble(readRawLong());
+            array[i] = readDouble();
         }
         return array;
     }
 
-    public synchronized boolean[] readBooleanArray() {
-        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_BOOLEAN) {
+    private void checkArray() {
+        if (nextIdentifier() != IDENTIFIER_ARRAY) {
             throw new InputMismatchException();
         }
+    }
+
+    public synchronized boolean[] readBooleanArray() {
+        checkArray();
         final int length = readRawInt();
         return readRawBooleanArray(length);
     }
 
     public synchronized byte[] readByteArray() {
-        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_BYTE) {
-            throw new InputMismatchException();
-        }
+        checkArray();
         final int length = readRawInt();
         return readRawByteArray(length);
     }
 
     public synchronized short[] readShortArray() {
-        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_SHORT) {
-            throw new InputMismatchException();
-        }
+        checkArray();
         final int length = readRawInt();
         return readRawShortArray(length);
     }
 
     public synchronized char[] readCharArray() {
-        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_CHAR) {
-            throw new InputMismatchException();
-        }
+        checkArray();
         final int length = readRawInt();
         return readRawCharArray(length);
     }
 
     public synchronized int[] readIntArray() {
-        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_INT) {
-            throw new InputMismatchException();
-        }
+        checkArray();
         final int length = readRawInt();
         return readRawIntArray(length);
     }
 
     public synchronized float[] readFloatArray() {
-        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_FLOAT) {
-            throw new InputMismatchException();
-        }
+        checkArray();
         final int length = readRawInt();
         return readRawFloatArray(length);
     }
 
     public synchronized long[] readLongArray() {
-        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_LONG) {
-            throw new InputMismatchException();
-        }
+        checkArray();
         final int length = readRawInt();
         return readRawLongArray(length);
     }
 
     public synchronized double[] readDoubleArray() {
-        if (nextIdentifier() != IDENTIFIER_ARRAY || nextIdentifier() != IDENTIFIER_DOUBLE) {
-            throw new InputMismatchException();
-        }
+        checkArray();
         final int length = readRawInt();
         return readRawDoubleArray(length);
     }

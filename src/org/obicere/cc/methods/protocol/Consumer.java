@@ -1,6 +1,10 @@
 package org.obicere.cc.methods.protocol;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Objects;
 
@@ -156,6 +160,9 @@ public class Consumer {
 
     private int lastReadIndex = 0;
 
+    private int lastStreamWriteIndex = 0;
+
+    private int lastStreamReadIndex = 0;
 
     private final float growth;
 
@@ -218,24 +225,32 @@ public class Consumer {
         this.buffer = newBuffer;
     }
 
-    public synchronized void streamInput(final byte[] input) {
-        Objects.requireNonNull(input);
-        final int length = input.length;
-        checkWriteSize(length);
-        System.arraycopy(input, 0, buffer, lastWriteIndex, length);
-        lastWriteIndex += length; // We just wrote n bytes where n=length
+    public synchronized void writeAvailable(final OutputStream stream) throws IOException {
+        final int lastStream = lastStreamWriteIndex;
+        final int lastWrite = lastWriteIndex;
+        final int available = lastWrite - lastStream;
+
+        final byte[] write = new byte[available];
+        System.arraycopy(buffer, lastStreamWriteIndex, write, 0, available);
+        stream.write(write);
+        lastStreamWriteIndex += available;
+    }
+
+    public synchronized void readAvailable(final InputStream stream) throws IOException {
+        final int available = stream.available();
+        if (available != 0) {
+            final byte[] buffer = new byte[available];
+            stream.read(buffer);
+            for (final byte b : buffer) {
+                writeRawByteValue(b);
+            }
+        }
     }
 
     private void checkWriteSize(final int newWrite) {
         while (lastWriteIndex + newWrite > bufferSize) {
             expand();
         }
-    }
-
-    public byte[] toOutputArray() {
-        final byte[] output = new byte[lastWriteIndex];
-        System.arraycopy(buffer, 0, output, 0, lastWriteIndex);
-        return output;
     }
 
     private void writeIdentifier(final int identifier) {

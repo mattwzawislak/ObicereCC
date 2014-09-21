@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public class BasicProtocol implements Flushable {
 
-    private final Consumer consumer = new Consumer();
+    private final StreamConsumer streamConsumer = new StreamConsumer();
 
     private final DataOutputStream output;
     private final DataInputStream  input;
@@ -68,155 +68,155 @@ public class BasicProtocol implements Flushable {
     }
 
     public void write(final boolean b) {
-        consumer.write(b);
+        streamConsumer.write(b);
         doFlush();
     }
 
     public void write(final byte b) {
-        consumer.write(b);
+        streamConsumer.write(b);
         doFlush();
     }
 
     public void write(final short s) {
-        consumer.write(s);
+        streamConsumer.write(s);
         doFlush();
     }
 
     public void write(final char c) {
-        consumer.write(c);
+        streamConsumer.write(c);
         doFlush();
     }
 
     public void write(final int i) {
-        consumer.write(i);
+        streamConsumer.write(i);
         doFlush();
     }
 
     public void write(final float f) {
-        consumer.write(f);
+        streamConsumer.write(f);
         doFlush();
     }
 
     public void write(final long l) {
-        consumer.write(l);
+        streamConsumer.write(l);
         doFlush();
     }
 
     public void write(final double d) {
-        consumer.write(d);
+        streamConsumer.write(d);
         doFlush();
     }
 
     public void write(final String s) {
-        consumer.write(s);
+        streamConsumer.write(s);
         doFlush();
     }
 
     public void write(final Object[] data) {
-        consumer.write(data);
+        streamConsumer.write(data);
         doFlush();
     }
 
     public void write(final boolean[] data) {
-        consumer.write(data);
+        streamConsumer.write(data);
         doFlush();
     }
 
     public void write(final byte[] data) {
-        consumer.write(data);
+        streamConsumer.write(data);
         doFlush();
     }
 
     public void write(final short[] data) {
-        consumer.write(data);
+        streamConsumer.write(data);
         doFlush();
     }
 
     public void write(final char[] data) {
-        consumer.write(data);
+        streamConsumer.write(data);
         doFlush();
     }
 
     public void write(final int[] data) {
-        consumer.write(data);
+        streamConsumer.write(data);
         doFlush();
     }
 
     public void write(final float[] data) {
-        consumer.write(data);
+        streamConsumer.write(data);
         doFlush();
     }
 
 
     public void write(final long[] data) {
-        consumer.write(data);
+        streamConsumer.write(data);
         doFlush();
     }
 
     public void write(final double[] data) {
-        consumer.write(data);
+        streamConsumer.write(data);
         doFlush();
     }
 
     private void waitForInput() {
-        while (!consumer.hasNext()) {
+        while (!streamConsumer.hasNext()) {
             read();
         }
     }
 
     public boolean readBoolean() {
         waitForInput();
-        return consumer.readBoolean();
+        return streamConsumer.readBoolean();
     }
 
     public byte readByte() {
         waitForInput();
-        return consumer.readByte();
+        return streamConsumer.readByte();
     }
 
     public short readShort() {
         waitForInput();
-        return consumer.readShort();
+        return streamConsumer.readShort();
     }
 
     public char readChar() {
         waitForInput();
-        return consumer.readChar();
+        return streamConsumer.readChar();
     }
 
     public int readInt() {
         waitForInput();
-        return consumer.readInt();
+        return streamConsumer.readInt();
     }
 
     public float readFloat() {
         waitForInput();
-        return consumer.readFloat();
+        return streamConsumer.readFloat();
     }
 
     public long readLong() {
         waitForInput();
-        return consumer.readLong();
+        return streamConsumer.readLong();
     }
 
     public double readDouble() {
         waitForInput();
-        return consumer.readDouble();
+        return streamConsumer.readDouble();
     }
 
     public String readString() {
         waitForInput();
-        return consumer.readString();
+        return streamConsumer.readString();
     }
 
     public <T> T readArray(final Class<T> cls) {
         waitForInput();
-        return consumer.readArray(cls);
+        return streamConsumer.readArray(cls);
     }
 
     private void read() {
         try {
-            consumer.readAvailable(input);
+            streamConsumer.readAvailable(input);
         } catch (final IOException e) {
             e.printStackTrace();
         }
@@ -231,7 +231,7 @@ public class BasicProtocol implements Flushable {
     @Override
     public void flush() {
         try {
-            consumer.writeAvailable(output);
+            streamConsumer.writeAvailable(output);
         } catch (final IOException e) {
             e.printStackTrace();
         }

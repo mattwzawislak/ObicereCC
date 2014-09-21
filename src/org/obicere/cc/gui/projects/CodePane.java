@@ -1,6 +1,7 @@
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.executor.language.Language;
+import org.obicere.cc.shutdown.CodeCompletionHook;
 import org.obicere.cc.shutdown.EditorHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 
@@ -10,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.nio.CharBuffer;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,15 +23,18 @@ public class CodePane extends JTextPane {
     private static final SimpleAttributeSet STRING_SET   = new SimpleAttributeSet();
     private static Font editorFont;
 
-    private static final EditorHook HOOK = ShutDownHookManager.hookByClass(EditorHook.class);
+    private static final EditorHook         EDITOR     = ShutDownHookManager.hookByClass(EditorHook.class);
+    private static final CodeCompletionHook COMPLETION = ShutDownHookManager.hookByClass(CodeCompletionHook.class);
 
     static {
-        StyleConstants.setForeground(STRING_SET, HOOK.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));
-        StyleConstants.setForeground(KEYWORD_SET, HOOK.getPropertyAsColor(EditorHook.KEYWORD_HIGHLIGHT_COLOR));
-        StyleConstants.setForeground(NORMAL_SET, HOOK.getPropertyAsColor(EditorHook.NORMAL_HIGHLIGHT_COLOR));
+        StyleConstants.setForeground(STRING_SET, EDITOR.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));
+        StyleConstants.setForeground(KEYWORD_SET, EDITOR.getPropertyAsColor(EditorHook.KEYWORD_HIGHLIGHT_COLOR));
+        StyleConstants.setForeground(NORMAL_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_HIGHLIGHT_COLOR));
 
-        editorFont = new Font(HOOK.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, HOOK.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
+        editorFont = new Font(EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
     }
+
+    private HashMap<Character, Long> lastHit = new HashMap<>();
 
     private long lastUpdate;
 
@@ -57,6 +62,53 @@ public class CodePane extends JTextPane {
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Newline");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Compile");
 
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_9, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, 0, true), "Finish Open");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open");
+
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_0, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open Delay");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, 0, true), "Finish Open Delay");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open Delay");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open Delay");
+
+        actionMap.put("Finish Open Delay", new AbstractAction() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final int index = getCaretPosition();
+                final String code = getText();
+                final char open = code.charAt(index - 1);
+
+                if (!lastHit.containsKey(open)) {
+                    return;
+                }
+                final long lastHit = CodePane.this.lastHit.get(open);
+                if (lastHit < 1500) {
+                    setText(code.substring(0, index - 1) + code.substring(index));
+                    setCaretPosition(index + 1);
+                    highlightKeywords();
+                }
+            }
+        });
+
+        actionMap.put("Finish Open", new AbstractAction() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final int index = getCaretPosition();
+
+                final String code = getText();
+                final char open = code.charAt(index - 1);
+                final char close = getClosingCharacter(open);
+                if (close == 0) {
+                    return;
+                }
+                registerHit(open);
+
+                setText(code.substring(0, index) + close + code.substring(index));
+                setCaretPosition(index);
+                highlightKeywords();
+            }
+        });
         actionMap.put("Compile", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -71,6 +123,9 @@ public class CodePane extends JTextPane {
         actionMap.put("Newline", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!COMPLETION.getPropertyAsBoolean(CodeCompletionHook.NEW_LINE_COMPLETION)) {
+                    return;
+                }
                 final int index = getCaretPosition();
                 final int lineNumber = getCaretLine();
                 final String line = getLine(lineNumber);
@@ -82,7 +137,7 @@ public class CodePane extends JTextPane {
                         break;
                     }
                 }
-                if (line.matches(".*?[\\)\\{]\\s*")) {
+                if (index != 0 && line.matches(".*?[\\)\\{]\\s*")) {
                     tabCount++;
                 }
 
@@ -111,6 +166,37 @@ public class CodePane extends JTextPane {
         }));
     }
 
+    private char getClosingCharacter(final char c) {
+        switch (c) {
+            case '(':
+                if (!COMPLETION.getPropertyAsBoolean(CodeCompletionHook.PARENTHESES_COMPLETION)) {
+                    return 0;
+                }
+                return ')';
+            case '{':
+                if (!COMPLETION.getPropertyAsBoolean(CodeCompletionHook.CURLY_BRACKET_COMPLETION)) {
+                    return 0;
+                }
+                return '}';
+            case '<':
+                if (!COMPLETION.getPropertyAsBoolean(CodeCompletionHook.TAG_COMPLETION)) {
+                    return 0;
+                }
+                return '>';
+            case '[':
+                if (!COMPLETION.getPropertyAsBoolean(CodeCompletionHook.BRACKET_COMPLETION)) {
+                    return 0;
+                }
+                return ']';
+            default:
+                return 0;
+        }
+    }
+
+    private void registerHit(final char c) {
+        lastHit.put(c, System.currentTimeMillis());
+    }
+
     private String clearMatches(final String code, final String regex) {
         final Pattern pattern = Pattern.compile(regex);
         final Matcher matcher = pattern.matcher(code);
@@ -136,13 +222,13 @@ public class CodePane extends JTextPane {
     }
 
     private void checkForUpdates() {
-        final long editorUpdate = HOOK.getLastEditorUpdate();
+        final long editorUpdate = EDITOR.getLastEditorUpdate();
         if (lastUpdate != editorUpdate) {
-            StyleConstants.setForeground(STRING_SET, HOOK.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));
-            StyleConstants.setForeground(KEYWORD_SET, HOOK.getPropertyAsColor(EditorHook.KEYWORD_HIGHLIGHT_COLOR));
-            StyleConstants.setForeground(NORMAL_SET, HOOK.getPropertyAsColor(EditorHook.NORMAL_HIGHLIGHT_COLOR));
+            StyleConstants.setForeground(STRING_SET, EDITOR.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));
+            StyleConstants.setForeground(KEYWORD_SET, EDITOR.getPropertyAsColor(EditorHook.KEYWORD_HIGHLIGHT_COLOR));
+            StyleConstants.setForeground(NORMAL_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_HIGHLIGHT_COLOR));
 
-            editorFont = new Font(HOOK.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, HOOK.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
+            editorFont = new Font(EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
             lastUpdate = editorUpdate;
             setFont(editorFont);
         }

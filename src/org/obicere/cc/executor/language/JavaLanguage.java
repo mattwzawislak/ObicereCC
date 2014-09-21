@@ -8,6 +8,8 @@ import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.Runner;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -120,7 +122,19 @@ public class JavaLanguage extends Language {
                 }
                 return results;
             } catch (final Exception e) {
-                e.printStackTrace();
+                // java.lang.AssertionError blah blah blah
+                // ...
+                // Caused by: <- We need this
+                final StringWriter writer = new StringWriter();
+                final PrintWriter printer = new PrintWriter(writer);
+                e.printStackTrace(printer);
+
+                final String fullError = writer.toString();
+                final int index = fullError.indexOf("Caused by:");
+                if (index > 0) {
+                    final String subError = fullError.substring(index);
+                    displayError(project, new String[]{subError});
+                }
                 return new Result[0];
             }
         }

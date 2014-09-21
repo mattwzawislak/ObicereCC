@@ -2,6 +2,7 @@ package org.obicere.cc.gui.settings;
 
 import org.obicere.cc.gui.MainTabPanel;
 import org.obicere.cc.gui.VerticalFlowLayout;
+import org.obicere.cc.gui.projects.VerticalWrapLayout;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 import org.obicere.cc.shutdown.ShutDownHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
@@ -16,10 +17,9 @@ import java.awt.*;
 public class MainSettingsPanel extends JPanel {
 
     public MainSettingsPanel() {
-        super(new FlowLayout(FlowLayout.LEFT));
+        super(new BorderLayout());
 
-        final VerticalFlowLayout layout = new VerticalFlowLayout(VerticalFlowLayout.CENTER, 5, 10);
-        layout.setMaximizeOtherDimension(true);
+        final VerticalWrapLayout layout = new VerticalWrapLayout();
         final JPanel panel = new JPanel(layout);
         final JScrollPane scroll = new JScrollPane(panel);
 
@@ -30,7 +30,7 @@ public class MainSettingsPanel extends JPanel {
                 panel.add(content);
             }
         }
-        add(scroll);
+        add(scroll, BorderLayout.CENTER);
 
     }
 }

@@ -108,6 +108,42 @@ public class StreamConsumer {
         buffer.write((byte) identifier);
     }
 
+    public synchronized void write(final boolean value) {
+        booleanC.write(value);
+    }
+
+    public synchronized void write(final byte value) {
+        byteC.write(value);
+    }
+
+    public synchronized void write(final char value) {
+        charC.write(value);
+    }
+
+    public synchronized void write(final short value) {
+        shortC.write(value);
+    }
+
+    public synchronized void write(final int value) {
+        intC.write(value);
+    }
+
+    public synchronized void write(final long value) {
+        longC.write(value);
+    }
+
+    public synchronized void write(final float value) {
+        floatC.write(value);
+    }
+
+    public synchronized void write(final double value) {
+        doubleC.write(value);
+    }
+
+    public synchronized void write(final String value) {
+        stringC.write(value);
+    }
+
     public synchronized void write(final boolean[] value) {
         booleanC.write(value);
     }
@@ -211,7 +247,7 @@ public class StreamConsumer {
     public synchronized double[] readDoubleArray() {
         return doubleC.readArray();
     }
-    
+
     public synchronized boolean hasNext() {
         return buffer.peek() != -1;
     }

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Objects;
 
@@ -142,133 +141,42 @@ public class Consumer {
      */
     private static final int BUFFER_SIZE_64_BIT = (1 << 3) + IDENTIFIER_SIZE;
 
-    /**
-     * The maximum size for the buffer. This values corresponds to the largest positive power of two
-     * available in indexing.
-     * <p>
-     * The maximum size corresponds to: <tt>134,217,728 bytes (128MB)</tt>.
-     */
-    private static final int MAXIMUM_BUFFER_SIZE = 1 << 30;
-
-    private static final float DEFAULT_GROWTH = 2.0f;
-
-    private static final int DEFAULT_SIZE = 32;
-
-    private int bufferSize;
-
-    private int lastWriteIndex = 0;
-
-    private int lastReadIndex = 0;
-
-    private int lastStreamWriteIndex = 0;
-
-    private int lastStreamReadIndex = 0;
-
-    private final float growth;
-
-    private byte[] buffer;
+    private final Buffer buffer;
 
     protected Consumer() {
-        this.growth = DEFAULT_GROWTH;
-        this.buffer = new byte[DEFAULT_SIZE];
-        this.bufferSize = DEFAULT_SIZE;
+        this.buffer = new Buffer();
     }
 
-    protected Consumer(final int initialBuffer) {
-        if (initialBuffer <= 0) {
-            throw new IllegalArgumentException("Initial buffer size must be > 0; given size: " + initialBuffer);
-        }
-        this.growth = DEFAULT_GROWTH;
-        this.buffer = new byte[initialBuffer];
-        this.bufferSize = initialBuffer;
+    protected Consumer(final int initialLength) {
+        this.buffer = new Buffer(initialLength);
     }
 
-    protected Consumer(final int initialBuffer, final float growth) {
-        if (initialBuffer <= 0) {
-            throw new IllegalArgumentException("Initial buffer size must be > 0; given size: " + initialBuffer);
-        }
-        if (growth <= 1.0) {
-            throw new IllegalArgumentException("Growth ratio must be greater than 1; given growth: " + growth);
-        }
-        this.growth = growth;
-        this.buffer = new byte[initialBuffer];
-        this.bufferSize = initialBuffer;
+    protected Consumer(final int initialLength, final float growth) {
+        this.buffer = new Buffer(initialLength, growth);
     }
 
-    protected void expand() {
-        int newLength = (int) (growth * bufferSize);
-        if (newLength > MAXIMUM_BUFFER_SIZE) {
-            newLength = MAXIMUM_BUFFER_SIZE;
-        }
-        final byte[] newBuffer = new byte[newLength];
-        System.arraycopy(buffer, 0, newBuffer, 0, lastWriteIndex);
-        this.buffer = newBuffer;
-        this.bufferSize = newLength;
+    public synchronized void clearRead() {
+        buffer.clearReadBuffer();
     }
 
     public synchronized boolean shouldClear() {
-        return buffer.length == MAXIMUM_BUFFER_SIZE;
-    }
-
-    public synchronized void clearReadBuffer() {
-        final int lastRead = lastReadIndex;
-        final int lastWrite = lastWriteIndex;
-        if (lastRead == 0) {
-            // No content read yet.
-            return;
-        }
-        final int newContent = lastWrite - lastRead;
-        final byte[] newBuffer = new byte[newContent * 2]; // create a new buffer to avoid continuous clear
-        System.arraycopy(buffer, lastRead, newBuffer, 0, newContent);
-        this.lastReadIndex = 0; // Reset last read
-        this.lastWriteIndex = newContent;
-        this.buffer = newBuffer;
+        return buffer.length() == Buffer.MAXIMUM_BUFFER_SIZE;
     }
 
     public synchronized void writeAvailable(final OutputStream stream) throws IOException {
-        final int lastStream = lastStreamWriteIndex;
-        final int lastWrite = lastWriteIndex;
-        final int available = lastWrite - lastStream;
-
-        final byte[] write = new byte[available];
-        System.arraycopy(buffer, lastStreamWriteIndex, write, 0, available);
-        stream.write(write);
-        lastStreamWriteIndex += available;
+        buffer.writeAvailable(stream);
     }
 
     public synchronized void readAvailable(final InputStream stream) throws IOException {
-        final int available = stream.available();
-        if (available != 0) {
-            final byte[] buffer = new byte[available];
-            stream.read(buffer);
-            for (final byte b : buffer) {
-                writeRawByteValue(b);
-            }
-        }
-    }
-
-    private void checkWriteSize(final int newWrite) {
-        while (lastWriteIndex + newWrite > bufferSize) {
-            expand();
-        }
+        buffer.readAvailable(stream);
     }
 
     private void writeIdentifier(final int identifier) {
-        checkWriteSize(1);
-        try {
-            buffer[lastWriteIndex++] = (byte) identifier;
-        } catch (final ArrayIndexOutOfBoundsException e) {
-            throw new OutOfMemoryError("Buffer is full.");
-        }
+        buffer.write((byte) identifier);
     }
 
     private void writeRawByteValue(final int b) {
-        try {
-            checkWriteSize(1);
-            buffer[lastWriteIndex++] = (byte) (b & 0xFF);
-        } catch (final ArrayIndexOutOfBoundsException e) {
-            throw new OutOfMemoryError("Buffer is full.");
-        }
+        buffer.write((byte) b);
     }
 
     private void writeRawShortValue(final int s) {
@@ -441,26 +349,15 @@ public class Consumer {
     }
 
     private synchronized byte peekNext() {
-        if (buffer.length <= lastReadIndex) {
-            return -1; // Waiting on more input
-        }
-        return buffer[lastReadIndex];
+        return buffer.peek();
     }
 
     private synchronized byte next() {
-        try {
-            return buffer[lastReadIndex++];
-        } catch (final ArrayIndexOutOfBoundsException e) {
-            throw new InvalidProtocolException("Next byte is missing. Index: " + lastReadIndex);
-        }
+        return buffer.read();
     }
 
     private synchronized int nextIdentifier() {
-        try {
-            return buffer[lastReadIndex++];
-        } catch (final ArrayIndexOutOfBoundsException e) {
-            throw new InvalidProtocolException("Next identifier is missing. Index: " + lastReadIndex);
-        }
+        return buffer.read();
     }
 
     public boolean hasNext() {

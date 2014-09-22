@@ -1,10 +1,12 @@
 package org.obicere.cc.methods.protocol;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.Flushable;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -49,10 +51,9 @@ public class BasicProtocol implements Flushable {
 
             final BasicProtocol protocol = new BasicProtocol(connection, true);
 
-            System.out.println("Starting to write");
-            protocol.write("Test");
-            protocol.write(100);
-            protocol.write(new Object[]{1, 2, 3, "Finished"});
+            for (int i = 0; connection.isConnected(); i++) {
+                protocol.write(i);
+            }
         } else {
             final int socket = Integer.parseInt(args[0]);
             final Socket connection = new Socket("127.0.0.1", socket);
@@ -60,9 +61,9 @@ public class BasicProtocol implements Flushable {
             final BasicProtocol protocol = new BasicProtocol(connection);
 
             System.out.println("Starting to read");
-            System.out.println(protocol.readString());
-            System.out.println(protocol.readInt());
-            System.out.println(Arrays.toString(protocol.readArray(Object[].class)));
+            while (connection.isConnected()) {
+                System.out.println(protocol.readInt());
+            }
             System.out.println("Done");
         }
     }

@@ -39,7 +39,7 @@ public class StringConsumer extends AbstractConsumer {
         final char[] data = value.toCharArray();
         writeRawIntValue(data.length);
         for (final char c : data) {
-            writeRawShortValue(c);
+            writeRawShortValue((short) c);
         }
     }
 }

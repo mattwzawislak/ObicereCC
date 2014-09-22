@@ -3,6 +3,7 @@ package org.obicere.cc.methods.protocol;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 /**
  * @author Obicere
@@ -26,8 +27,6 @@ public class Buffer {
     private int lastReadIndex = 0;
 
     private int lastStreamWriteIndex = 0;
-
-    private int bufferSize;
 
     private final float growth;
 
@@ -58,22 +57,22 @@ public class Buffer {
     }
 
     public byte read() {
-        if(lastReadIndex >= buffer.length){
+        if (lastReadIndex >= length()) {
             throw new IndexOutOfBoundsException("No more data available.");
         }
         return buffer[lastReadIndex++];
     }
 
-    public byte peek(){
-        if(lastReadIndex >= buffer.length){
-            return -1; // No identifier should match this
+    public byte peek() {
+        if (lastReadIndex >= lastWriteIndex) {
+            return 0; // No identifier should match this
         }
         return buffer[lastReadIndex];
     }
 
     public void write(final byte value) {
         checkWriteSize(1);
-        if (lastWriteIndex >= buffer.length) {
+        if (lastWriteIndex >= length()) {
             throw new OutOfMemoryError("No more buffer space available.");
         }
         buffer[lastWriteIndex++] = value;
@@ -84,14 +83,13 @@ public class Buffer {
     }
 
     protected void expand() {
-        int newLength = (int) (growth * bufferSize);
+        int newLength = (int) (growth * length());
         if (newLength > MAXIMUM_BUFFER_SIZE) {
             newLength = MAXIMUM_BUFFER_SIZE;
         }
         final byte[] newBuffer = new byte[newLength];
         System.arraycopy(buffer, 0, newBuffer, 0, lastWriteIndex);
         this.buffer = newBuffer;
-        this.bufferSize = newLength;
     }
 
     protected void clearReadBuffer() {
@@ -109,7 +107,7 @@ public class Buffer {
         this.buffer = newBuffer;
     }
 
-    protected synchronized void readAvailable(final InputStream stream) throws IOException {
+    protected void readAvailable(final InputStream stream) throws IOException {
         final int available = stream.available();
         if (available != 0) {
             final byte[] buffer = new byte[available];
@@ -132,7 +130,7 @@ public class Buffer {
     }
 
     protected void checkWriteSize(final int newWrite) {
-        while (lastWriteIndex + newWrite > bufferSize) {
+        while (lastWriteIndex + newWrite > length()) {
             expand();
         }
     }

@@ -103,27 +103,27 @@ public abstract class AbstractConsumer {
         this.buffer = buffer;
     }
 
-    protected void writeRawByteValue(final int b) {
-        buffer.write((byte) b);
+    protected void writeRawByteValue(final byte b) {
+        buffer.write(b);
     }
 
-    protected void writeRawShortValue(final int s) {
-        writeRawByteValue(s >> 8);
-        writeRawByteValue(s >> 0);
+    protected void writeRawShortValue(final short s) {
+        writeRawByteValue((byte) (s >> 8));
+        writeRawByteValue((byte) (s >> 0));
     }
 
     protected void writeRawIntValue(final int i) {
-        writeRawShortValue(i >> 16);
-        writeRawShortValue(i >> 0);
+        writeRawShortValue((short) (i >> 16));
+        writeRawShortValue((short) (i >> 0));
     }
 
     protected void writeRawLongValue(final long l) {
-        writeRawIntValue((int) (l >> 32)); // Damn 32-bit ALUs
+        writeRawIntValue((int) (l >> 32));
         writeRawIntValue((int) (l >> 0));
     }
 
     protected void writeIdentifier(final int id) {
-        writeRawByteValue(id);
+        writeRawByteValue((byte) id);
     }
 
     protected byte readRawByte() {

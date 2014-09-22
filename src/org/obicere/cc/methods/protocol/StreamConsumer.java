@@ -249,7 +249,7 @@ public class StreamConsumer {
     }
 
     public synchronized boolean hasNext() {
-        return buffer.peek() != -1;
+        return buffer.peek() != 0;
     }
 
     public boolean hasBoolean() {

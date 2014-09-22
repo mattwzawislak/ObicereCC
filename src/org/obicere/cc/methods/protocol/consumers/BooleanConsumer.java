@@ -37,11 +37,11 @@ public class BooleanConsumer extends AbstractConsumer {
 
     public void write(final boolean value){
         writeIdentifier(IDENTIFIER_BOOLEAN);
-        writeRawByteValue(value ? 1 : 0);
+        writeRawByteValue((byte) (value ? 1 : 0));
     }
 
     public void writeRaw(final boolean value){
-        writeRawByteValue(value ? 1 : 0);
+        writeRawByteValue((byte) (value ? 1 : 0));
     }
 
     public void write(final boolean[] value){

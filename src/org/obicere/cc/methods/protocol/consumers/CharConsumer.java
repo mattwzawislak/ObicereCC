@@ -36,11 +36,11 @@ public class CharConsumer extends AbstractConsumer {
 
     public void write(final char value){
         writeIdentifier(IDENTIFIER_CHAR);
-        writeRawShortValue(value);
+        writeRawShortValue((short) value);
     }
 
     public void writeRaw(final char value){
-        writeRawShortValue(value);
+        writeRawShortValue((short) value);
     }
 
     public void write(final char[] value){

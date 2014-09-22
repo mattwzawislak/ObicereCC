@@ -137,7 +137,7 @@ public class CodePane extends JTextPane {
                         break;
                     }
                 }
-                if (index != 0 && line.matches(".*?[\\)\\{]\\s*")) {
+                if (line.matches(".*?[\\)\\{]\\s*")) {
                     tabCount++;
                 }
 
@@ -279,7 +279,7 @@ public class CodePane extends JTextPane {
         }
         final Element map = getDocument().getDefaultRootElement();
         final Element branch = map.getElement(line);
-        return getText().substring(branch.getStartOffset(), branch.getEndOffset());
+        return getText().substring(branch.getStartOffset(), branch.getEndOffset() - 1);
     }
 
 }

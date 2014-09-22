@@ -43,7 +43,7 @@ public class CharSet {
     }
 
     protected char nextChar(final SimpleRandom seed) {
-        return chars[seed.nextInt(size)];
+        return charAt(seed.nextInt(size));
     }
 
     public int size() {

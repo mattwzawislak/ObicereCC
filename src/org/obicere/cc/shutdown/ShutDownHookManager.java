@@ -6,10 +6,7 @@ import org.obicere.cc.methods.Reflection;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -34,6 +31,7 @@ public class ShutDownHookManager {
             }
         });
         HOOKS = new ShutDownHook[goodHooks.size()];
+        goodHooks.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         final Iterator<ShutDownHook> iterator = goodHooks.iterator();
         for (int i = 0; iterator.hasNext(); i++) {
             HOOKS[i] = iterator.next();

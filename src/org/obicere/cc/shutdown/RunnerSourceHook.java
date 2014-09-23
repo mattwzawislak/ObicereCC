@@ -14,7 +14,7 @@ import java.io.IOException;
  */
 public class RunnerSourceHook extends SettingsShutDownHook {
 
-    public static final String NAME = "source.runner";
+    public static final String NAME = "runner.source";
 
     @HookValue("true")
     public static final String DOWNLOAD_FROM_MAIN_SOURCE      = "source.runner.main";

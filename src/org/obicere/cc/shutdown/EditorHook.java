@@ -9,6 +9,8 @@ import org.obicere.cc.gui.settings.IntegerSetting;
  */
 public class EditorHook extends SettingsShutDownHook {
 
+    private static final String GROUP_NAME = "Editor Settings";
+
     public static final String NAME = "editor.settings";
 
     @HookValue("java.awt.Color[r=40,g=116,b=167]")

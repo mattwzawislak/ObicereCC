@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 public class CodePane extends JTextPane {
 
+    private static final String             BRACKET_CASE_MATCH = ".*?(\\{)\\s*(\\})";
     private static final String             OPEN_BODY_MATCH    = ".*?([\\)\\{:])\\s*";
     private static final String             MASTER_SPLIT       = "([(\\[\\]);\\{}\0.])";
     private static final SimpleAttributeSet KEYWORD_SET        = new SimpleAttributeSet();
@@ -130,10 +131,13 @@ public class CodePane extends JTextPane {
                 final int index = getCaretPosition();
                 final int lineNumber = getCaretLine();
                 final String line = getLine(lineNumber);
-                int tabCount = 0;
+                final StringBuilder add = new StringBuilder("\n");
+
+                int newCaret = index;
                 for (final char c : line.toCharArray()) {
                     if (c == '\t') {
-                        tabCount++;
+                        add.append('\t');
+                        newCaret++;
                     } else {
                         break;
                     }
@@ -144,20 +148,26 @@ public class CodePane extends JTextPane {
                     final String match = line.replaceAll(OPEN_BODY_MATCH, "$1");
                     final int matchIndex = line.indexOf(match);
                     final int caretIndex = getCaretPositionInLine(lineNumber) + 1;
-                    if (matchIndex <= caretIndex) {
-                        tabCount++;
+                    if (matchIndex < caretIndex) {
+                        add.append('\t');
+                        newCaret++;
+                    }
+                }
+                if (line.matches(BRACKET_CASE_MATCH)) {
+                    final int caretIndex = getCaretPositionInLine(lineNumber);
+                    final int openMatchIndex = line.indexOf('{');
+                    final int closeMatchIndex = line.indexOf('}', caretIndex);
+                    if (openMatchIndex < caretIndex && caretIndex <= closeMatchIndex) {
+                        final String soFar = add.toString();
+                        add.append('\t');
+                        add.append(soFar); // Effectively duplicate the string since we are adding
+                        newCaret++;        // two lines here with the first having an extra tab
                     }
                 }
 
                 final String code = getText();
-                final StringBuilder newCode = new StringBuilder(code.substring(0, index));
-                newCode.append('\n');
-                for (int i = 0; i < tabCount; i++) {
-                    newCode.append('\t');
-                }
-                newCode.append(code.substring(index));
-                setText(newCode.toString());
-                setCaretPosition(index + 1 + tabCount);
+                setText(code.substring(0, index) + add + code.substring(index));
+                setCaretPosition(newCaret + 1);
                 highlightKeywords();
             }
         });

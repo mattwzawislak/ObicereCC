@@ -17,10 +17,11 @@ import java.util.regex.Pattern;
 
 public class CodePane extends JTextPane {
 
-    private static final String             MASTER_SPLIT = "([(\\[\\]);\\{}\0.])";
-    private static final SimpleAttributeSet KEYWORD_SET  = new SimpleAttributeSet();
-    private static final SimpleAttributeSet NORMAL_SET   = new SimpleAttributeSet();
-    private static final SimpleAttributeSet STRING_SET   = new SimpleAttributeSet();
+    private static final String             OPEN_BODY_MATCH    = ".*?([\\)\\{:])\\s*";
+    private static final String             MASTER_SPLIT       = "([(\\[\\]);\\{}\0.])";
+    private static final SimpleAttributeSet KEYWORD_SET        = new SimpleAttributeSet();
+    private static final SimpleAttributeSet NORMAL_SET         = new SimpleAttributeSet();
+    private static final SimpleAttributeSet STRING_SET         = new SimpleAttributeSet();
     private static Font editorFont;
 
     private static final EditorHook         EDITOR     = ShutDownHookManager.hookByClass(EditorHook.class);
@@ -137,8 +138,15 @@ public class CodePane extends JTextPane {
                         break;
                     }
                 }
-                if (line.matches(".*?[\\)\\{]\\s*")) {
-                    tabCount++;
+                if (line.matches(OPEN_BODY_MATCH)) {
+                    // If the line we are at is an open body line
+                    // and the caret is after the opening character
+                    final String match = line.replaceAll(OPEN_BODY_MATCH, "$1");
+                    final int matchIndex = line.indexOf(match);
+                    final int caretIndex = getCaretPositionInLine(lineNumber) + 1;
+                    if (matchIndex <= caretIndex) {
+                        tabCount++;
+                    }
                 }
 
                 final String code = getText();
@@ -273,7 +281,20 @@ public class CodePane extends JTextPane {
         return map.getElementIndex(getCaretPosition());
     }
 
-    public String getLine(int line) {
+    public int getCaretPositionInLine(final int line) {
+        final Document doc = getDocument();
+        final Element map = doc.getDefaultRootElement();
+        final int caret = getCaretPosition();
+
+        final Element elementLine = map.getElement(line);
+        final int start = elementLine.getStartOffset();
+        if (start <= caret && caret <= elementLine.getEndOffset()) {
+            return caret - start;
+        }
+        return Integer.MAX_VALUE;
+    }
+
+    public String getLine(final int line) {
         if (getText().length() == 0) {
             return "";
         }

@@ -31,18 +31,18 @@ public class Command {
                     failure = "INFO: Could not find files for the given pattern(s).";
                     break;
                 case MAC:
-                    command = "whereis " + program;
-                    failure = ""; //TODO
+                    command = "command" + program;
+                    failure = "-bash: "; // Needs testing
                     break;
                 case LINUX:
-                    command = "whereis " + program;
+                    command = null;
                     failure = ""; //TODO
                     break;
                 default:
                     return false;
             }
             final String[] str = ProcessRunner.run(command);
-            return str.length != 0 && !str[0].equals(failure);
+            return str.length != 0 && !str[0].startsWith(failure);
         } catch (final Exception e) {
             e.printStackTrace();
         }

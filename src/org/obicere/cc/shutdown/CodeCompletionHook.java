@@ -27,10 +27,6 @@ public class CodeCompletionHook extends SettingsShutDownHook {
     public static final String BRACKET_COMPLETION  = "code.completion.bracket";
     public static final String BRACKET_DESCRIPTION = "Add closing brackets.";
 
-    @HookValue("true")
-    public static final String TAG_COMPLETION  = "code.completion.tag";
-    public static final String TAG_DESCRIPTION = "Add closing tags.";
-
     public CodeCompletionHook() {
         super(GROUP_NAME, NAME, PRIORITY_WINDOW_CLOSING);
 
@@ -38,7 +34,6 @@ public class CodeCompletionHook extends SettingsShutDownHook {
         providePanel(PARENTHESES_COMPLETION, new BooleanSetting(this, PARENTHESES_COMPLETION, PARENTHESES_DESCRIPTION));
         providePanel(CURLY_BRACKET_COMPLETION, new BooleanSetting(this, CURLY_BRACKET_COMPLETION, CURLY_BRACKET_DESCRIPTION));
         providePanel(BRACKET_COMPLETION, new BooleanSetting(this, BRACKET_COMPLETION, BRACKET_DESCRIPTION));
-        providePanel(TAG_COMPLETION, new BooleanSetting(this, TAG_COMPLETION, TAG_DESCRIPTION));
     }
 
 }

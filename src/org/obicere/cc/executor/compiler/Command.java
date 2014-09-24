@@ -35,8 +35,8 @@ public class Command {
                     failure = "-bash: "; // Needs testing
                     break;
                 case LINUX:
-                    command = null;
-                    failure = ""; //TODO
+                    command = "whereis " + program;
+                    failure = program + ":"; // Needs testing
                     break;
                 default:
                     return false;

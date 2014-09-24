@@ -67,27 +67,28 @@ public class CodePane extends JTextPane {
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_9, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, 0, true), "Finish Open");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open");
 
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_0, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open Delay");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, 0, true), "Finish Open Delay");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open Delay");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open Delay");
 
         actionMap.put("Finish Open Delay", new AbstractAction() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final int index = getCaretPosition();
                 final String code = getText();
-                final char open = code.charAt(index - 1);
+                final char open = code.charAt(index - 2);
+                // index - 1 -> closing char. Ex: }
+                // index - 2 -> opening char. Ex: {
+                // TODO: fix this. Note if there is any characters in between, this fails
 
                 if (!lastHit.containsKey(open)) {
                     return;
                 }
-                final long lastHit = CodePane.this.lastHit.get(open);
-                if (lastHit < 1500) {
+                final long register = lastHit.get(open);
+                if (System.currentTimeMillis() - register < 1000) {
                     setText(code.substring(0, index - 1) + code.substring(index));
-                    setCaretPosition(index + 1);
+                    setCaretPosition(index);
                     highlightKeywords();
                 }
             }
@@ -99,7 +100,7 @@ public class CodePane extends JTextPane {
                 final int index = getCaretPosition();
 
                 final String code = getText();
-                final char open = code.charAt(index - 1);
+                final char open = code.charAt(index - 1); // Get the opening char at previous index
                 final char close = getClosingCharacter(open);
                 if (close == 0) {
                     return;
@@ -147,7 +148,7 @@ public class CodePane extends JTextPane {
                     // and the caret is after the opening character
                     final String match = line.replaceAll(OPEN_BODY_MATCH, "$1");
                     final int matchIndex = line.indexOf(match);
-                    final int caretIndex = getCaretPositionInLine(lineNumber) + 1;
+                    final int caretIndex = getCaretPositionInLine(lineNumber);
                     if (matchIndex < caretIndex) {
                         add.append('\t');
                         newCaret++;
@@ -196,11 +197,6 @@ public class CodePane extends JTextPane {
                     return 0;
                 }
                 return '}';
-            case '<':
-                if (!COMPLETION.getPropertyAsBoolean(CodeCompletionHook.TAG_COMPLETION)) {
-                    return 0;
-                }
-                return '>';
             case '[':
                 if (!COMPLETION.getPropertyAsBoolean(CodeCompletionHook.BRACKET_COMPLETION)) {
                     return 0;

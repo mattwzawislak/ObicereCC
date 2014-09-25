@@ -36,7 +36,7 @@ public class Command {
                     break;
                 case LINUX:
                     command = "whereis " + program;
-                    failure = program + ":"; // Needs testing
+                    failure = program + ": "; // TODO: Fix this.
                     break;
                 default:
                     return false;

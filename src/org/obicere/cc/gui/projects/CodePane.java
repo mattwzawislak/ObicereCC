@@ -77,15 +77,12 @@ public class CodePane extends JTextPane {
             public void actionPerformed(final ActionEvent e) {
                 final int index = getCaretPosition();
                 final String code = getText();
-                final char open = code.charAt(index - 2);
-                // index - 1 -> closing char. Ex: }
-                // index - 2 -> opening char. Ex: {
-                // TODO: fix this. Note if there is any characters in between, this fails
+                final char close = code.charAt(index - 1);
 
-                if (!lastHit.containsKey(open)) {
+                if (!lastHit.containsKey(close)) {
                     return;
                 }
-                final long register = lastHit.get(open);
+                final long register = lastHit.get(close);
                 if (System.currentTimeMillis() - register < 1000) {
                     setText(code.substring(0, index - 1) + code.substring(index));
                     setCaretPosition(index);
@@ -105,7 +102,7 @@ public class CodePane extends JTextPane {
                 if (close == 0) {
                     return;
                 }
-                registerHit(open);
+                registerHit(close);
 
                 setText(code.substring(0, index) + close + code.substring(index));
                 setCaretPosition(index);

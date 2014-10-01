@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +21,9 @@ public class Splash {
     private static final Logger LOGGER = Logger.getLogger(Splash.class.getCanonicalName());
 
     private static final SplashScreenHook HOOK = ShutDownHookManager.hookByClass(SplashScreenHook.class);
+
+    private static final int WIDTH  = 600;
+    private static final int HEIGHT = 200;
 
     private static final int CENTER_X = 500;
     private static final int CENTER_Y = 100;
@@ -57,25 +61,30 @@ public class Splash {
     private boolean should;
 
     private Splash() {
-        frame = new JFrame();
+        this.frame = new JFrame();
+        this.message = Message.getRandom();
+        final String username = HOOK.getPropertyAsString(SplashScreenHook.USER_NAME);
+        if (username == null || username.length() == 0) {
+            this.name = System.getProperty("user.name");
+        } else {
+            this.name = username;
+        }
+
+        final BufferedImage background = buildBackground();
         final JPanel splash = new JPanel() {
 
             @Override
             public void paintComponent(Graphics g1) {
+                super.paintComponent(g1);
                 final Graphics2D g = (Graphics2D) g1;
                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-                g.setColor(BORDER);
-                g.fillRect(0, 0, getWidth(), getHeight());
-                g.setColor(BACKGROUND);
-                g.fillRect(2, 2, getWidth() - 4, getHeight() - 4);
+
+                g.drawImage(background, 0, 0, this);
                 g.setColor(TEXT_COLOR);
                 g.setFont(FONT);
                 g.drawString(status, 10, 190);
-                g.drawString("Welcome to Obicere Computing Challenges, " + name, 10, 15);
-                g.drawString(message, 10, 105);
 
-                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 for (int i = 0; i < 3; i++) {
                     final Graphics2D newG = (Graphics2D) g.create();
                     final AffineTransform transform = new AffineTransform();
@@ -94,15 +103,6 @@ public class Splash {
         final Mouse mouse = new Mouse();
         splash.addMouseListener(mouse);
         splash.addMouseMotionListener(mouse);
-
-        message = Message.getRandom();
-        final String username = HOOK.getPropertyAsString(SplashScreenHook.USER_NAME);
-        if (username == null || username.length() == 0) {
-            name = System.getProperty("user.name");
-        } else {
-            name = username;
-        }
-
         frame.setIconImage(Global.ICON);
         frame.setUndecorated(true);
         frame.setSize(600, 200);
@@ -116,6 +116,31 @@ public class Splash {
                 }
             }
         });
+    }
+
+    private BufferedImage buildBackground() {
+        final BufferedImage background = new BufferedImage(600, 200, BufferedImage.TYPE_INT_ARGB);
+
+        final Graphics2D g = (Graphics2D) background.getGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g.setColor(BORDER);
+        g.fillRect(0, 0, WIDTH, HEIGHT);
+        g.setColor(BACKGROUND);
+        g.fillRect(2, 2, WIDTH - 4, HEIGHT - 4);
+        g.setColor(TEXT_COLOR);
+        g.setFont(FONT);
+        g.drawString("Welcome to Obicere Computing Challenges, " + name, 10, 15);
+
+        final String[] split = message.split("\n");
+        int y = 105;
+        final int height = g.getFontMetrics().getHeight();
+        for (final String aSplit : split) {
+            g.drawString(aSplit, 10, y);
+            y += height;
+        }
+
+        return background;
     }
 
     public static void display() {

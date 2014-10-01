@@ -16,7 +16,7 @@ public abstract class ShutDownHook extends Thread {
     private static final String DYNAMIC_MATCHER_DECIMAL     = "[+-]?[0-9]{1,10}";
     private static final String DYNAMIC_MATCHER_HEXADECIMAL = "(?i)[+-]?0x[0-9a-f]{1,9}";
     private static final String DYNAMIC_MATCHER_DOUBLE      = "[+-]?([0-9]{1,10})((\\.)?[0-9]{0,10}?)([eE][+-]?[0-9]{1,10})?";
-    private static final String DYNAMIC_MATCHER_COLOR       = "java\\.awt\\.Color\\[r=([0-9]{1,3}),g=([0-9]{1,3}),b=([0-9]{1,3})\\]";
+    private static final String DYNAMIC_MATCHER_COLOR       = "([0-9]{1,3}),\\s*([0-9]{1,3}),\\s*([0-9]{1,3})";
 
     public static final int PRIORITY_WINDOW_CLOSING   = 0x0;
     public static final int PRIORITY_RUNTIME_SHUTDOWN = 0x1;
@@ -87,6 +87,11 @@ public abstract class ShutDownHook extends Thread {
     }
 
     public void setProperty(final String key, final Object value) {
+        if (value instanceof Color) {
+            final Color color = (Color) value;
+            properties.setProperty(key, String.format("%d,%d,%d", color.getRed(), color.getGreen(), color.getBlue()));
+            return;
+        }
         properties.setProperty(key, String.valueOf(value));
     }
 
@@ -120,38 +125,22 @@ public abstract class ShutDownHook extends Thread {
         return parseColor(content);
     }
 
-    public Object getDynamicObject(final String name) {
-        final String value = getPropertyAsString(name);
-        if (value.matches(DYNAMIC_MATCHER_BOOLEAN)) {
-            return Boolean.valueOf(value);
-        }
-        if (value.matches(DYNAMIC_MATCHER_OCTAL)) {
-            return Integer.parseInt(value, 8);
-        }
-        if (value.matches(DYNAMIC_MATCHER_DECIMAL)) {
-            return Integer.parseInt(value, 10);
-        }
-        if (value.matches(DYNAMIC_MATCHER_HEXADECIMAL)) {
-            return Integer.parseInt(value, 16);
-        }
-        if (value.matches(DYNAMIC_MATCHER_DOUBLE)) {
-            return Double.parseDouble(value);
-        }
-        if (value.matches(DYNAMIC_MATCHER_COLOR)) {
-            return parseColor(value);
-        }
-        // By default, just return a string
-        return value;
-    }
-
     private Color parseColor(final String value) {
-        final String parse = value.replaceAll(DYNAMIC_MATCHER_COLOR, "$1;$2;$3");
-        final String[] tokens = parse.split(";");
+        final int rgb;
+        if (value.matches(DYNAMIC_MATCHER_HEXADECIMAL)) {
+            rgb = Integer.parseInt(value, 16);
+        } else if (value.matches(DYNAMIC_MATCHER_COLOR)) {
+            final String parse = value.replaceAll(DYNAMIC_MATCHER_COLOR, "$1 $2 $3");
+            final String[] tokens = parse.split(";");
 
-        final int r = Integer.parseInt(tokens[0]);
-        final int g = Integer.parseInt(tokens[1]);
-        final int b = Integer.parseInt(tokens[2]);
-        return new Color(r, g, b);
+            final int r = Integer.parseInt(tokens[0]);
+            final int g = Integer.parseInt(tokens[1]);
+            final int b = Integer.parseInt(tokens[2]);
+            rgb = (r << 16) | (g << 8) | (b << 0);
+        } else {
+            rgb = 0;
+        }
+        return new Color(rgb);
     }
 
 }

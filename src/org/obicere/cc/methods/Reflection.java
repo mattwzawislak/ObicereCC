@@ -59,15 +59,10 @@ public class Reflection {
         return where(e -> e.getAnnotation(cls) != null);
     }
 
-    public static Object getStaticField(final Class<?> cls, final String name) {
-        try {
-            final Field field = cls.getDeclaredField(name);
-            field.setAccessible(true);
-            return field.get(null);
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static Object getStaticField(final Class<?> cls, final String name) throws NoSuchFieldException, IllegalAccessException {
+        final Field field = cls.getDeclaredField(name);
+        field.setAccessible(true);
+        return field.get(null);
     }
 
     public static Object newInstance(final Class<?> cls) {

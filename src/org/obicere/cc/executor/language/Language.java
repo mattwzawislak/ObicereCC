@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 public abstract class Language {
 
-    private static final Logger LOGGER = Logger.getLogger(Language.class.getCanonicalName());
+    private static final Logger log = Logger.getLogger(Language.class.getCanonicalName());
 
     private final Class<? extends Language> subclass;
     private final boolean                   includeParameters;
@@ -46,7 +46,7 @@ public abstract class Language {
             this.name = name;
             this.directory = new File(Global.Paths.DATA, name);
             if (!directory.exists() && !directory.mkdir()) {
-                LOGGER.log(Level.WARNING, "Failed to create directory for " + name);
+                log.log(Level.WARNING, "Failed to create directory for " + name);
             }
 
             this.keywords = loadField("KEYWORDS").split(",");
@@ -83,13 +83,21 @@ public abstract class Language {
 
         } catch (final Exception e) {
             e.printStackTrace();
-            LOGGER.log(Level.WARNING, "Failed to load language: " + name);
+            log.log(Level.WARNING, "Failed to load language: " + name);
             throw new IllegalArgumentException();
         }
     }
 
-    private String loadField(final String name) {
-        return (String) Reflection.getStaticField(subclass, name);
+    private String loadField(final String field) {
+        try {
+            return (String) Reflection.getStaticField(subclass, field);
+        } catch (final IllegalAccessException e) {
+            log.log(Level.WARNING, "Could not access available field {0} in {1} language file.", new Object[]{field, name});
+
+        } catch (final NoSuchFieldException e) {
+            log.log(Level.WARNING, "Could not find field {0} in {1} language file.", new Object[]{field, name});
+        }
+        return null;
     }
 
     public boolean isKeyword(final String word) {

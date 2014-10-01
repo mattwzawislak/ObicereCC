@@ -5,6 +5,10 @@ import java.util.Random;
 public class Message {
 
     private final static String[] MESSAGES = new String[]{
+            // Music
+            "4 x 4 = 12",
+            "                          SAIL",
+
             // Games
             "There is no cow level.",
             "PC Master Race",
@@ -14,6 +18,7 @@ public class Message {
 
             // Shitty advertising
             "Now with 0 calories!",
+            "Soon™",
 
             // Jaden Smith Quotes
             "How Can Mirrors Be Real If Our Eyes Aren't Even Real?",
@@ -21,7 +26,9 @@ public class Message {
 
             // Programming
             "Now with an O(nlogn) complexity!",
+            "import java.awt.*;",
             "import javax.swing.*;",
+            "0x04C11DB7",
             "i++;",
             "0 < i, i + 1 < 0",
             "More polygons than before!",
@@ -29,7 +36,12 @@ public class Message {
             // Star Wars
             "Isn't a parsec a unit of distance?",
             "Han shot first.",
-            "Say \"what\" again!"
+
+            // I can't even
+            "What if birds aren't really singing but are screaming\nbecause they are afraid of heights?",
+
+            // Other movies
+            "Say \"what\" again, I dare you."
 
     };
 

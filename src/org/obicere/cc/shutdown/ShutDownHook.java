@@ -8,8 +8,12 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class ShutDownHook extends Thread {
+
+    private static final Logger log = Logger.getLogger(ShutDownHook.class.getCanonicalName());
 
     private static final String DYNAMIC_MATCHER_BOOLEAN     = "(?i)true|false";
     private static final String DYNAMIC_MATCHER_OCTAL       = "[+-]?0[0-7]{1,11}";
@@ -139,6 +143,7 @@ public abstract class ShutDownHook extends Thread {
             final int b = Integer.parseInt(tokens[2]);
             rgb = (r << 16) | (g << 8) | (b << 0);
         } else {
+            log.log(Level.WARNING, "Failed to parse color code: {0}. Set to default rgb=black.", value);
             rgb = 0;
         }
         return new Color(rgb);

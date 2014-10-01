@@ -23,12 +23,8 @@ public class Boot {
         Paths.build();
         LanguageHandler.load();
         ShutDownHookManager.setup();
-        final SplashScreenHook hook = ShutDownHookManager.hookByClass(SplashScreenHook.class);
-        final boolean splash = !hook.getPropertyAsBoolean(SplashScreenHook.NO_SPLASH);
         try {
-            if (splash) {
-                SwingUtilities.invokeAndWait(Splash::display);
-            }
+            SwingUtilities.invokeAndWait(Splash::display);
         } catch (final InterruptedException | InvocationTargetException e) {
             e.printStackTrace();
             System.exit(0);
@@ -39,10 +35,8 @@ public class Boot {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 FrameManager.buildGUI();
-                if (splash) {
-                    Splash.getInstance().shouldDispose(true);
-                    Splash.getInstance().dispose();
-                }
+                Splash.getInstance().shouldDispose(true);
+                Splash.getInstance().dispose();
             } catch (final Exception e) {
                 e.printStackTrace();
             }

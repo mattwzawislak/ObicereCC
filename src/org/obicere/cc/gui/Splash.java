@@ -120,6 +120,9 @@ public class Splash {
 
     public static void display() {
         instance = new Splash();
+        if (HOOK.getPropertyAsBoolean(SplashScreenHook.NO_SPLASH)) {
+            return;
+        }
         instance.getFrame().setVisible(true);
     }
 
@@ -127,16 +130,15 @@ public class Splash {
         return instance;
     }
 
-    public static void setStatus(String status) {
-        if (instance == null) {
-            return;
-        }
+    public static void setStatus(final String status) {
         LOGGER.log(Level.INFO, status);
         Splash.status = status;
-        instance.getFrame().repaint();
+        SwingUtilities.invokeLater(instance.getFrame()::repaint);
+        // This method might not be called on swing worker thread
+        // Better be sure not to tie up calling thread.
     }
 
-    public void shouldDispose(boolean should) {
+    public void shouldDispose(final boolean should) {
         this.should = should;
     }
 

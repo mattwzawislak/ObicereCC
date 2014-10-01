@@ -1,6 +1,7 @@
 package org.obicere.cc.shutdown;
 
 import org.obicere.cc.configuration.Global;
+import org.obicere.cc.methods.IOUtils;
 
 import java.awt.*;
 import java.io.File;
@@ -42,7 +43,7 @@ public abstract class ShutDownHook extends Thread {
             if (!propertiesFile.exists() && !propertiesFile.createNewFile()) {
                 throw new AssertionError("Could not create properties file.");
             }
-            Global.readProperties(properties, propertiesFile);
+            IOUtils.readProperties(properties, propertiesFile);
             final Field[] fields = getClass().getDeclaredFields();
             for (final Field field : fields) {
                 try {
@@ -102,7 +103,7 @@ public abstract class ShutDownHook extends Thread {
     @Override
     public void run() {
         try {
-            Global.writeProperties(properties, propertiesFile);
+            IOUtils.writeProperties(properties, propertiesFile);
         } catch (final IOException e) {
             e.printStackTrace();
         }

@@ -62,28 +62,6 @@ public class Global {
         return OS.OTHER;
     }
 
-    public static void readProperties(final Properties properties, final File file) throws IOException {
-        Objects.requireNonNull(properties);
-        Objects.requireNonNull(file);
-        if (!file.exists() && !file.createNewFile()) {
-            throw new IOException("Could not read from properties file: " + file);
-        }
-        final InputStream input = new FileInputStream(file);
-        if (file.canRead()) {
-            properties.load(input);
-        }
-    }
-
-    public static void writeProperties(final Properties properties, final File file) throws IOException {
-        if (file.exists() && !file.canWrite()) {
-            throw new IOException("Could not write to properties file: " + file);
-        }
-        final FileOutputStream stream = new FileOutputStream(file);
-        properties.store(stream, null);
-        stream.flush();
-        stream.close();
-    }
-
     public static enum OS {
         WINDOWS, MAC, LINUX, OTHER
     }

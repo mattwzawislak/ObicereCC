@@ -12,6 +12,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.NetworkInterface;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -165,13 +166,16 @@ public class Updater {
             final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
                 if (interfaces.nextElement().isUp()) {
-                    LOGGER.log(Level.WARNING, "Site may be down at the moment.");
+                    LOGGER.log(Level.WARNING, "Site appears down from this connection.");
                     return false;
                 }
             }
             LOGGER.log(Level.WARNING, "Not connected to internet. Unable to get updates.");
-        } catch (final Exception e) {
+        } catch (final UnknownHostException host) {
+            LOGGER.log(Level.WARNING, "Could not connect to host. Unknown host. ");
+        } catch (final IOException e) {
             e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not connect to server. ");
         }
         return false;
     }

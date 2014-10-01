@@ -14,7 +14,7 @@ public abstract class ShutDownHook extends Thread {
     private static final String DYNAMIC_MATCHER_BOOLEAN     = "(?i)true|false";
     private static final String DYNAMIC_MATCHER_OCTAL       = "[+-]?0[0-7]{1,11}";
     private static final String DYNAMIC_MATCHER_DECIMAL     = "[+-]?[0-9]{1,10}";
-    private static final String DYNAMIC_MATCHER_HEXADECIMAL = "(?i)[+-]?0x[0-9a-f]{1,9}";
+    private static final String DYNAMIC_MATCHER_HEXADECIMAL = "[+-]?((0x)|#)([0-9a-fA-F]{1,6})"; // 3rd match group is actual hex value
     private static final String DYNAMIC_MATCHER_DOUBLE      = "[+-]?([0-9]{1,10})((\\.)?[0-9]{0,10}?)([eE][+-]?[0-9]{1,10})?";
     private static final String DYNAMIC_MATCHER_COLOR       = "([0-9]{1,3}),\\s*([0-9]{1,3}),\\s*([0-9]{1,3})";
 
@@ -128,10 +128,11 @@ public abstract class ShutDownHook extends Thread {
     private Color parseColor(final String value) {
         final int rgb;
         if (value.matches(DYNAMIC_MATCHER_HEXADECIMAL)) {
-            rgb = Integer.parseInt(value, 16);
+            final String actualContent = value.replaceAll(DYNAMIC_MATCHER_HEXADECIMAL, "$3"); // 3rd match group is hex value
+            rgb = Integer.parseInt(actualContent, 16);
         } else if (value.matches(DYNAMIC_MATCHER_COLOR)) {
             final String parse = value.replaceAll(DYNAMIC_MATCHER_COLOR, "$1 $2 $3");
-            final String[] tokens = parse.split(";");
+            final String[] tokens = parse.split("\\s+");
 
             final int r = Integer.parseInt(tokens[0]);
             final int g = Integer.parseInt(tokens[1]);

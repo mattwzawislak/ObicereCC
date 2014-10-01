@@ -14,14 +14,14 @@ public class Project {
     public static final String[]            DIFFICULTY = new String[]{"Beginner", "Intermediate", "Advanced", "Challenging", "Legendary"};
     public static final LinkedList<Project> DATA       = new LinkedList<>();
 
-    private final String   name;
-    private final Manifest manifest;
-    private final Class<?> runner;
+    private final String         name;
+    private final RunnerManifest manifest;
+    private final Class<?>       runner;
 
     public Project(final Class<?> runner, final String name) throws ClassNotFoundException {
         this.runner = runner;
         this.name = name;
-        this.manifest = runner.getAnnotation(Manifest.class);
+        this.manifest = runner.getAnnotation(RunnerManifest.class);
     }
 
     public static void loadCurrent() {

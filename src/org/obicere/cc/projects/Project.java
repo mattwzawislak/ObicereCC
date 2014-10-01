@@ -25,7 +25,7 @@ public class Project {
     }
 
     public static void loadCurrent() {
-        final LinkedList<Class<?>> list = Reflection.loadClassesFrom(Paths.SOURCE);
+        final LinkedList<Class<?>> list = Reflection.loadClassesFrom(Paths.SOURCES);
         final Class<Runner> cls = Runner.class;
         Reflection.filterAsSubclassOf(cls, list);
         list.forEach(Project::add);

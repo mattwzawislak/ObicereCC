@@ -111,7 +111,7 @@ public class Updater {
                 fileName = runnerName;
             }
 
-            final File packageDirectory = new File(Paths.SOURCE, directory.replace(".", File.separator));
+            final File packageDirectory = new File(Paths.SOURCES, directory.replace(".", File.separator));
             if (!packageDirectory.exists() && !packageDirectory.mkdirs()) {
                 throw new IOException("Failed to create proper package: " + packageDirectory);
             }

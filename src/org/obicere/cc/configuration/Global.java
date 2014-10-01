@@ -16,6 +16,8 @@ public class Global {
     public static final Image COMPLETE_IMAGE;
     public static final Image ICON;
 
+    private static OS selectedOS;
+
     static {
         CLOSE_IMAGE = loadImage(URLs.CLOSE);
         COMPLETE_IMAGE = loadImage(URLs.COMPLETE);
@@ -40,6 +42,13 @@ public class Global {
     }
 
     public static OS getOS() {
+        if (selectedOS != null) {
+            return selectedOS;
+        }
+        return (selectedOS = parseOS());
+    }
+
+    private static OS parseOS() {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("windows")) {
             return OS.WINDOWS;
@@ -83,10 +92,10 @@ public class Global {
 
         public static final String   APP_DATA = getAppData();
         public static final String   HOME     = APP_DATA + File.separator + "ObicereCC";
-        public static final String   SOURCE   = HOME + File.separator + "src";
+        public static final String   SOURCES  = HOME + File.separator + "sources";
         public static final String   DATA     = HOME + File.separator + "data";
         public static final String   LANGUAGE = DATA + File.separator + "language";
-        public static final String[] PATHS    = new String[]{APP_DATA, HOME, SOURCE, DATA, LANGUAGE};
+        public static final String[] PATHS    = new String[]{APP_DATA, HOME, SOURCES, DATA, LANGUAGE};
 
         public static void build() {
             for (final String s : PATHS) {

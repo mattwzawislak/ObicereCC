@@ -11,7 +11,7 @@ public enum Casing {
     LOWERCASE_UNDERSCORE;
 
     public static Casing forName(final String name) {
-        final String search = name.replaceAll("[^a-zA-Z_]", "").replace(' ', '_').toUpperCase();
+        final String search = name.replaceAll("\\W*", "").replace(' ', '_').toUpperCase();
         for (final Casing casing : values()) {
             if (casing.name().equals(search)) {
                 return casing;

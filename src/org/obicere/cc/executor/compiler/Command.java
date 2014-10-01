@@ -31,7 +31,7 @@ public class Command {
                     failure = "INFO: Could not find files for the given pattern(s).";
                     break;
                 case MAC:
-                    command = "command" + program;
+                    command = "command " + program;
                     failure = "-bash: "; // Needs testing
                     break;
                 case LINUX:

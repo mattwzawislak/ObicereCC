@@ -12,12 +12,14 @@ import java.util.Objects;
 /**
  * @author Obicere
  */
-public class BasicProtocol implements Flushable {
+public class BasicProtocol implements Flushable, AutoCloseable {
 
     private final StreamConsumer streamConsumer = new StreamConsumer();
 
     private final DataOutputStream output;
     private final DataInputStream  input;
+
+    private final Socket socket;
 
     private final boolean autoFlush;
 
@@ -32,40 +34,8 @@ public class BasicProtocol implements Flushable {
         }
         this.output = new DataOutputStream(socket.getOutputStream());
         this.input = new DataInputStream(socket.getInputStream());
+        this.socket = socket;
         this.autoFlush = autoFlush;
-    }
-
-    public static void main(final String... args) throws Exception {
-        final boolean write = args.length == 0;
-
-        if (write) {
-            final ServerSocket socket = new ServerSocket(500);
-            new Thread(() -> {
-                try {
-                    main("" + 500);
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
-            final Socket connection = socket.accept();
-
-            final BasicProtocol protocol = new BasicProtocol(connection, true);
-
-            for (int i = 0; connection.isConnected(); i++) {
-                protocol.write(i);
-            }
-        } else {
-            final int socket = Integer.parseInt(args[0]);
-            final Socket connection = new Socket("127.0.0.1", socket);
-
-            final BasicProtocol protocol = new BasicProtocol(connection);
-
-            System.out.println("Starting to read");
-            while (connection.isConnected()) {
-                System.out.println(protocol.readInt());
-            }
-            System.out.println("Done");
-        }
     }
 
     public void write(final boolean b) {
@@ -238,4 +208,10 @@ public class BasicProtocol implements Flushable {
         }
     }
 
+    @Override
+    public void close() throws Exception {
+        input.close();
+        output.close();
+        socket.close();
+    }
 }

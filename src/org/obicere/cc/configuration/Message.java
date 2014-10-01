@@ -5,19 +5,31 @@ import java.util.Random;
 public class Message {
 
     private final static String[] MESSAGES = new String[]{
-            "Han shot first.",
+            // Games
             "There is no cow level.",
-            "More polygons than before!",
-            "Now with 0 calories!",
-            "Rxd4!!",
             "PC Master Race",
-            "Now with a O(nlogn) complexity!",
+
+            // Chess
+            "Rxd4!!",
+
+            // Shitty advertising
+            "Now with 0 calories!",
+
+            // Jaden Smith Quotes
             "How Can Mirrors Be Real If Our Eyes Aren't Even Real?",
+            "Trees Are Never Sad Look At Them Every Once In Awhile\nThey're Quite Beautiful.",
+
+            // Programming
+            "Now with an O(nlogn) complexity!",
             "import javax.swing.*;",
             "i++;",
-            "Isn't a parsec a unit of distance?",
             "0 < i, i + 1 < 0",
-            "Say 'what' again!"
+            "More polygons than before!",
+
+            // Star Wars
+            "Isn't a parsec a unit of distance?",
+            "Han shot first.",
+            "Say \"what\" again!"
 
     };
 

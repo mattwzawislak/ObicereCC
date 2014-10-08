@@ -8,6 +8,9 @@ import java.util.Properties;
 
 public class IOUtils {
 
+    private static final int APPLICATION_PORT_MIN = 55000;
+    private static final int APPLICATION_PORT_MAX = 60000;
+
     private IOUtils() {
     }
 
@@ -62,7 +65,14 @@ public class IOUtils {
         stream.close();
     }
 
-    public int getOpenPort(final int min, final int max) {
+    public static int findOpenPort() {
+        return findOpenPort(APPLICATION_PORT_MIN, APPLICATION_PORT_MAX);
+    }
+
+    public static int findOpenPort(final int min, final int max) {
+        if (min > max) {
+            return findOpenPort(max, min);
+        }
         for (int i = min; i <= max; i++) {
             try {
                 final ServerSocket socket = new ServerSocket(i);

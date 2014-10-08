@@ -185,6 +185,46 @@ public class BasicProtocol implements Flushable, AutoCloseable {
         return streamConsumer.readArray(cls);
     }
 
+    public boolean hasBoolean() {
+        return streamConsumer.hasBoolean();
+    }
+
+    public boolean hasByte() {
+        return streamConsumer.hasByte();
+    }
+
+    public boolean hasShort() {
+        return streamConsumer.hasShort();
+    }
+
+    public boolean hasChar() {
+        return streamConsumer.hasChar();
+    }
+
+    public boolean hasInt() {
+        return streamConsumer.hasInt();
+    }
+
+    public boolean hasFloat() {
+        return streamConsumer.hasFloat();
+    }
+
+    public boolean hasLong() {
+        return streamConsumer.hasLong();
+    }
+
+    public boolean hasDouble() {
+        return streamConsumer.hasDouble();
+    }
+
+    public boolean hasString() {
+        return streamConsumer.hasString();
+    }
+
+    public boolean hasArray() {
+        return streamConsumer.hasArray();
+    }
+
     private void read() {
         try {
             streamConsumer.readAvailable(input);

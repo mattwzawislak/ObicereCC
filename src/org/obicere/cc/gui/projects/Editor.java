@@ -7,11 +7,23 @@ import org.obicere.cc.shutdown.SaveProgressHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.projects.Project;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
+import java.util.TimerTask;
+import java.util.Timer;
 
 public class Editor extends JPanel {
 
@@ -159,8 +171,20 @@ public class Editor extends JPanel {
         if (codePane.getText().length() == 0) {
             return;
         }
-        final Result[] results = language.compileAndRun(project);
-        resultsTable.setResults(results);
+        final Thread thread = new Thread(() -> {
+            final Result[] results = language.compileAndRun(project);
+            resultsTable.setResults(results);
+        });
+        thread.start();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (thread.isAlive()) {
+                    thread.interrupt();
+                    setInstructionsText(language.getName() + ": program execution timed out after 10 seconds.", true);
+                }
+            }
+        }, 10000);
     }
 
     public void save() {

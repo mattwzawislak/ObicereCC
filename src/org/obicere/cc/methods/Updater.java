@@ -78,7 +78,7 @@ public class Updater {
                 System.exit(0);
             }
             for (final Project p : Project.DATA) {
-                currentRunnersList.put(p.getRunner().getCanonicalName(), p.getVersion());
+                currentRunnersList.put(p.getRunnerClass().getCanonicalName(), p.getVersion());
             }
             updatedRunnersList.keySet().stream().filter(OUTDATED_FILTER).forEach(key -> download(key, src));
         }

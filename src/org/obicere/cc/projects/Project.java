@@ -16,12 +16,14 @@ public class Project {
 
     private final String         name;
     private final RunnerManifest manifest;
-    private final Class<?>       runner;
+    private final Class<?>       runnerClass;
+    private final Runner         runner;
 
-    public Project(final Class<?> runner, final String name) throws ClassNotFoundException {
-        this.runner = runner;
+    public Project(final Class<?> runnerClass, final String name) throws ClassNotFoundException {
+        this.runnerClass = runnerClass;
+        this.runner = (Runner) Reflection.newInstance(runnerClass);
         this.name = name;
-        this.manifest = runner.getAnnotation(RunnerManifest.class);
+        this.manifest = runnerClass.getAnnotation(RunnerManifest.class);
     }
 
     public static void loadCurrent() {
@@ -85,7 +87,11 @@ public class Project {
         return new File(language.getDirectory(), name);
     }
 
-    public Class<?> getRunner() {
+    public Class<?> getRunnerClass() {
+        return runnerClass;
+    }
+
+    public Runner getRunner() {
         return runner;
     }
 

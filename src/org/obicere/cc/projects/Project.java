@@ -8,10 +8,11 @@ import org.obicere.cc.methods.Reflection;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Project {
 
-    public static final String[]            DIFFICULTY = new String[]{"Beginner", "Intermediate", "Advanced", "Challenging", "Legendary"};
+    private static final String[]            DIFFICULTY = new String[]{"Beginner", "Intermediate", "Advanced", "Challenging", "Legendary"};
     public static final LinkedList<Project> DATA       = new LinkedList<>();
 
     private final String         name;
@@ -42,6 +43,14 @@ public class Project {
         }
     }
 
+    public static void resetData(){
+        DATA.clear();
+    }
+
+    public static List<Project> getData(){
+        return DATA;
+    }
+
     public String getName() {
         return name;
     }
@@ -60,6 +69,10 @@ public class Project {
 
     public int getDifficulty() {
         return manifest.difficulty();
+    }
+
+    public String getDifficultyString(){
+        return DIFFICULTY[getDifficulty() - 1];
     }
 
     public String getSortName() {

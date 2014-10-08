@@ -77,14 +77,14 @@ public class Updater {
                 JOptionPane.showMessageDialog(null, "Update available - Please download again.", "Update", JOptionPane.INFORMATION_MESSAGE);
                 System.exit(0);
             }
-            for (final Project p : Project.DATA) {
+            for (final Project p : Project.getData()) {
                 currentRunnersList.put(p.getRunnerClass().getCanonicalName(), p.getVersion());
             }
             updatedRunnersList.keySet().stream().filter(OUTDATED_FILTER).forEach(key -> download(key, src));
         }
         currentRunnersList = null;
         updatedRunnersList = null;
-        Project.DATA.clear();
+        Project.resetData();
         Project.loadCurrent();
     }
 

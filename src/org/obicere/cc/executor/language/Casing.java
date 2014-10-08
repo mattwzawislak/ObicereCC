@@ -1,5 +1,11 @@
 package org.obicere.cc.executor.language;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * @author Obicere
  */
@@ -10,22 +16,28 @@ public enum Casing {
     LOWERCASE,
     LOWERCASE_UNDERSCORE;
 
-    public static Casing forName(final String name) {
-        final String search = name.replaceAll("\\W*", "").replace(' ', '_').toUpperCase();
-        for (final Casing casing : values()) {
-            if (casing.name().equals(search)) {
-                return casing;
-            }
+    private static final Pattern SPLIT_PATTERN = Pattern.compile("[A-Z]?[a-z]+|[0-9]+");
+
+    private List<String> splitWords(final String word) {
+        final LinkedList<String> list = new LinkedList<>();
+        final Matcher matcher = SPLIT_PATTERN.matcher(word);
+        while (matcher.find()) {
+            list.add(matcher.group());
         }
-        return LOWER_CAMEL_CASE;
+        return list;
     }
 
     public String performCase(final String word) {
-        final String[] words = getWords(word);
+        if (this == LOWERCASE) {
+            return word.toLowerCase();
+        }
+        final List<String> words = splitWords(word);
+        final Iterator<String> iterator = words.iterator();
         final StringBuilder builder = new StringBuilder(word.length());
         switch (this) {
             case CAMEL_CASE:
-                for (final String token : words) {
+                while (iterator.hasNext()) {
+                    final String token = iterator.next();
                     if (!token.isEmpty()) {
                         builder.append(Character.toUpperCase(token.charAt(0)));
                         builder.append(token.toLowerCase().substring(1));
@@ -33,24 +45,24 @@ public enum Casing {
                 }
                 break;
             case LOWER_CAMEL_CASE:
-                for (int i = 0; i < words.length; i++) {
-                    final String token = words[i];
-                    if (!token.isEmpty() && i != 0) {
+                boolean lowered = false;
+                while(iterator.hasNext()) {
+                    final String token = iterator.next();
+                    if (!token.isEmpty()) {
+                        if (!lowered) {
+                            builder.append(token.toLowerCase());
+                            lowered = true;
+                            continue;
+                        }
                         builder.append(Character.toUpperCase(token.charAt(0)));
                         builder.append(token.toLowerCase().substring(1));
                     }
                 }
                 break;
-            case LOWERCASE:
-                for (final String token : words) {
-                    if (!token.isEmpty()) {
-                        builder.append(token.toLowerCase());
-                    }
-                }
-                break;
             case LOWERCASE_UNDERSCORE:
-                for (int i = 0; i < words.length; i++) {
-                    final String token = words[i];
+
+                for (int i = 0; iterator.hasNext(); i++) {
+                    final String token = iterator.next();
                     if (!token.isEmpty()) {
                         if (i != 0) {
                             builder.append('_');
@@ -62,9 +74,4 @@ public enum Casing {
         }
         return builder.toString();
     }
-
-    private String[] getWords(final String phrase) {
-        return phrase.split("[_\\s]");
-    }
-
 }

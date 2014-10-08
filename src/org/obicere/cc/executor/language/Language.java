@@ -6,7 +6,7 @@ import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.compiler.Compiler;
 import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.gui.projects.Editor;
-import org.obicere.cc.methods.Reflection;
+import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
 
 import javax.swing.*;
@@ -19,68 +19,23 @@ public abstract class Language {
 
     private static final Logger log = Logger.getLogger(Language.class.getCanonicalName());
 
-    private final Class<? extends Language> subclass;
-    private final boolean                   includeParameters;
-
-    private final String stringType;
-    private final String characterType;
-    private final String integerType;
-    private final String floatType;
-    private final String arrayOpen;
-    private final String arrayClose;
     private final String name;
-    private final String skeleton;
 
     private final File     directory;
-    private final String[] keywords;
-    private final String[] literalsMatchers;
     private final Compiler compiler;
-    private final Command  executorCommand;
 
-    private final Casing fieldCasing;
-    private final Casing methodCasing;
-    private final Casing classCasing;
-
-    protected Language(final String name, final Class<? extends Language> subclass) {
+    protected Language(final String name) {
         try {
-            this.subclass = subclass;
             this.name = name;
             this.directory = new File(Global.Paths.DATA, name);
             if (!directory.exists() && !directory.mkdir()) {
                 log.log(Level.WARNING, "Failed to create directory for " + name);
             }
+            final String src = getSourceExtension();
+            final String cmp = getCompiledExtension();
+            final Command[] commands = getCommands();
 
-            this.keywords = loadField("KEYWORDS").split(",");
-            this.literalsMatchers = loadField("LITERAL").split(",");
-            this.skeleton = loadField("SKELETON").replace("\\n", "\n").replace("\\t", "\t");
-
-            this.fieldCasing = Casing.forName(loadField("FIELD_CASING"));
-            this.methodCasing = Casing.forName(loadField("METHOD_CASING"));
-            this.classCasing = Casing.forName(loadField("CLASS_CASING"));
-            this.includeParameters = Boolean.valueOf(loadField("INCLUDE_PARAMETERS"));
-
-            this.stringType = loadField("STRING");
-            this.characterType = loadField("CHARACTER");
-            this.integerType = loadField("INTEGER");
-            this.floatType = loadField("FLOAT");
-
-            final String[] executor = loadField("EXECUTOR_COMMAND").split(";");
-            this.executorCommand = new Command(executor[0], executor[1]);
-
-            final String[] array = loadField("ARRAY").split(",");
-            this.arrayOpen = array[0];
-            this.arrayClose = array[1];
-
-            final String compiledExt = loadField("COMPILED_EXTENSION");
-            final String sourceExt = loadField("SOURCE_EXTENSION");
-            final String[] commandValues = loadField("COMPILER_ARGUMENTS").split(",");
-            final Command[] commands = new Command[commandValues.length];
-            for (int i = 0; i < commandValues.length; i++) {
-                final String[] command = commandValues[i].split(";", 2);
-                commands[i] = new Command(command[0], command[1]);
-            }
-
-            this.compiler = new Compiler(name, sourceExt, compiledExt, commands);
+            this.compiler = new Compiler(name, src, cmp, commands);
 
         } catch (final Exception e) {
             e.printStackTrace();
@@ -89,19 +44,9 @@ public abstract class Language {
         }
     }
 
-    private String loadField(final String field) {
-        try {
-            return (String) Reflection.getStaticField(subclass, field);
-        } catch (final IllegalAccessException e) {
-            log.log(Level.WARNING, "Could not access available field {0} in {1} language file.", new Object[]{field, name});
-
-        } catch (final NoSuchFieldException e) {
-            log.log(Level.WARNING, "Could not find field {0} in {1} language file.", new Object[]{field, name});
-        }
-        return null;
-    }
-
     public boolean isKeyword(final String word) {
+        final String[] keywords = getKeyWords();
+
         int low = 0;
         int high = keywords.length - 1;
 
@@ -120,95 +65,136 @@ public abstract class Language {
         return false;
     }
 
-    public String[] getLiteralMatches() {
-        return literalsMatchers;
-    }
+    public abstract String[] getLiteralMatches();
 
     public String getName() {
         return name;
-    }
-
-    public String getSourceExtension() {
-        return compiler.getSourceExtension();
-    }
-
-    public String getCompiledExtension() {
-        return compiler.getCompiledExtension();
     }
 
     public File getDirectory() {
         return directory;
     }
 
-    protected String getRawSkeleton() {
-        return skeleton;
-    }
-
     protected Compiler getCompiler() {
         return compiler;
     }
 
-    public abstract String getSkeleton(final Project project);
+    public abstract String getSkeleton(final Project project); // TODO: test a generic implementation
+
+
+    protected abstract Casing getParameterCasing();
+
+    protected abstract boolean shouldDisplayParameterTypes();
+
+    protected String getStringType() {
+        return "";
+    }
+
+    protected String getCharacterType() {
+        return "";
+    }
+
+    protected String getIntegerType() {
+        return "";
+    }
+
+    protected String getFloatType() {
+        return "";
+    }
+
+    protected String getArrayOpen() {
+        return "";
+    }
+
+    protected String getArrayClose() {
+        return "";
+    }
+
+    public abstract String getSourceExtension();
+
+    public abstract String getCompiledExtension();
+
+    protected abstract String[] getKeyWords();
+
+    protected abstract Command[] getCommands();
 
     public abstract Result[] compileAndRun(final Project project);
 
-    public String fieldCase(final String token) {
-        return fieldCasing.performCase(token);
-    }
-
-    public String methodCase(final String token) {
-        return methodCasing.performCase(token);
-    }
-
-    public String classCase(final String token) {
-        return classCasing.performCase(token);
-    }
-
-    public boolean displayParameters() {
-        return includeParameters;
-    }
-
-    public String getStringType() {
-        return stringType;
-    }
-
-    public String getCharacterType() {
-        return characterType;
-    }
-
-    public String getIntegerType() {
-        return integerType;
-    }
-
-    public String getFloatType() {
-        return floatType;
-    }
-
-    public String getArrayOpen() {
-        return arrayOpen;
-    }
-
-    public String getArrayClose() {
-        return arrayClose;
-    }
-
-    public String getArray(final int size) {
+    private String getArray(final int size) {
         if (size <= 0) {
             return "";
         }
         final StringBuilder builder = new StringBuilder(size * 2);
         for (int i = 0; i < size; i++) {
-            builder.append(arrayOpen);
-            builder.append(arrayClose);
+            builder.append(getArrayOpen());
+            builder.append(getArrayClose());
         }
         return builder.toString();
     }
 
-    public Command getExecutorCommand() {
-        return executorCommand;
+    private int getArrayDimension(final Class<?> cls) {
+
+        int count = 0;
+        Class<?> subCls = cls;
+        while (subCls.isArray()) {
+            subCls = subCls.getComponentType();
+            count++;
+        }
+        return count;
     }
 
-    public void displayError(final Project project, final String[] error) {
+    public String buildParameters(final Project project) {
+        final StringBuilder builder = new StringBuilder();
+        final Parameter[] params = project.getRunner().getParameters();
+
+        final boolean displayTypes = shouldDisplayParameterTypes();
+
+        final Casing param = getParameterCasing();
+
+        for (int i = 0; i < params.length; i++) {
+            if (i != 0) {
+                builder.append(", ");
+            }
+            if (displayTypes) {
+                final Class<?> cls = params[i].getType();
+                final String clsName = cls.getSimpleName().replaceAll("(\\[|\\])+", "");
+                switch (clsName) {
+                    case "int":
+                    case "Integer":
+                        builder.append(getIntegerType());
+                        break;
+
+                    case "char":
+                    case "Character":
+                        builder.append(getCharacterType());
+                        break;
+
+                    case "float":
+                    case "Float":
+                    case "double":
+                    case "Double":
+                        builder.append(getFloatType());
+                        break;
+
+                    case "String":
+                        builder.append(getStringType());
+                        break;
+                }
+                final int count = getArrayDimension(cls);
+                if (count >= 1) {
+                    builder.append(getArray(count));
+                }
+            }
+            if (param != null) {
+                builder.append(param.performCase(params[i].getName()));
+            } else {
+                builder.append(params[i].getName());
+            }
+        }
+        return builder.toString();
+    }
+
+    public void displayError(final Project project, final String... error) {
         final Editor editor = FrameManager.tabByName(project.getName(), this);
         final StringBuilder builder = new StringBuilder();
         final String path = project.getFile(this).getAbsolutePath();

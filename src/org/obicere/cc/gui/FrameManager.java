@@ -104,9 +104,10 @@ public class FrameManager {
         tabs.setSelectedComponent(tabByName(project.getName(), language));
     }
 
-    public static <T> T getTab(final Class<T> cls){
-        for(final JPanel tab : MAIN_TABS){
-            if(tab.getClass().equals(cls)){
+    @SuppressWarnings("unchecked")
+    public static <T> T getTab(final Class<T> cls) {
+        for (final JPanel tab : MAIN_TABS) {
+            if (tab.getClass().equals(cls)) {
                 return (T) tab;
             }
         }
@@ -117,7 +118,7 @@ public class FrameManager {
         for (final Component c : tabs.getComponents()) {
             if (c instanceof Editor) {
                 final Editor c1 = (Editor) c;
-                if (name.equals(c1.getName()) && language.equals(c1.getLanguage())) {
+                if (name.equals(c1.getProjectName()) && language.equals(c1.getLanguage())) {
                     return c1;
                 }
             }

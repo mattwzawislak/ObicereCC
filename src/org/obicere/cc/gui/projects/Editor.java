@@ -15,8 +15,7 @@ import java.io.File;
 
 public class Editor extends JPanel {
 
-    private static final Font CONSOLOAS_12     = new Font("Consolas", Font.PLAIN, 12);
-    private static final long serialVersionUID = 4203077483497169333L;
+    private static final Font CONSOLOAS_12 = new Font("Consolas", Font.PLAIN, 12);
 
     private final CodePane     codePane;
     private final ResultsTable resultsTable;
@@ -39,8 +38,11 @@ public class Editor extends JPanel {
         this.language = language;
 
         final LayoutHook hook = ShutDownHookManager.hookByClass(LayoutHook.class);
+
+        final JButton reset = new JButton("Reset");
         final JButton run = new JButton("Run");
-        final JButton clear = new JButton("Clear Project");
+        final JButton save = new JButton("Save");
+
         final JButton clearError = new JButton("Clear");
         final JButton copy = new JButton("Copy");
         final JPanel rightSide = new JPanel(new BorderLayout());
@@ -50,15 +52,16 @@ public class Editor extends JPanel {
         final JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsTable, rightSide);
         final JSplitPane textSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, instructionPanel, mainSplit);
 
-        run.setHorizontalTextPosition(SwingConstants.CENTER);
-        run.setPreferredSize(new Dimension(200, run.getPreferredSize().height));
         run.setToolTipText("Runs the project. (Ctrl+R)");
         run.addActionListener(e -> saveAndRun());
 
+        save.addActionListener(e -> save());
+
         codePane.requestFocus();
 
-        clear.addActionListener(e -> clearSaveFiles());
+        reset.addActionListener(e -> clearSaveFiles());
 
+        textSplit.setDividerLocation(hook.getPropertyAsInt(LayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION));
         textSplit.addPropertyChangeListener(evt -> {
             if (evt.getPropertyName().equals("dividerLocation")) {
                 if (hook.getPropertyAsBoolean(LayoutHook.SAVE_LAYOUT)) {
@@ -67,6 +70,7 @@ public class Editor extends JPanel {
             }
         });
 
+        mainSplit.setDividerLocation(hook.getPropertyAsInt(LayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION));
         mainSplit.addPropertyChangeListener(evt -> {
             if (evt.getPropertyName().equals("dividerLocation")) {
                 if (hook.getPropertyAsBoolean(LayoutHook.SAVE_LAYOUT)) {
@@ -75,8 +79,11 @@ public class Editor extends JPanel {
             }
         });
 
-        buttons.add(clear);
+        buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS));
+        buttons.add(reset);
+        buttons.add(Box.createHorizontalGlue());
         buttons.add(run);
+        buttons.add(save);
 
         rightSide.add(new JScrollPane(codePane), BorderLayout.CENTER);
         rightSide.add(buttons, BorderLayout.SOUTH);
@@ -87,6 +94,7 @@ public class Editor extends JPanel {
         instructions.setToolTipText("Instructions and any errors will appear here.");
 
         clearError.addActionListener(e -> setInstructionsText(project.getDescription(), false));
+
         copy.addActionListener(e -> {
             final StringSelection selection = new StringSelection(instructions.getText());
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -101,11 +109,12 @@ public class Editor extends JPanel {
         instructionPanel.add(instructionButtons, BorderLayout.SOUTH);
 
         add(textSplit, BorderLayout.CENTER);
-        setName(project.getName());
 
         codePane.highlightKeywords();
-        mainSplit.setDividerLocation(hook.getPropertyAsInt(LayoutHook.PROPERTY_MAINSPLIT_DIVIDER_LOCATION));
-        textSplit.setDividerLocation(hook.getPropertyAsInt(LayoutHook.PROPERTY_TEXTSPLIT_DIVIDER_LOCATION));
+    }
+
+    public String getProjectName() {
+        return project.getName();
     }
 
     public void setInstructionsText(final String string, final boolean error) {
@@ -146,14 +155,17 @@ public class Editor extends JPanel {
     }
 
     public void saveAndRun() {
+        save();
         if (codePane.getText().length() == 0) {
-            return;
-        }
-        if (!project.save(codePane.getText(), language)) {
-            JOptionPane.showMessageDialog(null, "Error saving current code!");
             return;
         }
         final Result[] results = language.compileAndRun(project);
         resultsTable.setResults(results);
+    }
+
+    public void save() {
+        if (!project.save(codePane.getText(), language)) {
+            JOptionPane.showMessageDialog(null, "Error saving current code!");
+        }
     }
 }

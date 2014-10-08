@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
-    private static final Dimension PROJECT_PANEL_MANIFEST_SIZE = new Dimension(150, 40);
+    private static final Dimension PROJECT_PANEL_MANIFEST_SIZE = new Dimension(200, 40);
 
     private final Project project;
     private final JLabel  complete;

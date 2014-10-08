@@ -6,6 +6,7 @@ import org.obicere.cc.shutdown.SaveProgressHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,9 +20,11 @@ public class ProjectSelector extends JPanel {
     public ProjectSelector() {
         super(new BorderLayout());
         selector = new JPanel(new WrapLayout(WrapLayout.LEFT));
-        for (final Project project : Project.DATA) {
-            final ProjectPanel temp = new ProjectPanel(project, hook.isComplete(project.getName()));
+        for (final Project project : Project.getData()) {
+            final ProjectPanel temp = new ProjectPanel(project);
             projects.add(temp);
+            temp.setBorder(new BevelBorder(BevelBorder.RAISED));
+            temp.setComplete(hook.isComplete(project.getName()));
         }
         Collections.sort(projects);
         projects.forEach(selector::add);

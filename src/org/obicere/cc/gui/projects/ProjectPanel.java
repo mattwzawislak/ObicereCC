@@ -5,7 +5,6 @@ import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.projects.Project;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

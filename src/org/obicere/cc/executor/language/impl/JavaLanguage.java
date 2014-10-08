@@ -116,6 +116,8 @@ public class JavaLanguage extends Language {
                 builder.append(", ");
             }
             builder.append(params[i].getType().getSimpleName());
+            builder.append(' ');
+            builder.append(params[i].getName());
         }
         return builder.toString();
     }
@@ -126,8 +128,7 @@ public class JavaLanguage extends Language {
         final String[] message = getCompiler().compile(file);
         if (message.length == 0) {
             try {
-                final Class<?> cls = project.getRunnerClass();
-                final Runner runner = (Runner) cls.newInstance();
+                final Runner runner = project.getRunner();
                 final Parameter[] parameters = runner.getParameters();
                 final Case[] cases = runner.getCases();
                 final Class<?>[] searchClasses = new Class<?>[parameters.length];

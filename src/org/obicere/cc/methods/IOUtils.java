@@ -1,6 +1,7 @@
 package org.obicere.cc.methods;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Properties;
@@ -59,6 +60,18 @@ public class IOUtils {
         properties.store(stream, null);
         stream.flush();
         stream.close();
+    }
+
+    public int getOpenPort(final int min, final int max) {
+        for (int i = min; i <= max; i++) {
+            try {
+                final ServerSocket socket = new ServerSocket(i);
+                socket.close();
+                return i;
+            } catch (final IOException ignored) {
+            }
+        }
+        return -1;
     }
 
 }

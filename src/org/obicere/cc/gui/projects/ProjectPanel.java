@@ -1,23 +1,23 @@
 package org.obicere.cc.gui.projects;
 
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.obicere.cc.configuration.Global;
-import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.projects.Project;
 
-import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import java.awt.*;
-import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
-    private static final long serialVersionUID = -3692838815172773196L;
-    private static final Color TEXT_COLOR = new Color(0x0F0F0F);
+    private static final long  serialVersionUID = -3692838815172773196L;
+    private static final Color TEXT_COLOR       = new Color(0x0F0F0F);
     private final Project project;
-    private final JLabel complete;
+    private final JLabel  complete;
 
     public ProjectPanel(final Project project, final boolean isComplete) {
         super(new BorderLayout());
@@ -32,8 +32,6 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
         final JLabel author = new JLabel(project.getAuthor());
 
         final JButton open = new JButton("Open");
-
-        final JComboBox<String> languageChoice = new JComboBox<>(new Vector<>(LanguageHandler.getSupportedLanguages()));
 
         final StringBuilder builder = new StringBuilder();
         final Pattern pattern = Pattern.compile("[A-Z]?[a-z]+|[0-9]+");
@@ -59,7 +57,6 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
         leftPane.setPreferredSize(new Dimension(25, 150));
 
-        options.add(languageChoice, BorderLayout.NORTH);
         options.add(open, BorderLayout.SOUTH);
 
         rightPane.add(options, BorderLayout.SOUTH);
@@ -69,7 +66,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
         setPreferredSize(new Dimension(320, 150));
         setBorder(new BevelBorder(BevelBorder.RAISED));
 
-        open.addActionListener(e -> FrameManager.openProject(project, LanguageHandler.getLanguage((String) languageChoice.getSelectedItem())));
+        open.addActionListener(e -> FrameManager.openProject(project, ProjectSelectorControls.getControls().getSelectedLanguage()));
 
         complete.setPreferredSize(new Dimension(75, 30));
 

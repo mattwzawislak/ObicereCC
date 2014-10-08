@@ -9,8 +9,12 @@ public class LanguageHandler {
 
     private static final Map<String, Language> SUPPORTED = new HashMap<>();
 
-    public static Set<String> getSupportedLanguages() {
+    public static Set<String> getSupportedLanguageNames() {
         return SUPPORTED.keySet();
+    }
+
+    public static Collection<Language> getSupportedLanguages(){
+        return SUPPORTED.values();
     }
 
     public static Language getLanguage(final String name) {

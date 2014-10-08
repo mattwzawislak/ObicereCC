@@ -214,4 +214,9 @@ public abstract class Language {
         return obj instanceof Language && ((Language) obj).getName().equals(getName());
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
 }

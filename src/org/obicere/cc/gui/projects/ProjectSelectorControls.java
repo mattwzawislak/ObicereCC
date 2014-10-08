@@ -1,26 +1,47 @@
 package org.obicere.cc.gui.projects;
 
+import org.obicere.cc.executor.language.Language;
+import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.FrameManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Vector;
 
 public class ProjectSelectorControls extends JPanel {
 
     private static final String    DEFAULT     = "Search...";
     private static final Dimension OPTION_SIZE = new Dimension(100, 35);
 
+    private static ProjectSelectorControls instance;
+
     private final JCheckBox complete;
     private final JCheckBox name;
     private final JCheckBox incomplete;
 
-    public ProjectSelectorControls() {
+    private final JComboBox<Language> languageSelector;
+
+
+    public static ProjectSelectorControls getControls() {
+        if (instance == null) {
+            instance = new ProjectSelectorControls();
+        }
+        return instance;
+    }
+
+    private ProjectSelectorControls() {
         super(new BorderLayout());
         final JPanel options = new JPanel(new FlowLayout(FlowLayout.LEADING));
         final JPanel padding = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 5));
+
+        final JPanel languagePadding = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+
         final JTextField search = new JTextField();
         final ItemListener listener = e -> search(search.getText());
+
+        final JLabel languageLabel = new JLabel("Selected Language: ");
+        languageSelector = new JComboBox<>(new Vector<>(LanguageHandler.getSupportedLanguages()));
 
         complete = new JCheckBox("Complete");
         incomplete = new JCheckBox("Incomplete");
@@ -44,6 +65,9 @@ public class ProjectSelectorControls extends JPanel {
         });
         complete.addItemListener(listener);
         incomplete.addItemListener(listener);
+
+        languagePadding.add(languageLabel);
+        languagePadding.add(languageSelector);
 
         padding.add(search);
         search.setPreferredSize(new Dimension(310, 20));
@@ -77,6 +101,7 @@ public class ProjectSelectorControls extends JPanel {
         });
         add(padding, BorderLayout.CENTER);
         add(options, BorderLayout.SOUTH);
+        add(languagePadding, BorderLayout.EAST);
     }
 
     public synchronized void search(final String key) {
@@ -87,6 +112,10 @@ public class ProjectSelectorControls extends JPanel {
         }
         final ProjectSelector projectSelector = FrameManager.getTab(ProjectTabPanel.class).getProjectSelector();
         projectSelector.refine(fixedKey, complete.isSelected(), name.isSelected(), incomplete.isSelected());
+    }
+
+    public Language getSelectedLanguage() {
+        return (Language) languageSelector.getSelectedItem();
     }
 
 }

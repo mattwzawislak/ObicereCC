@@ -1,8 +1,11 @@
-package org.obicere.cc.executor.language;
+package org.obicere.cc.executor.language.impl;
 
 import org.obicere.cc.executor.Case;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
+import org.obicere.cc.executor.language.Casing;
+import org.obicere.cc.executor.language.Language;
+import org.obicere.cc.executor.language.LanguageIdentifier;
 import org.obicere.cc.methods.StringSubstitute;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;

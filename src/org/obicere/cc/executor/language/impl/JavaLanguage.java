@@ -1,9 +1,8 @@
-package org.obicere.cc.executor.language.impl;
+package org.obicere.cc.executor.language;
 
 import org.obicere.cc.executor.Case;
 import org.obicere.cc.executor.Result;
-import org.obicere.cc.executor.language.Language;
-import org.obicere.cc.executor.language.LanguageIdentifier;
+import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.methods.StringSubstitute;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
@@ -20,12 +19,31 @@ import java.net.URLClassLoader;
 public class JavaLanguage extends Language {
 
     //keywords
-    public static final String KEYWORDS = "abstract,assert,boolean,break,byte,case,catch,char,class,const,continue,default,double,do,else,enum,extends,false,final,finally,float,for,goto,if,implements,import,instanceof,int,interface,long,native,new,null,package,private,protected,public,return,short,static,strictfp,super,switch,synchronized,this,throw,throws,transient,true,try,void,volatile,while";
+    public static final String   KEYWORDS  = "abstract,assert,boolean,break,byte,case,catch,char,class,const,continue,default,double,do,else,enum,extends,false,final,finally,float,for,goto,if,implements,import,instanceof,int,interface,long,native,new,null,package,private,protected,public,return,short,static,strictfp,super,switch,synchronized,this,throw,throws,transient,true,try,void,volatile,while";
+    public static final String[] _KEYWORDS = new String[]{
+            "abstract", "assert", "boolean", "break", "byte",
+            "case", "catch", "char", "class", "const",
+            "continue", "default", "double", "do", "else",
+            "enum", "extends", "false", "final", "finally",
+            "float", "for", "goto", "if", "implements",
+            "import", "instanceof", "int", "interface", "long",
+            "native", "new", "null", "package", "private",
+            "protected", "public", "return", "short", "static",
+            "strictfp", "super", "switch", "synchronized", "this",
+            "throw", "throws", "transient", "true", "try",
+            "void", "volatile", "while"
+    };
+
     //skeleton
     public static final String SKELETON = "public class ${name} {\n\t\n\tpublic ${return} ${method}(${parameter}){\n\t\t\n\t}\n}";
 
     //literal
-    public static final String LITERAL = "\"(?:[^\"\\\\\\n\\r\\u2028\\u2029]|\\\\(?:[^\\n\\rxu0-9]|0(?![0-9])|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|\\n|\\r\\n?))*\",(//.*+)|(?s)(/[*].*?[*]/)";
+    public static final String   LITERAL   = "\"(?:[^\"\\\\\\n\\r\\u2028\\u2029]|\\\\(?:[^\\n\\rxu0-9]|0(?![0-9])|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|\\n|\\r\\n?))*\",(//.*+)|(?s)(/[*].*?[*]/),'(?:[^\"\\\\\\n\\r\\u2028\\u2029]|\\\\(?:[^\\n\\rxu0-9]|0(?![0-9])|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|\\n|\\r\\n?))'";
+    public static final String[] _LITERALS = new String[]{
+            "\"(?:[^\"\\\\\\n\\r\\u2028\\u2029]|\\\\(?:[^\\n\\rxu0-9]|0(?![0-9])|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|\\n|\\r\\n?))*\"", // Match Strings
+            "'(?:[^\"\\\\\\n\\r\\u2028\\u2029]|\\\\(?:[^\\n\\rxu0-9]|0(?![0-9])|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|\\n|\\r\\n?))'", // Match chars
+            "(//.*+)|(?s)(/[*].*?[*]/)" // Match comments
+    };
 
     //compiledExtension
     public static final String COMPILED_EXTENSION = ".class";
@@ -35,17 +53,34 @@ public class JavaLanguage extends Language {
     //compilerArguments
     public static final String COMPILER_ARGUMENTS = "javac; ${exec} -g -nowarn \"${file}\"";
 
+    public static final Command[] _COMPILER_COMMANDS = new Command[]{
+            new Command("javac", "${exec} -g -nowarn \"${file}\"")
+    };
+
     //methodCasing
-    public static final String METHOD_CASING      = "lower camel case";
+    public static final String METHOD_CASING = "lower camel case";
+
+    public static final Casing _METHOD_CASING = Casing.LOWER_CAMEL_CASE;
+
     //fieldCasing
-    public static final String FIELD_CASING       = "lower camel case";
+    public static final String FIELD_CASING = "lower camel case";
+
+    public static final Casing _FIELD_CASING = Casing.LOWER_CAMEL_CASE;
+
     //classCasing
-    public static final String CLASS_CASING       = "camel case";
+    public static final String CLASS_CASING = "camel case";
+
+    public static final Casing _CLASS_CASING = Casing.CAMEL_CASE;
+
     //includeParameters
     public static final String INCLUDE_PARAMETERS = "true";
 
+    public static final boolean _INCLUDE_PARAMETER_TYPES = true;
+
     //executorCommand
     public static final String EXECUTOR_COMMAND = " ; ";
+
+    public static final String _EXECUTOR_COMMAND = null; // We run Java through reflection, no protocols needed
 
     //string
     public static final String STRING    = "String";
@@ -57,6 +92,10 @@ public class JavaLanguage extends Language {
     public static final String FLOAT     = "double";
     //array
     public static final String ARRAY     = "[,]";
+
+    public static final String OPEN_ARRAY = "[";
+
+    public static final String CLOSE_ARRAY = "]";
 
     public JavaLanguage() {
         super("Java", JavaLanguage.class);

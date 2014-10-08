@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class SearchPanel extends JPanel {
+public class ProjectSelectorControls extends JPanel {
 
     private static final String    DEFAULT     = "Search...";
     private static final Dimension OPTION_SIZE = new Dimension(100, 35);
@@ -15,7 +15,7 @@ public class SearchPanel extends JPanel {
     private final JCheckBox name;
     private final JCheckBox incomplete;
 
-    public SearchPanel() {
+    public ProjectSelectorControls() {
         super(new BorderLayout());
         final JPanel options = new JPanel(new FlowLayout(FlowLayout.LEADING));
         final JPanel padding = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 5));

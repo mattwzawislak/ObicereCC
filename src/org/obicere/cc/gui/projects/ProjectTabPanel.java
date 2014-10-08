@@ -12,7 +12,7 @@ public class ProjectTabPanel extends JPanel {
 
     public ProjectTabPanel() {
         super(new BorderLayout());
-        final SearchPanel search = new SearchPanel();
+        final ProjectSelectorControls search = new ProjectSelectorControls();
         projectSelector = new ProjectSelector();
         add(search, BorderLayout.NORTH);
         add(projectSelector, BorderLayout.CENTER);

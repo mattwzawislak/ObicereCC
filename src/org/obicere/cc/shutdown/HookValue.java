@@ -13,6 +13,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HookValue {
 
-    public String value();
+    public String value() default "";
 
 }

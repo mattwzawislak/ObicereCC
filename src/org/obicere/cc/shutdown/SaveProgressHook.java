@@ -10,7 +10,7 @@ public class SaveProgressHook extends ShutDownHook {
 
     public static final String NAME = "save.progress";
 
-    @HookValue("")
+    @HookValue()
     public static final String PROGRESS_COMPLETE = "progress.complete";
 
     private final Map<String, Boolean> completeList = new HashMap<>();

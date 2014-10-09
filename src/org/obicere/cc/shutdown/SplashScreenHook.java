@@ -16,7 +16,7 @@ public class SplashScreenHook extends SettingsShutDownHook {
     public static final String NO_SPLASH             = "no.splash";
     public static final String NO_SPLASH_DESCRIPTION = "Display no splash screen: ";
 
-    @HookValue("")
+    @HookValue()
     public static final String USER_NAME             = "username";
     public static final String USER_NAME_DESCRIPTION = "Desired Username: ";
 

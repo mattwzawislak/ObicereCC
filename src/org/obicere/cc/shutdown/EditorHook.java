@@ -23,7 +23,7 @@ public class EditorHook extends SettingsShutDownHook {
 
     @HookValue("java.awt.Color[r=36,g=36,b=36]")
     public static final String NORMAL_HIGHLIGHT_COLOR       = "color.highlight.normal";
-    public static final String NORMAL_HIGHLIGHT_DESCRIPTION = "Editor font Color: ";
+    public static final String NORMAL_HIGHLIGHT_DESCRIPTION = "Editor text Color: ";
 
     @HookValue("Consolas")
     public static final String EDITOR_FONT_TYPE             = "font.type";

@@ -11,14 +11,11 @@ import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.Logger;
 
 /**
  * @author Obicere
  */
 public class FileLoader {
-
-    private static final Logger LOGGER = Logger.getLogger(FileLoader.class.getCanonicalName());
 
     private static final HashSet<String> IGNORED_JARS = new HashSet<>();
 

@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 public class FrameManager {
 
-    private static final Logger LOGGER = Logger.getLogger(FrameManager.class.getCanonicalName());
+    private static final Logger log = Logger.getLogger(FrameManager.class.getCanonicalName());
 
     public static final LinkedList<WindowListener> WINDOW_CLOSING_HOOKS = new LinkedList<>();
 
@@ -139,7 +139,7 @@ public class FrameManager {
             tabs.remove(cur);
             return;
         }
-        LOGGER.log(Level.WARNING, "Failed to close tab: " + name);
+        log.log(Level.WARNING, "Failed to close tab: " + name);
     }
 
 }

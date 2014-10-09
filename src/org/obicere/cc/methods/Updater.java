@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 public class Updater {
 
-    private static final Logger LOGGER = Logger.getLogger(Updater.class.getCanonicalName());
+    private static final Logger log = Logger.getLogger(Updater.class.getCanonicalName());
 
     private static double updatedClientVersion = 0.0;
     private static double currentClientVersion = 1.00;
@@ -125,7 +125,7 @@ public class Updater {
             IOUtils.write(out, data);
 
         } catch (final IOException e) {
-            LOGGER.log(Level.WARNING, "Failed to download class: " + name);
+            log.log(Level.WARNING, "Failed to download class: " + name);
             e.printStackTrace();
         }
 
@@ -165,22 +165,22 @@ public class Updater {
             urlConn.connect();
             if (urlConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 final long responseTime = System.currentTimeMillis() - responseStart;
-                LOGGER.log(Level.INFO, "Response from the server took {0}ms.", responseTime);
+                log.log(Level.INFO, "Response from the server took {0}ms.", responseTime);
                 return true;
             }
             final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
                 if (interfaces.nextElement().isUp()) {
-                    LOGGER.log(Level.WARNING, "Site appears down from this connection.");
+                    log.log(Level.WARNING, "Site appears down from this connection.");
                     return false;
                 }
             }
-            LOGGER.log(Level.WARNING, "Not connected to internet. Unable to get updates.");
+            log.log(Level.WARNING, "Not connected to internet. Unable to get updates.");
         } catch (final UnknownHostException host) {
-            LOGGER.log(Level.WARNING, "Could not connect to host. Unknown host. ");
+            log.log(Level.WARNING, "Could not connect to host. Unknown host. ");
         } catch (final IOException e) {
             e.printStackTrace();
-            LOGGER.log(Level.WARNING, "Could not connect to server. ");
+            log.log(Level.WARNING, "Could not connect to server. ");
         }
         return false;
     }

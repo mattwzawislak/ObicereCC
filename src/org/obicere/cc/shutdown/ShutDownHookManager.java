@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 public class ShutDownHookManager {
 
-    private static final Logger LOGGER = Logger.getLogger(SettingsShutDownHook.class.getCanonicalName());
+    private static final Logger log = Logger.getLogger(SettingsShutDownHook.class.getCanonicalName());
 
     private static final ShutDownHook[] HOOKS;
 
@@ -27,7 +27,7 @@ public class ShutDownHookManager {
             if (e != null) {
                 final ShutDownHook hook = (ShutDownHook) Reflection.newInstance(e);
                 if (hook == null) {
-                    LOGGER.log(Level.WARNING, "Failed to create hook: " + e.getName());
+                    log.log(Level.WARNING, "Failed to create hook: " + e.getName());
                     // Error initializing
                 }
                 goodHooks.add(hook);
@@ -50,7 +50,7 @@ public class ShutDownHookManager {
 
     public static void setup() {
         for (final ShutDownHook hook : HOOKS) {
-            LOGGER.log(Level.INFO, "Adding hook: " + hook.getName());
+            log.log(Level.INFO, "Adding hook: " + hook.getName());
             switch (hook.getHookPriority()) {
                 case ShutDownHook.PRIORITY_RUNTIME_SHUTDOWN:
                     Runtime.getRuntime().addShutdownHook(hook);

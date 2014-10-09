@@ -123,9 +123,6 @@ public class CodePane extends JTextPane {
         actionMap.put("Newline", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!COMPLETION.getPropertyAsBoolean(CodeCompletionHook.NEW_LINE_COMPLETION)) {
-                    return;
-                }
                 final int index = getCaretPosition();
                 final int lineNumber = getCaretLine();
                 final String line = getLine(lineNumber);

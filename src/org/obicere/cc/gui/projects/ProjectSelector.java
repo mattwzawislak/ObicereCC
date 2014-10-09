@@ -59,7 +59,6 @@ public class ProjectSelector extends JPanel {
                 }
             }
         }
-        validate();
         revalidate();
         updateUI();
     }

@@ -24,7 +24,13 @@ public class Case {
     public boolean equals(final Object obj) {
         if (obj instanceof Case) {
             final Case param = (Case) obj;
-            return param.getExpectedResult().equals(getExpectedResult()) && Arrays.equals(param.getParameters(), getParameters());
+            if (!Arrays.deepEquals(param.getParameters(), getParameters())) {
+                return false;
+            }
+            if (expectedResult.getClass().isArray()) {
+                return Arrays.deepEquals(new Object[]{param.getExpectedResult()}, new Object[]{getExpectedResult()});
+            }
+            return param.getExpectedResult().equals(getExpectedResult());
         }
         return false;
     }

@@ -72,10 +72,6 @@ public class FileLoader {
         return loader.find();
     }
 
-    private String normalizeSlashes(final String path) {
-        return path.replace("\\", "/");
-    }
-
     private List<String> find() {
         if (!list.isEmpty()) {
             return list;

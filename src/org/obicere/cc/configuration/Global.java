@@ -32,10 +32,10 @@ public class Global {
             tk.prepareImage(img, -1, -1, null);
             return img;
         } catch (final SecurityException e) {
-            log.warning("Insufficient permissions to load image.");
+            log.severe("Insufficient permissions to load image.");
             return null;
         } catch (final AWTError e) {
-            log.warning("Could not instantiate default toolkit.");
+            log.severe("Could not instantiate default toolkit to load images.");
             return null;
         }
     }
@@ -71,12 +71,13 @@ public class Global {
 
     public static class Paths {
 
-        public static final String   APP_DATA = getAppData();
-        public static final String   HOME     = APP_DATA + File.separator + "ObicereCC";
-        public static final String   SOURCES  = HOME + File.separator + "sources";
-        public static final String   DATA     = HOME + File.separator + "data";
-        public static final String   LANGUAGE = DATA + File.separator + "language";
-        public static final String[] PATHS    = new String[]{APP_DATA, HOME, SOURCES, DATA, LANGUAGE};
+        public static final String APP_DATA = getAppData();
+        public static final String HOME     = APP_DATA + File.separator + "ObicereCC";
+        public static final String SOURCES  = HOME + File.separator + "sources";
+        public static final String DATA     = HOME + File.separator + "data";
+        public static final String LANGUAGE = DATA + File.separator + "language";
+
+        public static final String[] PATHS = new String[]{APP_DATA, HOME, SOURCES, DATA, LANGUAGE};
 
         public static void build() {
             for (final String s : PATHS) {
@@ -90,8 +91,11 @@ public class Global {
 
     public static class URLs {
 
-        public static final String HOME      = "http://www.obicere.uni.me";
-        public static final String BIN       = HOME + "/ccbin/";
+        // Site
+        public static final String HOME = "http://www.obicere.uni.me";
+        public static final String BIN  = HOME + "/ccbin/";
+
+        // Working directory/jar
         public static final String RESOURCES = "resource/";
         public static final String CLOSE     = RESOURCES + "close.png";
         public static final String COMPLETE  = RESOURCES + "complete.png";

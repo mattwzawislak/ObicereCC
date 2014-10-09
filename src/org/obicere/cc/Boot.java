@@ -26,9 +26,12 @@ public class Boot {
         ShutDownHookManager.setup();
         try {
             SwingUtilities.invokeAndWait(Splash::display);
-        } catch (final InterruptedException | InvocationTargetException e) {
+        } catch (final InterruptedException ignored) {
+            return;
+        } catch (final InvocationTargetException e) {
+            log.log(Level.SEVERE, "Failed to create splash instance.");
             e.printStackTrace();
-            System.exit(0);
+            return;
         }
         Updater.update();
         Splash.setStatus("Loading framework");

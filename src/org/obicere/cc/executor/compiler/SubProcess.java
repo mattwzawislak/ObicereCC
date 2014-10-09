@@ -1,11 +1,11 @@
-package org.obicere.cc.executor;
+package org.obicere.cc.executor.compiler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 
-public class ProcessRunner {
+public class SubProcess {
 
     private static Process runProcess(final String command) throws IOException {
         final String[] split = command.split(" +(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");

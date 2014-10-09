@@ -13,7 +13,7 @@ import java.util.List;
 public class Project {
 
     private static final String[]            DIFFICULTY = new String[]{"Beginner", "Intermediate", "Advanced", "Challenging", "Legendary"};
-    public static final LinkedList<Project> DATA       = new LinkedList<>();
+    public static final  LinkedList<Project> DATA       = new LinkedList<>();
 
     private final String         name;
     private final RunnerManifest manifest;
@@ -43,11 +43,11 @@ public class Project {
         }
     }
 
-    public static void resetData(){
+    public static void resetData() {
         DATA.clear();
     }
 
-    public static List<Project> getData(){
+    public static List<Project> getData() {
         return DATA;
     }
 
@@ -71,8 +71,8 @@ public class Project {
         return manifest.difficulty();
     }
 
-    public String getDifficultyString(){
-        return DIFFICULTY[getDifficulty() - 1];
+    public static String getDifficultyString(final int difficulty) {
+        return DIFFICULTY[difficulty - 1];
     }
 
     public String getSortName() {

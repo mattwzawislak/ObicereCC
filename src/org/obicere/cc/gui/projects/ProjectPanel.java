@@ -15,7 +15,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,10 +30,9 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
         this.project = project;
 
-        final JPanel manifestPane = new JPanel(new GridLayout(3, 1));
+        final JPanel manifestPane = new JPanel();
         final JPanel options = new JPanel(new BorderLayout(5, 5));
 
-        final JLabel difficulty = new JLabel(project.getDifficultyString());
         final JLabel name = new JLabel(separateWords(project.getName()));
         final JLabel author = new JLabel(project.getAuthor());
         this.complete = new JLabel(null, null, SwingConstants.CENTER);
@@ -50,7 +48,7 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
         options.add(complete);
         options.add(Box.createVerticalGlue());
         options.add(open);
-        options.setPreferredSize(new Dimension(60, 120));
+        options.setPreferredSize(new Dimension(60, 100));
 
         open.addActionListener(e -> FrameManager.openProject(project, ProjectSelectorControls.getControls().getSelectedLanguage()));
 
@@ -58,9 +56,11 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
         name.setFont(name.getFont().deriveFont(14f));
         name.setToolTipText(toHTML(project.getDescription()));
 
+        manifestPane.setLayout(new BoxLayout(manifestPane, BoxLayout.Y_AXIS));
         manifestPane.add(name);
+        manifestPane.add(Box.createVerticalGlue());
         manifestPane.add(author);
-        manifestPane.add(difficulty);
+        manifestPane.setPreferredSize(new Dimension(200, 100));
 
         add(manifestPane);
         add(options);

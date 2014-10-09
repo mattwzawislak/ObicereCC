@@ -7,8 +7,13 @@ import org.obicere.cc.shutdown.RunnerSourceHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.projects.Project;
 
-import javax.swing.*;
-import java.io.*;
+import javax.swing.JOptionPane;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.NetworkInterface;
 import java.net.URL;

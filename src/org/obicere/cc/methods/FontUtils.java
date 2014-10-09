@@ -1,6 +1,6 @@
 package org.obicere.cc.methods;
 
-import java.awt.*;
+import java.awt.GraphicsEnvironment;
 
 /**
  * @author Obicere

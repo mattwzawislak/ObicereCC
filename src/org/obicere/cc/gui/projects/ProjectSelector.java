@@ -1,13 +1,15 @@
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.gui.FrameManager;
+import org.obicere.cc.gui.layout.WrapLayout;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.shutdown.SaveProgressHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 

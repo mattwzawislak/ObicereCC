@@ -1,14 +1,14 @@
 package org.obicere.cc.gui.settings;
 
 import org.obicere.cc.gui.MainTabPanel;
-import org.obicere.cc.gui.VerticalFlowLayout;
-import org.obicere.cc.gui.projects.VerticalWrapLayout;
+import org.obicere.cc.gui.layout.VerticalWrapLayout;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 import org.obicere.cc.shutdown.ShutDownHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import java.awt.BorderLayout;
 
 /**
  * @author Obicere

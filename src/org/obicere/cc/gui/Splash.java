@@ -5,8 +5,19 @@ import org.obicere.cc.configuration.Message;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.shutdown.SplashScreenHook;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -18,7 +29,7 @@ import java.util.logging.Logger;
 
 public class Splash {
 
-    private static final Logger LOGGER = Logger.getLogger(Splash.class.getCanonicalName());
+    private static final Logger log = Logger.getLogger(Splash.class.getCanonicalName());
 
     private static final SplashScreenHook HOOK = ShutDownHookManager.hookByClass(SplashScreenHook.class);
 
@@ -156,7 +167,7 @@ public class Splash {
     }
 
     public static void setStatus(final String status) {
-        LOGGER.log(Level.INFO, status);
+        log.log(Level.INFO, status);
         Splash.status = status;
         SwingUtilities.invokeLater(instance.getFrame()::repaint);
         // This method might not be called on swing worker thread

@@ -4,8 +4,18 @@ import org.obicere.cc.configuration.Global;
 import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.projects.Project;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

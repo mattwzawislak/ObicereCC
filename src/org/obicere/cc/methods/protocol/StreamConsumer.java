@@ -1,6 +1,15 @@
 package org.obicere.cc.methods.protocol;
 
-import org.obicere.cc.methods.protocol.consumers.*;
+import org.obicere.cc.methods.protocol.consumers.AbstractConsumer;
+import org.obicere.cc.methods.protocol.consumers.BooleanConsumer;
+import org.obicere.cc.methods.protocol.consumers.ByteConsumer;
+import org.obicere.cc.methods.protocol.consumers.CharConsumer;
+import org.obicere.cc.methods.protocol.consumers.DoubleConsumer;
+import org.obicere.cc.methods.protocol.consumers.FloatConsumer;
+import org.obicere.cc.methods.protocol.consumers.IntConsumer;
+import org.obicere.cc.methods.protocol.consumers.LongConsumer;
+import org.obicere.cc.methods.protocol.consumers.ShortConsumer;
+import org.obicere.cc.methods.protocol.consumers.StringConsumer;
 
 import java.io.IOException;
 import java.io.InputStream;

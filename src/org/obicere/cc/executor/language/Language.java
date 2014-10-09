@@ -9,7 +9,7 @@ import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;

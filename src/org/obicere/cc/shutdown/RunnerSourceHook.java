@@ -4,8 +4,8 @@ import org.obicere.cc.configuration.Global;
 import org.obicere.cc.gui.settings.BooleanSetting;
 import org.obicere.cc.gui.settings.ButtonSetting;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JOptionPane;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 

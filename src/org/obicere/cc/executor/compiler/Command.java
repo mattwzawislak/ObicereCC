@@ -1,5 +1,6 @@
 package org.obicere.cc.executor.compiler;
 
+import java.io.IOException;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.executor.ProcessRunner;
 
@@ -43,7 +44,8 @@ public class Command {
             }
             final String[] str = ProcessRunner.run(command);
             return str.length != 0 && !str[0].startsWith(failure);
-        } catch (final Exception e) {
+        } catch (final IOException e) {
+
             e.printStackTrace();
         }
         return false;

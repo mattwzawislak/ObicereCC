@@ -1,16 +1,16 @@
 package org.obicere.cc.configuration;
 
-import java.awt.*;
-import java.io.*;
+import java.awt.AWTError;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.io.File;
 import java.net.URL;
-import java.util.Objects;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Global {
 
-    private static final Logger LOGGER = Logger.getLogger(Global.class.getCanonicalName());
+    private static final Logger log = Logger.getLogger(Global.class.getCanonicalName());
 
     public static final Image CLOSE_IMAGE;
     public static final Image COMPLETE_IMAGE;
@@ -31,8 +31,11 @@ public class Global {
             final Image img = tk.createImage(path);
             tk.prepareImage(img, -1, -1, null);
             return img;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final SecurityException e) {
+            log.warning("Insufficient permissions to load image.");
+            return null;
+        } catch (final AWTError e) {
+            log.warning("Could not instantiate default toolkit.");
             return null;
         }
     }
@@ -79,7 +82,7 @@ public class Global {
             for (final String s : PATHS) {
                 final File file = new File(s);
                 if (!file.exists() && !file.mkdir()) {
-                    LOGGER.log(Level.WARNING, "Failed to create folder {0}.", file);
+                    log.log(Level.WARNING, "Failed to create folder {0}.", file);
                 }
             }
         }

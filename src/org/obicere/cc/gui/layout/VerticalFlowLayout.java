@@ -1,4 +1,4 @@
-package org.obicere.cc.gui;
+package org.obicere.cc.gui.layout;
 /*
  * @(#)VerticalFlowLayout.java	1.52 03/12/19
  *

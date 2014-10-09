@@ -2,7 +2,11 @@ package org.obicere.cc.gui.settings;
 
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 /**
  * @author Obicere

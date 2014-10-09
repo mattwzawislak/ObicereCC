@@ -2,7 +2,6 @@ package org.obicere.cc.shutdown;
 
 import org.obicere.cc.gui.settings.SettingPanel;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

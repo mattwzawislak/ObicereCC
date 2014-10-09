@@ -1,9 +1,9 @@
 package org.obicere.cc.gui.settings;
 
-import org.obicere.cc.gui.VerticalFlowLayout;
+import org.obicere.cc.gui.layout.VerticalFlowLayout;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 import java.util.Map;
 

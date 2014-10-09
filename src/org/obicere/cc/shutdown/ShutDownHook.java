@@ -3,7 +3,7 @@ package org.obicere.cc.shutdown;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.methods.IOUtils;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;

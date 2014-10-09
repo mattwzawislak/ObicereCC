@@ -3,7 +3,10 @@ package org.obicere.cc.gui.settings;
 import org.obicere.cc.methods.FontUtils;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 /**
  * @author Obicere

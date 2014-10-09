@@ -2,6 +2,7 @@ package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.language.Language;
+import org.obicere.cc.gui.layout.WrapLayout;
 import org.obicere.cc.shutdown.LayoutHook;
 import org.obicere.cc.shutdown.SaveProgressHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;

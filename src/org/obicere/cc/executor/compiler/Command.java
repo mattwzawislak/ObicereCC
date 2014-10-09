@@ -1,8 +1,8 @@
 package org.obicere.cc.executor.compiler;
 
 import java.io.IOException;
+
 import org.obicere.cc.configuration.Global;
-import org.obicere.cc.executor.ProcessRunner;
 
 public class Command {
 
@@ -42,7 +42,7 @@ public class Command {
                 default:
                     return false;
             }
-            final String[] str = ProcessRunner.run(command);
+            final String[] str = SubProcess.run(command);
             return str.length != 0 && !str[0].startsWith(failure);
         } catch (final IOException e) {
 

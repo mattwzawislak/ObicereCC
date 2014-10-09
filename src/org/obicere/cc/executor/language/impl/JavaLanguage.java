@@ -125,7 +125,7 @@ public class JavaLanguage extends Language {
     @Override
     public Result[] compileAndRun(final Project project) {
         final File file = project.getFile(this);
-        final String[] message = getCompiler().compile(file);
+        final String[] message = getProcessExecutor().compile(file);
         if (message.length == 0) {
             try {
                 final Runner runner = project.getRunner();

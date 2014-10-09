@@ -1,13 +1,12 @@
 package org.obicere.cc.executor.compiler;
 
-import org.obicere.cc.executor.ProcessRunner;
 import org.obicere.cc.methods.StringSubstitute;
 
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Compiler {
+public class ProcessExecutor {
 
     private static final String ERROR_NO_JDK = "Could not find JAVAC. Make sure your path is set correctly.";
 
@@ -20,7 +19,7 @@ public class Compiler {
 
     private Command workingCommand;
 
-    public Compiler(final String name, final String sourceExt, final String compiledExt, final Command[] commands) {
+    public ProcessExecutor(final String name, final String sourceExt, final String compiledExt, final Command[] commands) {
         this.name = name;
         this.sourceExt = sourceExt;
         this.compiledExt = compiledExt;
@@ -53,7 +52,7 @@ public class Compiler {
             if (command == ERROR_NO_JDK) {
                 return new String[]{ERROR_NO_JDK};
             }
-            return ProcessRunner.run(command);
+            return SubProcess.run(command);
         } catch (final Exception e) {
             e.printStackTrace();
         }

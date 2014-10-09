@@ -3,7 +3,7 @@ package org.obicere.cc.executor.language;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
-import org.obicere.cc.executor.compiler.Compiler;
+import org.obicere.cc.executor.compiler.ProcessExecutor;
 import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.projects.Parameter;
@@ -21,8 +21,8 @@ public abstract class Language {
 
     private final String name;
 
-    private final File     directory;
-    private final Compiler compiler;
+    private final File            directory;
+    private final ProcessExecutor processExecutor;
 
     protected Language(final String name) {
         try {
@@ -35,7 +35,7 @@ public abstract class Language {
             final String cmp = getCompiledExtension();
             final Command[] commands = getCommands();
 
-            this.compiler = new Compiler(name, src, cmp, commands);
+            this.processExecutor = new ProcessExecutor(name, src, cmp, commands);
 
         } catch (final Exception e) {
             e.printStackTrace();
@@ -75,8 +75,8 @@ public abstract class Language {
         return directory;
     }
 
-    protected Compiler getCompiler() {
-        return compiler;
+    protected ProcessExecutor getProcessExecutor() {
+        return processExecutor;
     }
 
     public abstract String getSkeleton(final Project project); // TODO: test a generic implementation

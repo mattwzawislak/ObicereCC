@@ -18,16 +18,16 @@ public class ResultsTable extends JTable implements TableCellRenderer {
     private static final long     serialVersionUID = 5610470469686875396L;
     private static final Color    CORRECT          = new Color(37, 133, 0);
     private static final String[] HEADERS          = new String[]{"Correct Answer", "Your Answer", "Parameters"};
+
     private final Project project;
     private final SaveProgressHook hook = ShutDownHookManager.hookByClass(SaveProgressHook.class);
+
     private boolean[] resultsCorrect;
 
     public ResultsTable(final Project project) {
         this.project = project;
 
         final DefaultTableModel model = new DefaultTableModel() {
-            private static final long serialVersionUID = 7189238275994159770L;
-
             @Override
             public boolean isCellEditable(int row, int col) {
                 return false;
@@ -61,7 +61,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
                         wrong = true;
                     }
                     final Object[] arr = {stringValue(results[i].getCorrectAnswer()), stringValue(results[i].getResult()), stringValue(results[i].getParameters())};
-                    m.insertRow(i + 1, arr);
+                    m.insertRow(i + 1, arr); // +1 for header offset
                 }
                 if (!wrong) {
                     hook.setComplete(project.getName(), true);
@@ -72,10 +72,10 @@ public class ResultsTable extends JTable implements TableCellRenderer {
     }
 
     private String stringValue(final Object obj) {
-        if (obj.getClass().isArray()) {
+        if (obj != null && obj.getClass().isArray()) {
             return Arrays.deepToString(convertToObjectArray(obj));
         }
-        return obj.toString();
+        return String.valueOf(obj);
     }
 
     private Object[] convertToObjectArray(Object array) {
@@ -94,8 +94,8 @@ public class ResultsTable extends JTable implements TableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column) {
-        final JLabel label = new JLabel(value.toString());
-        if (row == 0) {
+        final JLabel label = new JLabel(String.valueOf(value));
+        if (row == 0) { // Headers
             label.setFont(label.getFont().deriveFont(Font.BOLD));
             return label;
         }
@@ -104,7 +104,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
     }
 
     @Override
-    public TableCellRenderer getCellRenderer(int row, int column) {
+    public TableCellRenderer getCellRenderer(final int row, final int column) {
         return this;
     }
 

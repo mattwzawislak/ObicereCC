@@ -46,9 +46,9 @@ public class ProcessExecutor {
         return null;
     }
 
-    public String[] compile(final File file) {
+    public String[] process(final File file, final Object... varargs) {
         try {
-            final String command = getCommand(file);
+            final String command = getCommand(file, varargs);
             if (command == ERROR_NO_JDK) {
                 return new String[]{ERROR_NO_JDK};
             }
@@ -59,10 +59,26 @@ public class ProcessExecutor {
         return new String[]{"Internal Error"};
     }
 
-    public String getCommand(final File file) {
+    public String getCommand(final File file, final Object... varargs) {
         final Command command = getCompilerCommand();
         if (command == null) {
             return ERROR_NO_JDK;
+        }
+        final StringBuilder args = new StringBuilder();
+        final int length = varargs.length;
+        for (int i = 0; i < length; i++) {
+            if (i != 0) {
+                args.append(' ');
+            }
+            final Object obj = varargs[i];
+            final String value = String.valueOf(obj);
+            if (value.contains(" ")) {
+                args.append('"');
+                args.append(value);
+                args.append('"');
+                continue;
+            }
+            args.append(value);
         }
 
         final String exec = command.getFormat();
@@ -72,6 +88,7 @@ public class ProcessExecutor {
         substitute.put("path", file.getParent());
         substitute.put("name", file.getName());
         substitute.put("file", file.getAbsolutePath());
+        substitute.put("varargs", args.toString());
 
         return substitute.apply(exec).trim();
     }

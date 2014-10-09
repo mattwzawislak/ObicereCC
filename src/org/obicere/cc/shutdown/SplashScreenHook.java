@@ -8,6 +8,8 @@ import org.obicere.cc.gui.settings.StringSetting;
  */
 public class SplashScreenHook extends SettingsShutDownHook {
 
+    public static final String GROUP_NAME = "Splash Screen";
+
     public static final String NAME = "splash.screen";
 
     @HookValue("false")
@@ -19,7 +21,7 @@ public class SplashScreenHook extends SettingsShutDownHook {
     public static final String USER_NAME_DESCRIPTION = "Desired Username: ";
 
     public SplashScreenHook() {
-        super("Splash Screen.", NAME, PRIORITY_RUNTIME_SHUTDOWN);
+        super(GROUP_NAME, NAME, PRIORITY_RUNTIME_SHUTDOWN);
         providePanel(NO_SPLASH, new BooleanSetting(this, NO_SPLASH, NO_SPLASH_DESCRIPTION));
         providePanel(USER_NAME, new StringSetting(this, USER_NAME, USER_NAME_DESCRIPTION));
     }

@@ -12,23 +12,19 @@ public class TabPane extends JPanel {
     private static final Dimension TAB_SIZE = new Dimension(170, 30);
 
     public TabPane(final Project project, final Language language) {
-        super(new FlowLayout(FlowLayout.LEFT, 0, 2));
         final JLabel label = new JLabel(project.getName());
-        final JPanel buffer = new JPanel(new FlowLayout(FlowLayout.LEFT));
         final JButton close = new JButton(new ImageIcon(Global.CLOSE_IMAGE));
-
-        buffer.setOpaque(false);
-        buffer.setPreferredSize(new Dimension(146, 24));
-        buffer.add(label);
 
         close.setPreferredSize(new Dimension(24, 24));
         close.setContentAreaFilled(false);
         close.setOpaque(false);
         close.addActionListener(e -> FrameManager.removeTab(project.getName(), language));
 
-        add(buffer);
+        add(label);
+        add(Box.createHorizontalGlue());
         add(close);
         setOpaque(false);
+        setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
     }
 
     @Override

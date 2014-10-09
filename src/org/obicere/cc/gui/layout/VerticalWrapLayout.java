@@ -1,5 +1,7 @@
 package org.obicere.cc.gui.layout;
 
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -12,15 +14,19 @@ import java.util.Set;
  */
 public class VerticalWrapLayout implements LayoutManager2 {
 
-    private final Set<Component> components = new LinkedHashSet<>();
-    private       int            hgap       = 0;
-    private       int            vgap       = 0;
+    private static final Dimension ZERO_DIMENSION = new Dimension(0, 0);
 
-    public void setHGap(int hgap) {
-        this.hgap = hgap;
+    private final Set<Component> components = new LinkedHashSet<>();
+    private final int hgap;
+    private final int vgap;
+
+    public VerticalWrapLayout() {
+        this.hgap = 5;
+        this.vgap = 5;
     }
 
-    public void setVGap(int vgap) {
+    public VerticalWrapLayout(final int hgap, final int vgap) {
+        this.hgap = hgap;
         this.vgap = vgap;
     }
 
@@ -51,22 +57,26 @@ public class VerticalWrapLayout implements LayoutManager2 {
 
     @Override
     public void layoutContainer(Container parent) {
-        int x = 0;
-        int y = 0;
-        int max = 0;
+        layout(parent);
+    }
+
+    private void layout(final Container parent) {
+        int x = hgap;
+        int y = vgap;
+        int maxX = 0;
         for (final Component c : components) {
             if (c.isVisible()) {
-                max = Math.max(c.getPreferredSize().width, max);
+                maxX = Math.max(c.getPreferredSize().width, maxX);
             }
         }
         for (final Component c : this.components) {
             if (c.isVisible()) {
                 Dimension d = c.getPreferredSize();
-                if (y + d.height > parent.getHeight()) {
-                    x += max + this.hgap;
-                    y = 0;
+                if (y != vgap && y + d.height > parent.getHeight()) { // y != vgap to avoid immediate wrap
+                    x += maxX + this.hgap;
+                    y = vgap;
                 }
-                c.setBounds(x, y, max, d.height);
+                c.setBounds(x, y, maxX, d.height);
                 y += d.height + this.vgap;
             }
         }
@@ -74,16 +84,16 @@ public class VerticalWrapLayout implements LayoutManager2 {
 
     @Override
     public Dimension minimumLayoutSize(Container parent) {
-        return new Dimension(0, 0);
+        return ZERO_DIMENSION;
     }
 
     @Override
     public Dimension preferredLayoutSize(Container parent) {
-        return new Dimension(0, 0);
+        return ZERO_DIMENSION;
     }
 
     @Override
-    public Dimension maximumLayoutSize(Container target) {
+    public Dimension maximumLayoutSize(Container parent) {
         return new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
     }
 

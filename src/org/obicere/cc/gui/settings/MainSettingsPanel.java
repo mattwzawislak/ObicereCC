@@ -8,7 +8,9 @@ import org.obicere.cc.shutdown.ShutDownHookManager;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 /**
  * @author Obicere

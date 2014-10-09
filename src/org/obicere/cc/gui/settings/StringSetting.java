@@ -6,6 +6,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -29,6 +30,7 @@ public class StringSetting extends SettingPanel {
         final JLabel descriptor = new JLabel(getDescriptor());
         final JTextField field = new JTextField(hook.getPropertyAsString(key)); // Set default
 
+        field.setHorizontalAlignment(SwingConstants.RIGHT);
         field.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(final DocumentEvent e) {

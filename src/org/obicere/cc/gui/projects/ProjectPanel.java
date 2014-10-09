@@ -54,15 +54,9 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
         open.addActionListener(e -> FrameManager.openProject(project, ProjectSelectorControls.getControls().getSelectedLanguage()));
 
-        difficulty.setPreferredSize(PROJECT_PANEL_MANIFEST_SIZE);
-        difficulty.setFont(difficulty.getFont().deriveFont(15f));
-
         name.setPreferredSize(PROJECT_PANEL_MANIFEST_SIZE);
-        name.setFont(name.getFont().deriveFont(18f));
+        name.setFont(name.getFont().deriveFont(14f));
         name.setToolTipText(toHTML(project.getDescription()));
-
-        author.setPreferredSize(PROJECT_PANEL_MANIFEST_SIZE);
-        author.setFont(author.getFont().deriveFont(15f));
 
         manifestPane.add(name);
         manifestPane.add(author);

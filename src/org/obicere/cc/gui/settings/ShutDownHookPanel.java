@@ -3,7 +3,7 @@ package org.obicere.cc.gui.settings;
 import org.obicere.cc.gui.layout.VerticalFlowLayout;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.util.Map;
 
@@ -16,7 +16,7 @@ public class ShutDownHookPanel extends JPanel {
         final VerticalFlowLayout layout = new VerticalFlowLayout(VerticalFlowLayout.CENTER, 10, 10);
         layout.setMaximizeOtherDimension(true);
         setLayout(layout);
-        setBorder(new TitledBorder(hook.getGroupName()));
+        setBorder(BorderFactory.createTitledBorder(hook.getGroupName()));
 
         final Map<String, SettingPanel> options = hook.getSettingPanels();
         options.forEach(

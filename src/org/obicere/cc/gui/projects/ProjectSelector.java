@@ -7,9 +7,10 @@ import org.obicere.cc.projects.Project;
 import org.obicere.cc.shutdown.SaveProgressHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
@@ -26,13 +27,14 @@ public class ProjectSelector extends JPanel {
         super(new BorderLayout());
         final JPanel selector = new JPanel();
         final VerticalFlowLayout layout = new VerticalFlowLayout(VerticalFlowLayout.TOP);
+        final Border border = BorderFactory.createRaisedSoftBevelBorder();
         layout.setMaximizeOtherDimension(true);
         selector.setLayout(layout);
         for (final Project project : Project.getData()) {
-            final ProjectPanel temp = new ProjectPanel(project);
-            projects.add(temp);
-            temp.setBorder(new BevelBorder(BevelBorder.RAISED));
-            temp.setComplete(hook.isComplete(project.getName()));
+            final ProjectPanel panel = new ProjectPanel(project);
+            projects.add(panel);
+            panel.setBorder(border);
+            panel.setComplete(hook.isComplete(project.getName()));
         }
         Collections.sort(projects);
         for (int i = 0; i < difficultyPanels.length; i++) {

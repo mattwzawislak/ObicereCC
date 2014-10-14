@@ -79,8 +79,10 @@ public class CodePane extends JTextPane {
         setParagraphAttributes(paraSet, false);
         setText(content);
 
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Newline");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Compile");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
+
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Newline");
 
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_9, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, 0, true), "Finish Open");
@@ -132,9 +134,20 @@ public class CodePane extends JTextPane {
             public void actionPerformed(ActionEvent e) {
                 final Editor parent = (Editor) SwingUtilities.getAncestorOfClass(Editor.class, CodePane.this);
                 if (parent == null) {
-                    JOptionPane.showMessageDialog(null, "Failed to save code!", "Error", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Failed to run code.", "Error", JOptionPane.WARNING_MESSAGE);
                 } else {
                     parent.saveAndRun();
+                }
+            }
+        });
+        actionMap.put("Save", new AbstractAction() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final Editor parent = (Editor) SwingUtilities.getAncestorOfClass(Editor.class, CodePane.this);
+                if (parent == null) {
+                    JOptionPane.showMessageDialog(null, "Failed to save code.", "Error", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    parent.save();
                 }
             }
         });

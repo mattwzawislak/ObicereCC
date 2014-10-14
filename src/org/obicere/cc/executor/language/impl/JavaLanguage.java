@@ -88,7 +88,7 @@ public class JavaLanguage extends Language {
         try {
             final Runner runner = project.getRunner();
 
-            final String returnType = runner.getReturnType().getCanonicalName();
+            final String returnType = runner.getReturnType().getSimpleName();
             final String methodName = runner.getMethodName();
 
             final String skeleton = SKELETON;

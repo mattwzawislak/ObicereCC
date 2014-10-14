@@ -137,6 +137,7 @@ public class FrameManager {
         final Editor cur = tabByName(name, language);
         if (cur != null) {
             tabs.remove(cur);
+            tabs.setSelectedIndex(0); // Move back to selection screen
             return;
         }
         log.log(Level.WARNING, "Failed to close tab: " + name);

@@ -13,16 +13,18 @@ import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.language.Casing;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.executor.language.LanguageIdentifier;
+import org.obicere.cc.executor.language.LanguageStreamer;
 import org.obicere.cc.methods.IOUtils;
 import org.obicere.cc.methods.StringSubstitute;
 import org.obicere.cc.methods.protocol.BasicProtocol;
+import org.obicere.cc.methods.protocol.MethodInvocationProtocol;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.Runner;
 
 /**
  * @author Obicere
  */
-@LanguageIdentifier
+@LanguageIdentifier()
 public class PythonLanguage extends Language {
 
     public static final String[] KEYWORDS = new String[]{
@@ -63,6 +65,7 @@ public class PythonLanguage extends Language {
 
     public PythonLanguage() {
         super("Python");
+        requestStreamer();
     }
 
     @Override
@@ -120,54 +123,22 @@ public class PythonLanguage extends Language {
 
     @Override
     public Result[] compileAndRun(final Project project) {
-        final int openPort = IOUtils.findOpenPort();
-        if (openPort == -1) {
-            displayError(project, "Could not open connection to remote process.");
-            return null;
-        }
-        final Runner runner;
-        final ServerSocket host;
-
-        try {
-            runner = project.getRunner();
-            host = new ServerSocket(openPort);
-
-        } catch (final IOException e) {
-            displayError(project, "Failed to open server socket.");
-            e.printStackTrace();
-            return null;
-        }
+        final LanguageStreamer streamer = streamer();
+        final Runner runner = project.getRunner();
+        final ServerSocket socket = streamer.createServerSocket(project);
 
         final File file = project.getFile(this);
-        final String[] message = getProcessExecutor().process(file, "-port", openPort);
+        final String[] message = streamer.runProcess(getProcessExecutor(), file, socket.getLocalPort(), project);
         if (message.length != 0) {
             try {
-                final Socket accept = host.accept();
-                final BasicProtocol protocol = new BasicProtocol(accept);
-
-                final Case[] cases = runner.getCases();
-                final int length = cases.length;
-                final Object[] container = new Object[length];
-                for (int i = 0; i < length; i++) {
-                    container[i] = cases[i].getParameters();
-                }
-                protocol.write(container);
+                final MethodInvocationProtocol protocol = streamer.createProtocol(socket);
+                streamer.writeInvocationParameters(project, protocol); // We wrote the data
+                streamer.waitForResponse(protocol); // lets wait for a reply
 
                 if (protocol.hasString()) {
-                    // Oh oh, error message
-                    final List<String> error = new LinkedList<>();
-                    do {
-                        error.add(protocol.readString());
-                    } while (protocol.hasString());
-                    displayError(project, error.toArray(new String[1]));
+                    displayError(project, streamer.readError(protocol));
                 }
-
-                final Object[] result = protocol.readArray(Object[][].class);
-                final Result[] results = new Result[length];
-                for (int i = 0; i < length; i++) {
-                    results[i] = new Result(result[i], cases[i].getExpectedResult(), container[i]);
-                }
-                return results;
+                return streamer.getResultsAndClose(runner.getCases(), protocol);
             } catch (final Exception e) {
                 e.printStackTrace();
                 displayError(project, "System connection error.");

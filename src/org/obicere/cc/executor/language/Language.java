@@ -24,6 +24,8 @@ public abstract class Language {
     private final File            directory;
     private final ProcessExecutor processExecutor;
 
+    private LanguageStreamer streamer;
+
     protected Language(final String name) {
         try {
             this.name = name;
@@ -42,6 +44,14 @@ public abstract class Language {
             log.log(Level.WARNING, "Failed to load language: " + name);
             throw new IllegalArgumentException();
         }
+    }
+
+    public void requestStreamer() {
+        this.streamer = new LanguageStreamer(this);
+    }
+
+    public LanguageStreamer streamer() {
+        return streamer;
     }
 
     public boolean isKeyword(final String word) {
@@ -65,8 +75,6 @@ public abstract class Language {
         return false;
     }
 
-    public abstract String[] getLiteralMatches();
-
     public String getName() {
         return name;
     }
@@ -79,8 +87,8 @@ public abstract class Language {
         return processExecutor;
     }
 
-    public abstract String getSkeleton(final Project project); // TODO: test a generic implementation
 
+    public abstract String getSkeleton(final Project project); // TODO: test a generic implementation
 
     protected abstract Casing getParameterCasing();
 
@@ -116,9 +124,12 @@ public abstract class Language {
 
     protected abstract String[] getKeyWords();
 
+    public abstract String[] getLiteralMatches();
+
     protected abstract Command[] getCommands();
 
     public abstract Result[] compileAndRun(final Project project);
+
 
     private String getArray(final int size) {
         if (size <= 0) {

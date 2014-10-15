@@ -273,8 +273,12 @@ public class StreamConsumer {
      * @param identifier The identifier to write to signal a new object.
      */
 
-    private void writeIdentifier(final int identifier) {
+    protected void writeIdentifier(final int identifier) {
         buffer.write((byte) identifier);
+    }
+
+    protected void writeLength(final int length) {
+        intC.writeRaw(length);
     }
 
     /**
@@ -706,7 +710,7 @@ public class StreamConsumer {
         }
     }
 
-    private int identifierFor(final Class<?> cls) {
+    protected int identifierFor(final Class<?> cls) {
         Objects.requireNonNull(cls);
         if (cls.isArray()) {
             return AbstractConsumer.IDENTIFIER_ARRAY;

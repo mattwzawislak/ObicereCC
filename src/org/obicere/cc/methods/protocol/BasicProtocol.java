@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 public class BasicProtocol implements Flushable, AutoCloseable {
 
-    private final StreamConsumer streamConsumer = new StreamConsumer();
+    protected final StreamConsumer streamConsumer = new StreamConsumer();
 
     private final DataOutputStream output;
     private final DataInputStream  input;
@@ -224,6 +224,10 @@ public class BasicProtocol implements Flushable, AutoCloseable {
         return streamConsumer.hasArray();
     }
 
+    public boolean hasNext() {
+        return streamConsumer.hasNext();
+    }
+
     private void read() {
         try {
             streamConsumer.readAvailable(input);
@@ -248,7 +252,7 @@ public class BasicProtocol implements Flushable, AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() throws IOException {
         input.close();
         output.close();
         socket.close();

@@ -27,6 +27,9 @@ public class Result {
     }
 
     public boolean isCorrect() {
+        if (result == null) {
+            return correctAnswer == null;
+        }
         if (result.getClass().isArray()) {
             return Arrays.deepEquals(new Object[]{result}, new Object[]{correctAnswer});
         }

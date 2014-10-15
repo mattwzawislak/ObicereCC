@@ -168,12 +168,13 @@ public class CodePane extends JTextPane {
                 final int max = Math.min(lineNumber + 1, lines.length);
                 final int caretIndex = getCaretPositionInLine(lineNumber);
 
+                int shortCounter = 0;
                 for (int i = 0; i < max; i++) {
                     int open = 0;
                     int close = 0;
                     int block = 0;
                     final char[] set = lines[i].toCharArray();
-                    boolean lastShort = false;
+                    boolean lineIsStatement = false;
                     for (final char c : set) {
                         switch (c) {
                             case '{':
@@ -183,16 +184,20 @@ public class CodePane extends JTextPane {
                                 close++;
                                 break;
                             case '(':
-                                if (!lastShort) {
-                                    block++;
-                                    lastShort = true;
-                                }
+                                block++;
+                                break;
+                            case ';':
+                                lineIsStatement = true;
                                 break;
                         }
                     }
                     tabs += open - close;
                     if (open == 0 && block > 0) {
                         tabs++;
+                        shortCounter++;
+                    } else if (lineIsStatement) {
+                        tabs -= shortCounter;
+                        shortCounter = 0;
                     }
                 }
                 for (int i = 0; i < tabs; i++) {

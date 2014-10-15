@@ -8,21 +8,17 @@ import java.util.Map;
 
 public class ProcessExecutor {
 
-    private static final String ERROR_NO_JDK = "Could not find JAVAC. Make sure your path is set correctly.";
+    private static final String ERROR_NO_PROCESS = "Could not find process. Make sure your path is set correctly.";
 
     private final StringSubstitute substitute;
 
     private final String    name;
-    private final String    sourceExt;
-    private final String    compiledExt;
     private final Command[] commands;
 
     private Command workingCommand;
 
     public ProcessExecutor(final String name, final String sourceExt, final String compiledExt, final Command[] commands) {
         this.name = name;
-        this.sourceExt = sourceExt;
-        this.compiledExt = compiledExt;
         this.commands = commands;
 
         final Map<String, String> map = new LinkedHashMap<>();
@@ -49,8 +45,8 @@ public class ProcessExecutor {
     public String[] process(final File file, final Object... varargs) {
         try {
             final String command = getCommand(file, varargs);
-            if (command == ERROR_NO_JDK) {
-                return new String[]{ERROR_NO_JDK};
+            if (command.equals(ERROR_NO_PROCESS)) {
+                return new String[]{ERROR_NO_PROCESS};
             }
             return SubProcess.run(command);
         } catch (final Exception e) {
@@ -62,7 +58,7 @@ public class ProcessExecutor {
     public String getCommand(final File file, final Object... varargs) {
         final Command command = getCompilerCommand();
         if (command == null) {
-            return ERROR_NO_JDK;
+            return ERROR_NO_PROCESS;
         }
         final StringBuilder args = new StringBuilder();
         final int length = varargs.length;
@@ -96,13 +92,4 @@ public class ProcessExecutor {
     public String getName() {
         return name;
     }
-
-    public String getSourceExtension() {
-        return sourceExt;
-    }
-
-    public String getCompiledExtension() {
-        return compiledExt;
-    }
-
 }

@@ -156,10 +156,10 @@ public class Editor extends JPanel {
             final String name = project.getName();
             if (deleteSource || deleteCompiled) {
                 if (hook.isComplete(name)) {
-                    codePane.setText(language.getSkeleton(project));
-                    codePane.highlightKeywords();
                     hook.setComplete(name, false);
                 }
+                codePane.setText(language.getSkeleton(project));
+                codePane.highlightKeywords();
                 return;
             }
             JOptionPane.showMessageDialog(null, "Error deleting current code!");

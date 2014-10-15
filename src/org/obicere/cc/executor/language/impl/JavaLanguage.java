@@ -6,7 +6,6 @@ import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.language.Casing;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.executor.language.LanguageIdentifier;
-import org.obicere.cc.methods.StringSubstitute;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.Runner;
@@ -84,28 +83,6 @@ public class JavaLanguage extends Language {
         return LITERALS;
     }
 
-    public String getSkeleton(final Project project) {
-        try {
-            final Runner runner = project.getRunner();
-
-            final String returnType = runner.getReturnType().getSimpleName();
-            final String methodName = runner.getMethodName();
-
-            final String skeleton = SKELETON;
-            final StringSubstitute substitute = new StringSubstitute();
-
-            substitute.put("parameter", buildParameters(project));
-            substitute.put("name", project.getName());
-            substitute.put("return", returnType);
-            substitute.put("method", methodName);
-
-            return substitute.apply(skeleton);
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
     @Override
     public String buildParameters(final Project project) {
         final StringBuilder builder = new StringBuilder();
@@ -169,42 +146,52 @@ public class JavaLanguage extends Language {
     }
 
     @Override
-    public Casing getParameterCasing() {
+    protected Casing getParameterCasing() {
         return FIELD_CASING;
     }
 
     @Override
-    public boolean shouldDisplayParameterTypes() {
+    protected Casing getMethodCasing(){
+        return METHOD_CASING;
+    }
+
+    @Override
+    protected Casing getClassCasing(){
+        return CLASS_CASING;
+    }
+
+    @Override
+    protected boolean shouldDisplayParameterTypes() {
         return INCLUDE_PARAMETER_TYPES;
     }
 
     @Override
-    public String getStringType() {
+    protected String getStringType() {
         return STRING;
     }
 
     @Override
-    public String getCharacterType() {
+    protected String getCharacterType() {
         return CHARACTER;
     }
 
     @Override
-    public String getIntegerType() {
+    protected String getIntegerType() {
         return INTEGER;
     }
 
     @Override
-    public String getFloatType() {
+    protected String getFloatType() {
         return FLOAT;
     }
 
     @Override
-    public String getArrayOpen() {
+    protected String getArrayOpen() {
         return OPEN_ARRAY;
     }
 
     @Override
-    public String getArrayClose() {
+    protected String getArrayClose() {
         return CLOSE_ARRAY;
     }
 
@@ -216,6 +203,11 @@ public class JavaLanguage extends Language {
     @Override
     public String getCompiledExtension() {
         return COMPILED_EXTENSION;
+    }
+
+    @Override
+    protected String getRawSkeleton() {
+        return SKELETON;
     }
 
     @Override

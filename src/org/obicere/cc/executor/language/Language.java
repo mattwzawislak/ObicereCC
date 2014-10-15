@@ -6,6 +6,7 @@ import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.compiler.ProcessExecutor;
 import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.gui.projects.Editor;
+import org.obicere.cc.methods.StringSubstitute;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
 
@@ -88,9 +89,52 @@ public abstract class Language {
     }
 
 
-    public abstract String getSkeleton(final Project project); // TODO: test a generic implementation
+    public String getSkeleton(final Project project) {
+        try {
+
+            final Class<?> returnType = project.getRunner().getReturnType();
+
+            final String skeleton = getRawSkeleton();
+            final StringSubstitute substitute = new StringSubstitute();
+
+            substitute.put("parameter", buildParameters(project));
+            substitute.put("method", getMethodString(project));
+            substitute.put("name", getClassString(project));
+            substitute.put("return", getStringForClass(returnType));
+
+            System.out.println(substitute.apply(skeleton));
+            return substitute.apply(skeleton);
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    private String getMethodString(final Project project) {
+        final Casing methodCasing = getMethodCasing();
+        final String methodName = project.getRunner().getMethodName();
+        if (methodCasing != null) {
+            return methodCasing.performCase(methodName);
+        } else {
+            return methodName;
+        }
+    }
+
+    private String getClassString(final Project project) {
+        final Casing classCasing = getClassCasing();
+        final String className = project.getName();
+        if (classCasing != null) {
+            return classCasing.performCase(className);
+        } else {
+            return className;
+        }
+    }
 
     protected abstract Casing getParameterCasing();
+
+    protected abstract Casing getMethodCasing();
+
+    protected abstract Casing getClassCasing();
 
     protected abstract boolean shouldDisplayParameterTypes();
 
@@ -121,6 +165,8 @@ public abstract class Language {
     public abstract String getSourceExtension();
 
     public abstract String getCompiledExtension();
+
+    protected abstract String getRawSkeleton();
 
     protected abstract String[] getKeyWords();
 
@@ -167,40 +213,45 @@ public abstract class Language {
                 builder.append(", ");
             }
             if (displayTypes) {
-                final Class<?> cls = params[i].getType();
-                final String clsName = cls.getSimpleName().replaceAll("(\\[|\\])+", "");
-                switch (clsName) {
-                    case "int":
-                    case "Integer":
-                        builder.append(getIntegerType());
-                        break;
-
-                    case "char":
-                    case "Character":
-                        builder.append(getCharacterType());
-                        break;
-
-                    case "float":
-                    case "Float":
-                    case "double":
-                    case "Double":
-                        builder.append(getFloatType());
-                        break;
-
-                    case "String":
-                        builder.append(getStringType());
-                        break;
-                }
-                final int count = getArrayDimension(cls);
-                if (count >= 1) {
-                    builder.append(getArray(count));
-                }
+                builder.append(getStringForClass(params[i].getType()));
             }
             if (param != null) {
                 builder.append(param.performCase(params[i].getName()));
             } else {
                 builder.append(params[i].getName());
             }
+        }
+        return builder.toString();
+    }
+
+    private String getStringForClass(final Class<?> cls) {
+        final StringBuilder builder = new StringBuilder();
+        final String clsName = cls.getSimpleName().replaceAll("(\\[|\\])+", "");
+        switch (clsName) {
+            case "int":
+            case "Integer":
+                builder.append(getIntegerType());
+                break;
+
+            case "char":
+            case "Character":
+                builder.append(getCharacterType());
+                break;
+
+            case "float":
+            case "Float":
+            case "double":
+            case "Double":
+                builder.append(getFloatType());
+                break;
+
+            case "String":
+                builder.append(getStringType());
+                break;
+        }
+        final int count = getArrayDimension(cls);
+        if (count >= 1) {
+            builder.append(getArray(count));
         }
         return builder.toString();
     }

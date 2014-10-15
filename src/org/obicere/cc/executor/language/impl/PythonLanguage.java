@@ -1,25 +1,17 @@
 package org.obicere.cc.executor.language.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.obicere.cc.executor.Case;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.language.Casing;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.executor.language.LanguageIdentifier;
 import org.obicere.cc.executor.language.LanguageStreamer;
-import org.obicere.cc.methods.IOUtils;
-import org.obicere.cc.methods.StringSubstitute;
-import org.obicere.cc.methods.protocol.BasicProtocol;
 import org.obicere.cc.methods.protocol.MethodInvocationProtocol;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.Runner;
+
+import java.io.File;
+import java.net.ServerSocket;
 
 /**
  * @author Obicere
@@ -74,26 +66,18 @@ public class PythonLanguage extends Language {
     }
 
     @Override
-    public String getSkeleton(final Project project) {
-        try {
-            final String methodName = project.getRunner().getMethodName();
-
-            final String skeleton = SKELETON;
-            final StringSubstitute substitute = new StringSubstitute();
-
-            substitute.put("parameter", buildParameters(project));
-            substitute.put("method", methodName);
-
-            return substitute.apply(skeleton);
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        return "";
+    protected Casing getParameterCasing() {
+        return FIELD_CASING;
     }
 
     @Override
-    protected Casing getParameterCasing() {
-        return FIELD_CASING;
+    protected Casing getMethodCasing() {
+        return METHOD_CASING;
+    }
+
+    @Override
+    protected Casing getClassCasing() {
+        return CLASS_CASING;
     }
 
     @Override
@@ -109,6 +93,11 @@ public class PythonLanguage extends Language {
     @Override
     public String getCompiledExtension() {
         return COMPILED_EXTENSION;
+    }
+
+    @Override
+    protected String getRawSkeleton() {
+        return SKELETON;
     }
 
     @Override

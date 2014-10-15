@@ -36,7 +36,6 @@ import java.util.regex.Pattern;
 public class CodePane extends JTextPane {
 
     private static final String             BRACKET_CASE_MATCH = ".*?(\\{)\\s*(\\})";
-    private static final String             OPEN_BODY_MATCH    = ".*?([\\)\\{:])\\s*";
     private static final String             MASTER_SPLIT       = "([(\\[\\]);\\{}\0.])";
     private static final SimpleAttributeSet KEYWORD_SET        = new SimpleAttributeSet();
     private static final SimpleAttributeSet NORMAL_SET         = new SimpleAttributeSet();
@@ -160,27 +159,48 @@ public class CodePane extends JTextPane {
                 final StringBuilder add = new StringBuilder("\n");
 
                 int newCaret = index;
-                for (final char c : line.toCharArray()) {
-                    if (c == '\t') {
-                        add.append('\t');
-                        newCaret++;
-                    } else {
-                        break;
+                String curCode = getText();
+                for (final String str : language.getLiteralMatches()) {
+                    curCode = clearMatches(curCode, str);
+                }
+                int tabs = 0;
+                final String[] lines = curCode.split("\n");
+                final int max = Math.min(lineNumber + 1, lines.length);
+                final int caretIndex = getCaretPositionInLine(lineNumber);
+
+                for (int i = 0; i < max; i++) {
+                    int open = 0;
+                    int close = 0;
+                    int block = 0;
+                    final char[] set = lines[i].toCharArray();
+                    boolean lastShort = false;
+                    for (final char c : set) {
+                        switch (c) {
+                            case '{':
+                                open++;
+                                break;
+                            case '}':
+                                close++;
+                                break;
+                            case '(':
+                                if (!lastShort) {
+                                    block++;
+                                    lastShort = true;
+                                }
+                                break;
+                        }
+                    }
+                    tabs += open - close;
+                    if (open == 0 && block > 0) {
+                        tabs++;
                     }
                 }
-                if (line.matches(OPEN_BODY_MATCH)) {
-                    // If the line we are at is an open body line
-                    // and the caret is after the opening character
-                    final String match = line.replaceAll(OPEN_BODY_MATCH, "$1");
-                    final int matchIndex = line.indexOf(match);
-                    final int caretIndex = getCaretPositionInLine(lineNumber);
-                    if (matchIndex < caretIndex) {
-                        add.append('\t');
-                        newCaret++;
-                    }
+                for (int i = 0; i < tabs; i++) {
+                    add.append("\t");
                 }
+                newCaret += tabs;
+
                 if (line.matches(BRACKET_CASE_MATCH)) {
-                    final int caretIndex = getCaretPositionInLine(lineNumber);
                     final int openMatchIndex = line.indexOf('{');
                     final int closeMatchIndex = line.indexOf('}', caretIndex);
                     if (openMatchIndex < caretIndex && caretIndex <= closeMatchIndex) {
@@ -322,7 +342,7 @@ public class CodePane extends JTextPane {
         if (start <= caret && caret <= elementLine.getEndOffset()) {
             return caret - start;
         }
-        return Integer.MAX_VALUE;
+        return -1;
     }
 
     public String getLine(final int line) {

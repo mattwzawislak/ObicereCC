@@ -102,7 +102,6 @@ public abstract class Language {
             substitute.put("name", getClassString(project));
             substitute.put("return", getStringForClass(returnType));
 
-            System.out.println(substitute.apply(skeleton));
             return substitute.apply(skeleton);
         } catch (final Exception e) {
             e.printStackTrace();

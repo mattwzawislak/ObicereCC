@@ -175,8 +175,9 @@ public class CodePane extends JTextPane {
                     int block = 0;
                     final char[] set = lines[i].toCharArray();
                     boolean lineIsStatement = false;
-                    for (final char c : set) {
-                        switch (c) {
+                    int bound = i == lineNumber ? Math.min(caretIndex + 1, set.length) : set.length;
+                    for (int j = 0; j < bound; j++) {
+                        switch (set[j]) {
                             case '{':
                                 open++;
                                 break;
@@ -192,7 +193,7 @@ public class CodePane extends JTextPane {
                         }
                     }
                     tabs += open - close;
-                    if (open == 0 && block > 0) {
+                    if (open == 0 && block > 0 && !lineIsStatement) {
                         tabs++;
                         shortCounter++;
                     } else if (lineIsStatement) {

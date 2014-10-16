@@ -121,8 +121,13 @@ public class JavaLanguage extends Language {
                 final Result[] results = new Result[cases.length];
                 for (int i = 0; i < results.length; i++) {
                     final Case thisCase = cases[i];
-                    final Object result = method.invoke(invoke.newInstance(), thisCase.getParameters());
-                    results[i] = new Result(result, thisCase.getExpectedResult(), thisCase.getParameters());
+                    try {
+                        final Object result = method.invoke(invoke.newInstance(), thisCase.getParameters());
+                        results[i] = new Result(result, thisCase.getExpectedResult(), thisCase.getParameters());
+                    } catch (final Throwable e) {
+                        e.printStackTrace();
+                        return null;
+                    }
                 }
                 return results;
             } catch (final Exception e) {
@@ -151,12 +156,12 @@ public class JavaLanguage extends Language {
     }
 
     @Override
-    protected Casing getMethodCasing(){
+    protected Casing getMethodCasing() {
         return METHOD_CASING;
     }
 
     @Override
-    protected Casing getClassCasing(){
+    protected Casing getClassCasing() {
         return CLASS_CASING;
     }
 

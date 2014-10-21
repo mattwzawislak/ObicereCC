@@ -1,8 +1,9 @@
-package org.obicere.cc.executor.language.impl;
+package org.obicere.cc.executor.language.impl.python;
 
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.language.Casing;
+import org.obicere.cc.executor.language.CodeFormatter;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.executor.language.LanguageIdentifier;
 import org.obicere.cc.executor.language.LanguageStreamer;
@@ -135,6 +136,11 @@ public class PythonLanguage extends Language {
             }
         }
         displayError(project, message);
+        return null;
+    }
+
+    @Override
+    public CodeFormatter getCodeFormatter() {
         return null;
     }
 }

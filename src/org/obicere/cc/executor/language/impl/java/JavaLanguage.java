@@ -1,9 +1,10 @@
-package org.obicere.cc.executor.language.impl;
+package org.obicere.cc.executor.language.impl.java;
 
 import org.obicere.cc.executor.Case;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.language.Casing;
+import org.obicere.cc.executor.language.CodeFormatter;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.executor.language.LanguageIdentifier;
 import org.obicere.cc.projects.Parameter;
@@ -20,7 +21,7 @@ import java.net.URLClassLoader;
 @LanguageIdentifier
 public class JavaLanguage extends Language {
 
-    public static final String[] KEYWORDS = new String[]{
+    private static final String[] KEYWORDS = new String[]{
             "abstract", "assert", "boolean", "break", "byte",
             "case", "catch", "char", "class", "const",
             "continue", "default", "double", "do", "else",
@@ -35,44 +36,46 @@ public class JavaLanguage extends Language {
     };
 
     //skeleton
-    public static final String SKELETON = "public class ${name} {\n\t\n\tpublic ${return} ${method}(${parameter}){\n\t\t\n\t}\n}";
+    private static final String SKELETON = "private class ${name} {\n\t\n\tprivate ${return} ${method}(${parameter}){\n\t\t\n\t}\n}";
 
     //literal
-    public static final String[] LITERALS = new String[]{
+    private static final String[] LITERALS = new String[]{
             "\"(?:[^\"\\\\\\n\\r\\u2028\\u2029]|\\\\(?:[^\\n\\rxu0-9]|0(?![0-9])|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|\\n|\\r\\n?))*\"", // Match Strings
             "'(?:[^\"\\\\\\n\\r\\u2028\\u2029]|\\\\(?:[^\\n\\rxu0-9]|0(?![0-9])|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|\\n|\\r\\n?))'", // Match chars
             "(//.*+)|(?s)(/[*].*?[*]/)" // Match comments
     };
 
     //compiledExtension
-    public static final String COMPILED_EXTENSION = ".class";
+    private static final String COMPILED_EXTENSION = ".class";
     //sourceExtension
-    public static final String SOURCE_EXTENSION   = ".java";
+    private static final String SOURCE_EXTENSION   = ".java";
 
-    public static final Command[] COMPILER_COMMANDS = new Command[]{
+    private static final Command[] COMPILER_COMMANDS = new Command[]{
             new Command("javac", "${exec} -g -nowarn \"${file}\"")
     };
 
-    public static final Casing METHOD_CASING = Casing.LOWER_CAMEL_CASE;
+    private static final Casing METHOD_CASING = Casing.LOWER_CAMEL_CASE;
 
-    public static final Casing FIELD_CASING = Casing.LOWER_CAMEL_CASE;
+    private static final Casing FIELD_CASING = Casing.LOWER_CAMEL_CASE;
 
-    public static final Casing CLASS_CASING = Casing.CAMEL_CASE;
+    private static final Casing CLASS_CASING = Casing.CAMEL_CASE;
 
-    public static final boolean INCLUDE_PARAMETER_TYPES = true;
+    private static final boolean INCLUDE_PARAMETER_TYPES = true;
 
     //string
-    public static final String STRING    = "String";
+    private static final String STRING    = "String";
     //character
-    public static final String CHARACTER = "char";
+    private static final String CHARACTER = "char";
     //integer
-    public static final String INTEGER   = "int";
+    private static final String INTEGER   = "int";
     //float
-    public static final String FLOAT     = "double";
+    private static final String FLOAT     = "double";
 
-    public static final String OPEN_ARRAY = "[";
+    private static final String OPEN_ARRAY = "[";
 
-    public static final String CLOSE_ARRAY = "]";
+    private static final String CLOSE_ARRAY = "]";
+
+    private static final CodeFormatter FORMATTER = new JavaCodeFormatter();
 
     public JavaLanguage() {
         super("Java");
@@ -223,5 +226,10 @@ public class JavaLanguage extends Language {
     @Override
     public Command[] getCommands() {
         return COMPILER_COMMANDS;
+    }
+
+    @Override
+    public CodeFormatter getCodeFormatter(){
+        return FORMATTER;
     }
 }

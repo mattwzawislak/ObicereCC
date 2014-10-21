@@ -135,6 +135,10 @@ public abstract class Language {
 
     protected abstract Casing getClassCasing();
 
+    public int getTabSize() {
+        return 4;
+    }
+
     protected abstract boolean shouldDisplayParameterTypes();
 
     protected String getStringType() {
@@ -175,6 +179,7 @@ public abstract class Language {
 
     public abstract Result[] compileAndRun(final Project project);
 
+    public abstract CodeFormatter getCodeFormatter();
 
     private String getArray(final int size) {
         if (size <= 0) {
@@ -261,7 +266,7 @@ public abstract class Language {
         final String path = project.getFile(this).getAbsolutePath();
         for (final String str : error) {
             builder.append(str.replace(path, "line"));
-            builder.append("\n");
+            builder.append(System.lineSeparator());
         }
         if (editor != null) {
             editor.setInstructionsText(builder.toString(), true);

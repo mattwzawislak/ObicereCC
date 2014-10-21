@@ -1,5 +1,6 @@
 package org.obicere.cc.gui.projects;
 
+import org.obicere.cc.executor.language.CodeFormatter;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.shutdown.CodeCompletionHook;
 import org.obicere.cc.shutdown.EditorHook;
@@ -35,11 +36,10 @@ import java.util.regex.Pattern;
 
 public class CodePane extends JTextPane {
 
-    private static final String             BRACKET_CASE_MATCH = ".*?(\\{)\\s*(\\})";
-    private static final String             MASTER_SPLIT       = "([(\\[\\]);\\{}\0.])";
-    private static final SimpleAttributeSet KEYWORD_SET        = new SimpleAttributeSet();
-    private static final SimpleAttributeSet NORMAL_SET         = new SimpleAttributeSet();
-    private static final SimpleAttributeSet STRING_SET         = new SimpleAttributeSet();
+    private static final String             MASTER_SPLIT = "([(\\[\\]);\\{}\0.])";
+    private static final SimpleAttributeSet KEYWORD_SET  = new SimpleAttributeSet();
+    private static final SimpleAttributeSet NORMAL_SET   = new SimpleAttributeSet();
+    private static final SimpleAttributeSet STRING_SET   = new SimpleAttributeSet();
     private static Font editorFont;
 
     private static final EditorHook         EDITOR     = ShutDownHookManager.hookByClass(EditorHook.class);
@@ -67,7 +67,8 @@ public class CodePane extends JTextPane {
         final StyleContext sc = StyleContext.getDefaultStyleContext();
         final TabStop[] tabs = new TabStop[50];
         final FontMetrics metrics = getFontMetrics(editorFont);
-        final int width = metrics.stringWidth("    ");
+        // Create a string of length equal to the tab size by formatting
+        final int width = metrics.stringWidth(String.format(String.format("%%%ss", language.getTabSize()), ""));
         for (int i = 0; i < tabs.length; i++) {
             tabs[i] = new TabStop(width * i);
         }
@@ -152,74 +153,20 @@ public class CodePane extends JTextPane {
         });
         actionMap.put("Newline", new AbstractAction() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                final int index = getCaretPosition();
-                final int lineNumber = getCaretLine();
-                final String line = getLine(lineNumber);
-                final StringBuilder add = new StringBuilder("\n");
-
-                int newCaret = index;
+            public void actionPerformed(final ActionEvent e) {
                 String curCode = getText();
                 for (final String str : language.getLiteralMatches()) {
                     curCode = clearMatches(curCode, str);
                 }
-                int tabs = 0;
-                final String[] lines = curCode.split("\n");
-                final int max = Math.min(lineNumber + 1, lines.length);
-                final int caretIndex = getCaretPositionInLine(lineNumber);
-
-                int shortCounter = 0;
-                for (int i = 0; i < max; i++) {
-                    int open = 0;
-                    int close = 0;
-                    int block = 0;
-                    final char[] set = lines[i].toCharArray();
-                    boolean lineIsStatement = false;
-                    int bound = i == lineNumber ? Math.min(caretIndex + 1, set.length) : set.length;
-                    for (int j = 0; j < bound; j++) {
-                        switch (set[j]) {
-                            case '{':
-                                open++;
-                                break;
-                            case '}':
-                                close++;
-                                break;
-                            case '(':
-                                block++;
-                                break;
-                            case ';':
-                                lineIsStatement = true;
-                                break;
-                        }
-                    }
-                    tabs += open - close;
-                    if (open == 0 && block > 0 && !lineIsStatement) {
-                        tabs++;
-                        shortCounter++;
-                    } else if (lineIsStatement) {
-                        tabs -= shortCounter;
-                        shortCounter = 0;
-                    }
-                }
-                for (int i = 0; i < tabs; i++) {
-                    add.append("\t");
-                }
-                newCaret += tabs;
-
-                if (line.matches(BRACKET_CASE_MATCH)) {
-                    final int openMatchIndex = line.indexOf('{');
-                    final int closeMatchIndex = line.indexOf('}', caretIndex);
-                    if (openMatchIndex < caretIndex && caretIndex <= closeMatchIndex) {
-                        final String soFar = add.toString();
-                        add.append('\t');
-                        add.append(soFar); // Effectively duplicate the string since we are adding
-                        newCaret++;        // two lines here with the first having an extra tab
-                    }
-                }
+                final int line = getCaretLine();
+                final int index = getCaretPosition();
+                final StringBuilder builder = new StringBuilder();
+                final CodeFormatter formatter = language.getCodeFormatter();
+                final int newCaret = formatter.newlineEntered(curCode, builder, index, line, getCaretPositionInLine(line));
 
                 final String code = getText();
-                setText(code.substring(0, index) + add + code.substring(index));
-                setCaretPosition(newCaret + 1);
+                setText(code.substring(0, index) + builder.toString() + code.substring(index));
+                setCaretPosition(newCaret);
                 highlightKeywords();
             }
         });

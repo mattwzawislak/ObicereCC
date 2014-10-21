@@ -147,7 +147,7 @@ public class Editor extends JPanel {
     }
 
     public void clearSaveFiles() {
-        final int n = JOptionPane.showConfirmDialog(null, "This will delete all progress on this project.\nDo you wish to continue?", "Continue?", JOptionPane.YES_NO_OPTION);
+        final int n = JOptionPane.showConfirmDialog(null, "This will delete all progress on this project." + System.lineSeparator() + "Do you wish to continue?", "Continue?", JOptionPane.YES_NO_OPTION);
         if (n == JOptionPane.YES_OPTION) {
             final File sourceFile = new File(project.getFileName(language) + language.getSourceExtension());
             final File compiledFile = new File(project.getFileName(language) + language.getCompiledExtension());

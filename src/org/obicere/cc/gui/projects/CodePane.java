@@ -68,7 +68,7 @@ public class CodePane extends JTextPane {
         final TabStop[] tabs = new TabStop[50];
         final FontMetrics metrics = getFontMetrics(editorFont);
         // Create a string of length equal to the tab size by formatting
-        final int width = metrics.stringWidth(String.format(String.format("%%%ss", language.getTabSize()), ""));
+        final int width = metrics.stringWidth(String.format(String.format("%%%ss", language.getTabSize()), " "));
         for (int i = 0; i < tabs.length; i++) {
             tabs[i] = new TabStop(width * i);
         }
@@ -164,8 +164,7 @@ public class CodePane extends JTextPane {
                 final CodeFormatter formatter = language.getCodeFormatter();
                 final int newCaret = formatter.newlineEntered(curCode, builder, index, line, getCaretPositionInLine(line));
 
-                final String code = getText();
-                setText(code.substring(0, index) + builder.toString() + code.substring(index));
+                setText(curCode.substring(0, index) + builder.toString() + curCode.substring(index));
                 setCaretPosition(newCaret);
                 highlightKeywords();
             }

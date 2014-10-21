@@ -11,13 +11,13 @@ public class JavaCodeFormatter implements CodeFormatter {
 
     @Override
     public int newlineEntered(final String code, final StringBuilder add, final int caret, final int row, final int column) {
-        add.append(System.lineSeparator());
+        add.append("\n");
 
         int newCaret = caret + 1; // accommodate for the newline
         int tabs = 0;
-        final String[] lines = code.split(System.lineSeparator());
-        final String currentLine = lines[row];
-        final int max = Math.min(row + 1, lines.length); // Don't attempt to check lines when none exist
+        final String[] lines = code.split("\n");
+        final int max = Math.min(row + 1, lines.length);
+        final String currentLine = lines[max - 1];// Don't attempt to check lines when none exist
 
         int shortCounter = 0;
         for (int i = 0; i < max; i++) {

@@ -153,10 +153,10 @@ public class JavaLanguage extends Language {
                         results[i] = new Result(result, thisCase.getExpectedResult(), thisCase.getParameters());
                     } catch (final InterruptedException e) {
                         e.printStackTrace();
-                        results[i] = new Result("Timed out...", thisCase.getExpectedResult(), thisCase.getParameters());
+                        results[i] = Result.newTimedOutResult(thisCase);
                     } catch (final ExecutionException e){
                         e.printStackTrace();
-                        results[i] = new Result("Error", thisCase.getExpectedResult(), thisCase.getParameters());
+                        results[i] = Result.newErrorResult(thisCase);
                     }
                 }
                 return results;

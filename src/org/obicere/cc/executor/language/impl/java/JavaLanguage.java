@@ -17,6 +17,12 @@ import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 @LanguageIdentifier
 public class JavaLanguage extends Language {
@@ -110,7 +116,13 @@ public class JavaLanguage extends Language {
             try {
                 final Runner runner = project.getRunner();
                 final Parameter[] parameters = runner.getParameters();
-                final Case[] cases = runner.getCases();
+                Case[] cases;
+                try {
+                    cases = runner.getCases();
+                } catch (final Throwable e) {
+                    e.printStackTrace();
+                    return null;
+                }
                 final Class<?>[] searchClasses = new Class<?>[parameters.length];
                 for (int i = 0; i < parameters.length; i++) {
                     searchClasses[i] = parameters[i].getType();
@@ -121,15 +133,30 @@ public class JavaLanguage extends Language {
                 final Class<?> invoke = cl.loadClass(project.getName());
                 final Method method = invoke.getDeclaredMethod(runner.getMethodName(), searchClasses);
 
-                final Result[] results = new Result[cases.length];
-                for (int i = 0; i < results.length; i++) {
-                    final Case thisCase = cases[i];
+                final int length = cases.length;
+                final Result[] results = new Result[length];
+                final ArrayList<FutureTask<Object>> resultTasks = new ArrayList<>(length);
+                final ExecutorService tasks = Executors.newFixedThreadPool(length);
+                for (final Case thisCase : cases) {
                     try {
-                        final Object result = method.invoke(invoke.newInstance(), thisCase.getParameters());
-                        results[i] = new Result(result, thisCase.getExpectedResult(), thisCase.getParameters());
+                        final FutureTask<Object> task = new FutureTask<>(() -> method.invoke(invoke.newInstance(), thisCase.getParameters()));
+                        tasks.execute(task);
+                        resultTasks.add(task);
                     } catch (final Throwable e) {
                         e.printStackTrace();
-                        return null;
+                    }
+                }
+                for (int i = 0; i < length; i++) {
+                    final Case thisCase = cases[i];
+                    try {
+                        final Object result = resultTasks.get(i).get(100, TimeUnit.HOURS);
+                        results[i] = new Result(result, thisCase.getExpectedResult(), thisCase.getParameters());
+                    } catch (final InterruptedException e) {
+                        e.printStackTrace();
+                        results[i] = new Result("Timed out...", thisCase.getExpectedResult(), thisCase.getParameters());
+                    } catch (final ExecutionException e){
+                        e.printStackTrace();
+                        results[i] = new Result("Error", thisCase.getExpectedResult(), thisCase.getParameters());
                     }
                 }
                 return results;
@@ -229,7 +256,7 @@ public class JavaLanguage extends Language {
     }
 
     @Override
-    public CodeFormatter getCodeFormatter(){
+    public CodeFormatter getCodeFormatter() {
         return FORMATTER;
     }
 }

@@ -97,11 +97,13 @@ public class ResultsTable extends JTable implements TableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column) {
-        final JLabel label = new JLabel(String.valueOf(value));
+        final String data = String.valueOf(value);
+        final JLabel label = new JLabel(data);
         if (row == 0) { // Headers
             label.setFont(label.getFont().deriveFont(Font.BOLD));
             return label;
         }
+        label.setToolTipText(data);
         label.setForeground(resultsCorrect[row - 1] ? CORRECT : Color.RED);
         return label;
     }

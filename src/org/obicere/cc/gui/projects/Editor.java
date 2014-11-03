@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -182,7 +183,7 @@ public class Editor extends JPanel {
             public void run() {
                 if (thread.isAlive()) {
                     thread.interrupt();
-                    setInstructionsText(language.getName() + ": program execution timed out after 10 seconds.", true);
+                    SwingUtilities.invokeLater(() -> setInstructionsText(language.getName() + ": program execution timed out after 10 seconds.", true));
                 }
             }
         }, 10000);

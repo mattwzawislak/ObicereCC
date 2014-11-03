@@ -18,7 +18,7 @@ import java.awt.FlowLayout;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
+public class ProjectPanel extends JPanel {
 
     private static final Dimension PROJECT_PANEL_MANIFEST_SIZE = new Dimension(200, 40);
 
@@ -72,11 +72,6 @@ public class ProjectPanel extends JPanel implements Comparable<ProjectPanel> {
 
     public Project getProject() {
         return project;
-    }
-
-    @Override
-    public int compareTo(final ProjectPanel o) {
-        return getProject().getSortName().compareTo(o.getProject().getSortName());
     }
 
     private String toHTML(final String description) {

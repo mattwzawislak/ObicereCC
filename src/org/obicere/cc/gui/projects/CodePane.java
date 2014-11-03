@@ -296,14 +296,4 @@ public class CodePane extends JTextPane {
         }
         return -1;
     }
-
-    public String getLine(final int line) {
-        if (getText().length() == 0) {
-            return "";
-        }
-        final Element map = getDocument().getDefaultRootElement();
-        final Element branch = map.getElement(line);
-        return getText().substring(branch.getStartOffset(), branch.getEndOffset() - 1);
-    }
-
 }

@@ -4,6 +4,7 @@ import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.gui.layout.VerticalFlowLayout;
 import org.obicere.cc.gui.layout.WrapLayout;
 import org.obicere.cc.projects.Project;
+import org.obicere.cc.projects.ProjectComparator;
 import org.obicere.cc.shutdown.SaveProgressHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 
@@ -15,6 +16,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class ProjectSelector extends JPanel {
 
@@ -30,13 +32,14 @@ public class ProjectSelector extends JPanel {
         final Border border = BorderFactory.createRaisedSoftBevelBorder();
         layout.setMaximizeOtherDimension(true);
         selector.setLayout(layout);
-        for (final Project project : Project.getData()) {
+        final List<Project> projectList = Project.getData();
+        Collections.sort(projectList, new ProjectComparator());
+        for (final Project project : projectList) {
             final ProjectPanel panel = new ProjectPanel(project);
             projects.add(panel);
             panel.setBorder(border);
             panel.setComplete(hook.isComplete(project.getName()));
         }
-        Collections.sort(projects);
         for (int i = 0; i < difficultyPanels.length; i++) {
             final JPanel panel = new JPanel(new WrapLayout(WrapLayout.LEFT));
             panel.setBorder(new TitledBorder(Project.getDifficultyString(i + 1)));

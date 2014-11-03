@@ -75,10 +75,6 @@ public class Project {
         return DIFFICULTY[difficulty - 1];
     }
 
-    public String getSortName() {
-        return manifest.difficulty() + getName();
-    }
-
     public String getCurrentCode(final Language language) {
         try {
             final File file = getFile(language);

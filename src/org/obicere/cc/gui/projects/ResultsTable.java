@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -32,7 +33,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
 
         final DefaultTableModel model = new DefaultTableModel() {
             @Override
-            public boolean isCellEditable(int row, int col) {
+            public boolean isCellEditable(final int row, final int col) {
                 return false;
             }
         };
@@ -40,19 +41,24 @@ public class ResultsTable extends JTable implements TableCellRenderer {
         setModel(model);
         setEnabled(false);
         model.setColumnIdentifiers(HEADERS);
-        model.setColumnCount(3);
+        model.setColumnCount(HEADERS.length);
         model.insertRow(0, HEADERS);
-        getColumnModel().getColumn(0).setMinWidth(125);
-        getColumnModel().getColumn(0).setMaxWidth(125);
-        getColumnModel().getColumn(1).setMinWidth(125);
-        getColumnModel().getColumn(1).setMaxWidth(125);
+
+        final TableColumnModel columns = getColumnModel();
+        fixSize(columns, 0, 125);
+        fixSize(columns, 1, 125);
+    }
+
+    private void fixSize(final TableColumnModel model, final int column, final int size){
+        model.getColumn(column).setMinWidth(size);
+        model.getColumn(column).setMaxWidth(size);
     }
 
     public void setResults(final Result[] results) {
         synchronized (getTreeLock()) {
             final DefaultTableModel m = (DefaultTableModel) getModel();
             final int rowCount = m.getRowCount();
-            for (int i = 1; i < rowCount; i++) {
+            for (int i = 1; i < rowCount; i++) { // Remove all rows but the header
                 m.removeRow(1);
             }
             if (results != null && results.length > 0) {

@@ -5,6 +5,7 @@ import org.obicere.cc.gui.layout.VerticalFlowLayout;
 import org.obicere.cc.gui.layout.WrapLayout;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.ProjectComparator;
+import org.obicere.cc.projects.ProjectLoader;
 import org.obicere.cc.shutdown.SaveProgressHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 
@@ -32,7 +33,7 @@ public class ProjectSelector extends JPanel {
         final Border border = BorderFactory.createRaisedSoftBevelBorder();
         layout.setMaximizeOtherDimension(true);
         selector.setLayout(layout);
-        final List<Project> projectList = Project.getData();
+        final List<Project> projectList = ProjectLoader.loadCurrent();
         Collections.sort(projectList, new ProjectComparator());
         for (final Project project : projectList) {
             final ProjectPanel panel = new ProjectPanel(project);

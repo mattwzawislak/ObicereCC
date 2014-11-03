@@ -3,6 +3,7 @@ package org.obicere.cc.methods;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.configuration.Global.URLs;
 import org.obicere.cc.gui.Splash;
+import org.obicere.cc.projects.ProjectLoader;
 import org.obicere.cc.shutdown.RunnerSourceHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.projects.Project;
@@ -47,7 +48,7 @@ public class Updater {
     }
 
     public static void update() {
-        Project.loadCurrent();
+        ProjectLoader.loadCurrent();
         if (!isInternetReachable()) {
             return;
         }
@@ -82,15 +83,13 @@ public class Updater {
                 JOptionPane.showMessageDialog(null, "Update available - Please download again.", "Update", JOptionPane.INFORMATION_MESSAGE);
                 System.exit(0);
             }
-            for (final Project p : Project.getData()) {
+            for (final Project p : ProjectLoader.getData()) {
                 currentRunnersList.put(p.getRunnerClass().getCanonicalName(), p.getVersion());
             }
             updatedRunnersList.keySet().stream().filter(OUTDATED_FILTER).forEach(key -> download(key, src));
         }
         currentRunnersList = null;
         updatedRunnersList = null;
-        Project.resetData();
-        Project.loadCurrent();
     }
 
     private static void download(final String name, final String src) {

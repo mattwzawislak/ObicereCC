@@ -1,19 +1,15 @@
 package org.obicere.cc.projects;
 
-import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.methods.IOUtils;
 import org.obicere.cc.methods.Reflection;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Project {
 
-    private static final String[]            DIFFICULTY = new String[]{"Beginner", "Intermediate", "Advanced", "Challenging", "Legendary"};
-    public static final  LinkedList<Project> DATA       = new LinkedList<>();
+    private static final String[] DIFFICULTY = new String[]{"Beginner", "Intermediate", "Advanced", "Challenging", "Legendary"};
 
     private final String         name;
     private final RunnerManifest manifest;
@@ -25,30 +21,6 @@ public class Project {
         this.runner = (Runner) Reflection.newInstance(runnerClass);
         this.name = name;
         this.manifest = runnerClass.getAnnotation(RunnerManifest.class);
-    }
-
-    public static void loadCurrent() {
-        final LinkedList<Class<?>> list = Reflection.loadClassesFrom(Paths.SOURCES);
-        final Class<Runner> cls = Runner.class;
-        Reflection.filterAsSubclassOf(cls, list);
-        list.forEach(Project::add);
-    }
-
-    private static void add(final Class<?> cls) {
-        try {
-            final String name = cls.getSimpleName();
-            DATA.add(new Project(cls, name.substring(0, name.length() - 6)));  // Remove Runner
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void resetData() {
-        DATA.clear();
-    }
-
-    public static List<Project> getData() {
-        return DATA;
     }
 
     public String getName() {

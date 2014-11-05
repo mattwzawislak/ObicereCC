@@ -149,7 +149,7 @@ public class JavaLanguage extends Language {
                 for (int i = 0; i < length; i++) {
                     final Case thisCase = cases[i];
                     try {
-                        final Object result = resultTasks.get(i).get(100, TimeUnit.HOURS);
+                        final Object result = resultTasks.get(i).get();
                         results[i] = new Result(result, thisCase.getExpectedResult(), thisCase.getParameters());
                     } catch (final InterruptedException e) {
                         e.printStackTrace();

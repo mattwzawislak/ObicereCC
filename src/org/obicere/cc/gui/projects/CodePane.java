@@ -160,11 +160,11 @@ public class CodePane extends JTextPane {
                 }
                 final int line = getCaretLine();
                 final int index = getCaretPosition();
-                final StringBuilder builder = new StringBuilder();
+                final StringBuilder builder = new StringBuilder(getText());
                 final CodeFormatter formatter = language.getCodeFormatter();
                 final int newCaret = formatter.newlineEntered(curCode, builder, index, line, getCaretPositionInLine(line));
 
-                setText(curCode.substring(0, index) + builder.toString() + curCode.substring(index));
+                setText(builder.toString());
                 setCaretPosition(newCaret);
                 highlightKeywords();
             }

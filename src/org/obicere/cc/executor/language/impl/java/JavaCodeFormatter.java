@@ -11,7 +11,8 @@ public class JavaCodeFormatter implements CodeFormatter {
 
     @Override
     public int newlineEntered(final String code, final StringBuilder add, final int caret, final int row, final int column) {
-        add.append("\n");
+        final StringBuilder append = new StringBuilder();
+        append.append("\n");
 
         int newCaret = caret + 1; // accommodate for the newline
         int tabs = 0;
@@ -53,7 +54,7 @@ public class JavaCodeFormatter implements CodeFormatter {
             }
         }
         for (int i = 0; i < tabs; i++) {
-            add.append("\t");
+            append.append("\t");
         }
         newCaret += tabs;
 
@@ -61,12 +62,13 @@ public class JavaCodeFormatter implements CodeFormatter {
             final int openMatchIndex = currentLine.indexOf('{');
             final int closeMatchIndex = currentLine.indexOf('}', column);
             if (openMatchIndex < column && column <= closeMatchIndex) {
-                final String soFar = add.toString();
-                add.append('\t');
-                add.append(soFar); // Effectively duplicate the string since we are adding
+                final String soFar = append.toString();
+                append.append('\t');
+                append.append(soFar); // Effectively duplicate the string since we are adding
                 newCaret++;        // two lines here with the first having an extra tab
             }
         }
+        add.insert(caret, append);
         return newCaret;
     }
 }

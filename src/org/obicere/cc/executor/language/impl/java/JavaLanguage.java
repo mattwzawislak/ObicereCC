@@ -6,6 +6,7 @@ import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.language.Casing;
 import org.obicere.cc.executor.language.CodeFormatter;
 import org.obicere.cc.executor.language.Language;
+import org.obicere.cc.executor.language.LanguageExecutorService;
 import org.obicere.cc.executor.language.LanguageIdentifier;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
@@ -17,12 +18,8 @@ import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 @LanguageIdentifier
 public class JavaLanguage extends Language {
@@ -133,33 +130,9 @@ public class JavaLanguage extends Language {
                 final Class<?> invoke = cl.loadClass(project.getName());
                 final Method method = invoke.getDeclaredMethod(runner.getMethodName(), searchClasses);
 
-                final int length = cases.length;
-                final Result[] results = new Result[length];
-                final ArrayList<FutureTask<Object>> resultTasks = new ArrayList<>(length);
-                final ExecutorService tasks = Executors.newFixedThreadPool(length);
-                for (final Case thisCase : cases) {
-                    try {
-                        final FutureTask<Object> task = new FutureTask<>(() -> method.invoke(invoke.newInstance(), thisCase.getParameters()));
-                        tasks.execute(task);
-                        resultTasks.add(task);
-                    } catch (final Throwable e) {
-                        e.printStackTrace();
-                    }
-                }
-                for (int i = 0; i < length; i++) {
-                    final Case thisCase = cases[i];
-                    try {
-                        final Object result = resultTasks.get(i).get();
-                        results[i] = new Result(result, thisCase.getExpectedResult(), thisCase.getParameters());
-                    } catch (final InterruptedException e) {
-                        e.printStackTrace();
-                        results[i] = Result.newTimedOutResult(thisCase);
-                    } catch (final ExecutionException e){
-                        e.printStackTrace();
-                        results[i] = Result.newErrorResult(thisCase);
-                    }
-                }
-                return results;
+                final Function<Case, FutureTask<Object>> supplier = c -> new FutureTask<>(() -> method.invoke(invoke.newInstance(), c.getParameters()));
+                final LanguageExecutorService service = new LanguageExecutorService(cases, supplier);
+                return service.requestResults();
             } catch (final Exception e) {
                 // java.lang.AssertionError blah blah blah
                 // ...

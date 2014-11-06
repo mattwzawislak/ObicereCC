@@ -3,7 +3,7 @@ package org.obicere.cc.executor.language.util;
 /**
  * @author Obicere
  */
-public class TypeDocumentIndexer {
+public class TypeDocumentIndexer implements DocumentIndexer<TypeDocumentIndexer.TypeFlag> {
 
     private final Bound    bound;
     private final TypeFlag flag;
@@ -18,6 +18,12 @@ public class TypeDocumentIndexer {
         this.flag = flag;
     }
 
+    @Override
+    public Bound getBound() {
+        return bound;
+    }
+
+    @Override
     public TypeFlag getFlag() {
         return flag;
     }
@@ -46,7 +52,18 @@ public class TypeDocumentIndexer {
         return flag == TypeFlag.KEYWORD;
     }
 
-    public enum TypeFlag implements org.obicere.cc.executor.language.util.Flag {
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder(32);
+        builder.append("TypeDocumentIndexer[");
+        builder.append(flag);
+        builder.append(",");
+        builder.append(bound);
+        builder.append("]");
+        return builder.toString();
+    }
+
+    public enum TypeFlag implements Flag {
 
         PLAINTEXT,
 

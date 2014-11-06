@@ -7,6 +7,6 @@ public interface DocumentIndexer<F extends Flag> {
 
     public Bound getBound();
 
-    public Flag getFlag();
+    public F getFlag();
 
 }

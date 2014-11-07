@@ -124,7 +124,7 @@ public class Editor extends JPanel {
 
         add(textSplit, BorderLayout.CENTER);
 
-        codePane.highlightKeywords();
+        codePane.styleDocument();
     }
 
     public String getProjectName() {
@@ -160,7 +160,7 @@ public class Editor extends JPanel {
                     hook.setComplete(name, false);
                 }
                 codePane.setText(language.getSkeleton(project));
-                codePane.highlightKeywords();
+                codePane.styleDocument();
                 return;
             }
             JOptionPane.showMessageDialog(null, "Error deleting current code!");

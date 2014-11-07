@@ -40,14 +40,6 @@ public class TypeDocumentIndexer implements DocumentIndexer<TypeDocumentIndexer.
         return flag == TypeFlag.OPERATOR;
     }
 
-    public boolean isOpening() {
-        return flag == TypeFlag.TAB_INCREASE;
-    }
-
-    public boolean isClosing() {
-        return flag == TypeFlag.TAB_DECREASE;
-    }
-
     public boolean isKeyWord() {
         return flag == TypeFlag.KEYWORD;
     }
@@ -69,10 +61,7 @@ public class TypeDocumentIndexer implements DocumentIndexer<TypeDocumentIndexer.
 
         LITERAL,
         OPERATOR,
-        KEYWORD,
-
-        TAB_INCREASE,
-        TAB_DECREASE;
+        KEYWORD;
 
         @Override
         public boolean allowsIntersection() {

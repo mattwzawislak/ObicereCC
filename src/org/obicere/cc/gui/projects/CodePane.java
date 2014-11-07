@@ -2,6 +2,9 @@ package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.executor.language.CodeFormatter;
 import org.obicere.cc.executor.language.Language;
+import org.obicere.cc.executor.language.util.Bound;
+import org.obicere.cc.executor.language.util.DocumentInspector;
+import org.obicere.cc.executor.language.util.TypeDocumentIndexer;
 import org.obicere.cc.shutdown.CodeCompletionHook;
 import org.obicere.cc.shutdown.EditorHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
@@ -11,6 +14,7 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -24,15 +28,15 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.TabSet;
 import javax.swing.text.TabStop;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.nio.CharBuffer;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 public class CodePane extends JTextPane {
 
@@ -58,6 +62,8 @@ public class CodePane extends JTextPane {
     private long lastUpdate;
 
     private final Language language;
+
+    private Thread styleThread;
 
     public CodePane(final String content, final Language language) {
         this.language = language;
@@ -106,7 +112,7 @@ public class CodePane extends JTextPane {
                 if (System.currentTimeMillis() - register < 1000) {
                     setText(code.substring(0, index - 1) + code.substring(index));
                     setCaretPosition(index);
-                    highlightKeywords();
+                    styleDocument();
                 }
             }
         });
@@ -126,7 +132,7 @@ public class CodePane extends JTextPane {
 
                 setText(code.substring(0, index) + close + code.substring(index));
                 setCaretPosition(index);
-                highlightKeywords();
+                styleDocument();
             }
         });
         actionMap.put("Compile", new AbstractAction() {
@@ -155,9 +161,9 @@ public class CodePane extends JTextPane {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 String curCode = getText();
-                for (final String str : language.getLiteralMatches()) {
-                    curCode = clearMatches(curCode, str);
-                }
+                //for (final String str : language.getLiteralMatches()) {
+                //    curCode = clearMatches(curCode, str);
+                //}
                 final int line = getCaretLine();
                 final int index = getCaretPosition();
                 final StringBuilder builder = new StringBuilder(getText());
@@ -166,7 +172,7 @@ public class CodePane extends JTextPane {
 
                 setText(builder.toString());
                 setCaretPosition(newCaret);
-                highlightKeywords();
+                styleDocument();
             }
         });
         addCaretListener(e -> SwingUtilities.invokeLater(() -> {
@@ -176,10 +182,20 @@ public class CodePane extends JTextPane {
                 final Rectangle r = component.modelToView(position);
                 r.x += 2;
                 component.scrollRectToVisible(r);
-                highlightKeywords(); // Whenever a new character gets added, caret updates.
+                styleDocument(); // Whenever a new character gets added, caret updates.
             } catch (Exception ignored) {
             }
         }));
+
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        final Container con = SwingUtilities.getAncestorOfClass(JScrollPane.class, this);
+        if (con != null) {
+            ((JScrollPane) con).getViewport().addChangeListener(e -> styleDocument());
+        }
     }
 
     private char getClosingCharacter(final char c) {
@@ -208,25 +224,6 @@ public class CodePane extends JTextPane {
         lastHit.put(c, System.currentTimeMillis());
     }
 
-    private String clearMatches(final String code, final String regex) {
-        final Pattern pattern = Pattern.compile(regex);
-        final Matcher matcher = pattern.matcher(code);
-        final StringBuilder builder = new StringBuilder(code);
-        while (matcher.find()) { // For each match
-            final String key = matcher.group();
-            int start = builder.indexOf(key);
-            final int length = key.length();
-            while (start > -1) { // For each instance
-                final int end = start + key.length();
-                final int nextSearchStart = start + length;
-                builder.replace(start, end, CharBuffer.allocate(length).toString());
-                start = builder.indexOf(key, nextSearchStart);
-                // replace the instance
-            }
-        }
-        return builder.toString();
-    }
-
     @Override
     public boolean getScrollableTracksViewportWidth() {
         return getUI().getPreferredSize(this).width <= getParent().getSize().width;
@@ -245,37 +242,55 @@ public class CodePane extends JTextPane {
         }
     }
 
-    public void highlightKeywords() {
-        checkForUpdates(); // Be sure to get the latest changes.
-        String code = getText();
-        for (final String literal : language.getLiteralMatches()) {
-            code = clearMatches(code, literal);
+    public void styleDocument() {
+        if (styleThread != null) {
+            styleThread.interrupt();
         }
-        code = code.replaceAll(MASTER_SPLIT, " $1 "); // create buffer.
-        // this will allow keywords to be adjacent to syntax-related characters
-        // EX: (int)
+        final Rectangle visible = getVisibleRect();
+        final Point start = new Point(visible.x, visible.y);
+        final Point end = new Point(visible.x + visible.width, visible.y + visible.height);
 
-        final StyledDocument style = getStyledDocument();
-        int i = 0;
-        for (final String word : code.split("\\s")) {
-            boolean match = false;
-            if (word.matches(MASTER_SPLIT)) {
-                match = true;
-                // accommodate buffer
-                i--;
-            }
-            if (word.matches("(\u0000)+")) { // an empty String buffer
-                style.setCharacterAttributes(i, word.length(), STRING_SET, true);
-            } else {
-                final boolean keyword = language.isKeyword(word);
-                style.setCharacterAttributes(i, word.length(), keyword ? KEYWORD_SET : NORMAL_SET, true);
-            }
-            i += word.length() + 1;
-            if (match) {
-                // accommodate buffer
-                i--;
-            }
+        int min;
+        int max;
+        try {
+            min = viewToModel(start);
+            max = viewToModel(end);
+        } catch (final NullPointerException e) {
+            min = getCaretPosition() - 250;
+            max = getCaretPosition() + 250;
         }
+
+        final int startRender = (min < 0 ? 0 : min);
+        final int endRender = (max < 0 ? getText().length() : max);
+
+        styleThread = new Thread(() -> {
+            try {
+                checkForUpdates(); // Be sure to get the latest changes.
+                final StyledDocument style = getStyledDocument();
+                final DocumentInspector inspector = new DocumentInspector(language);
+                inspector.apply(getText(), startRender, endRender);
+                final List<TypeDocumentIndexer> segments = inspector.getContent();
+                for (final TypeDocumentIndexer next : segments) {
+                    if (next == null) {
+                        continue;
+                    }
+                    final Bound bound = next.getBound();
+                    final SimpleAttributeSet set;
+                    if (next.isKeyWord()) {
+                        set = KEYWORD_SET;
+                    } else if (next.isLiteral()) {
+                        set = STRING_SET;
+                    } else {
+                        set = NORMAL_SET;
+                    }
+                    style.setCharacterAttributes(bound.getMin(), bound.getMax(), set, true);
+                }
+                styleThread = null;
+            } catch (final Error | Exception ignored) { // All errors here are about interruption
+
+            }
+        });
+        styleThread.start();
     }
 
     public int getCaretLine() {

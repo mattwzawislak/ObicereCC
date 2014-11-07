@@ -11,7 +11,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +18,7 @@ public class Boot {
 
     private static final Logger log = Logger.getLogger(Boot.class.getCanonicalName());
 
-    public static void main(final String[] args) throws URISyntaxException, ClassNotFoundException {
+    public static void main(final String[] args) {
         final long startBoot = System.currentTimeMillis();
         Paths.build();
         LanguageHandler.load();

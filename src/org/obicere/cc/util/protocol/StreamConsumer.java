@@ -1,15 +1,15 @@
-package org.obicere.cc.methods.protocol;
+package org.obicere.cc.util.protocol;
 
-import org.obicere.cc.methods.protocol.consumers.AbstractConsumer;
-import org.obicere.cc.methods.protocol.consumers.BooleanConsumer;
-import org.obicere.cc.methods.protocol.consumers.ByteConsumer;
-import org.obicere.cc.methods.protocol.consumers.CharConsumer;
-import org.obicere.cc.methods.protocol.consumers.DoubleConsumer;
-import org.obicere.cc.methods.protocol.consumers.FloatConsumer;
-import org.obicere.cc.methods.protocol.consumers.IntConsumer;
-import org.obicere.cc.methods.protocol.consumers.LongConsumer;
-import org.obicere.cc.methods.protocol.consumers.ShortConsumer;
-import org.obicere.cc.methods.protocol.consumers.StringConsumer;
+import org.obicere.cc.util.protocol.consumers.AbstractConsumer;
+import org.obicere.cc.util.protocol.consumers.BooleanConsumer;
+import org.obicere.cc.util.protocol.consumers.ByteConsumer;
+import org.obicere.cc.util.protocol.consumers.CharConsumer;
+import org.obicere.cc.util.protocol.consumers.DoubleConsumer;
+import org.obicere.cc.util.protocol.consumers.FloatConsumer;
+import org.obicere.cc.util.protocol.consumers.IntConsumer;
+import org.obicere.cc.util.protocol.consumers.LongConsumer;
+import org.obicere.cc.util.protocol.consumers.ShortConsumer;
+import org.obicere.cc.util.protocol.consumers.StringConsumer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,65 +64,65 @@ public class StreamConsumer {
     private static final int BUFFER_SIZE_64_BIT = (1 << 3) + IDENTIFIER_SIZE;
 
     /**
-     * {@link org.obicere.cc.methods.protocol.consumers.BooleanConsumer} instance for printing
+     * {@link org.obicere.cc.util.protocol.consumers.BooleanConsumer} instance for printing
      * all boolean-related methods.
      */
 
     private final BooleanConsumer booleanC;
 
     /**
-     * {@link org.obicere.cc.methods.protocol.consumers.ByteConsumer} instance for printing all
+     * {@link org.obicere.cc.util.protocol.consumers.ByteConsumer} instance for printing all
      * byte-related methods.
      */
 
     private final ByteConsumer byteC;
 
     /**
-     * {@link org.obicere.cc.methods.protocol.consumers.ShortConsumer} instance for printing all
+     * {@link org.obicere.cc.util.protocol.consumers.ShortConsumer} instance for printing all
      * short-related methods.
      */
     private final ShortConsumer shortC;
 
     /**
-     * {@link org.obicere.cc.methods.protocol.consumers.ShortConsumer} instance for printing all
+     * {@link org.obicere.cc.util.protocol.consumers.ShortConsumer} instance for printing all
      * short-related methods.
      */
     private final CharConsumer charC;
 
     /**
-     * {@link org.obicere.cc.methods.protocol.consumers.IntConsumer} instance for printing all
+     * {@link org.obicere.cc.util.protocol.consumers.IntConsumer} instance for printing all
      * int-related methods.
      */
     private final IntConsumer intC;
 
     /**
-     * {@link org.obicere.cc.methods.protocol.consumers.FloatConsumer} instance for printing all
+     * {@link org.obicere.cc.util.protocol.consumers.FloatConsumer} instance for printing all
      * float-related methods.
      */
     private final FloatConsumer floatC;
 
     /**
-     * {@link org.obicere.cc.methods.protocol.consumers.LongConsumer} instance for printing all
+     * {@link org.obicere.cc.util.protocol.consumers.LongConsumer} instance for printing all
      * long-related methods.
      */
     private final LongConsumer longC;
 
     /**
-     * {@link org.obicere.cc.methods.protocol.consumers.DoubleConsumer} instance for printing all
+     * {@link org.obicere.cc.util.protocol.consumers.DoubleConsumer} instance for printing all
      * double-related methods.
      */
     private final DoubleConsumer doubleC;
 
     /**
-     * {@link org.obicere.cc.methods.protocol.consumers.StringConsumer} instance for printing all
+     * {@link org.obicere.cc.util.protocol.consumers.StringConsumer} instance for printing all
      * {@link java.lang.String}-related methods.
      */
     private final StringConsumer stringC;
 
     /**
      * The storage of all objects written to the stream. All reading and writing will be done
-     * through the appropriate {@link org.obicere.cc.methods.protocol.consumers.AbstractConsumer}
-     * and the methods provided in the {@link Buffer} instance.
+     * through the appropriate {@link org.obicere.cc.util.protocol.consumers.AbstractConsumer}
+     * and the methods.provided in the {@link Buffer} instance.
      */
     private final Buffer buffer;
 
@@ -211,7 +211,7 @@ public class StreamConsumer {
     /**
      * Checks whether or not the {@link Buffer} should be cleared to free up memory. This is done by
      * checking to see if the buffer's current length is equal to the
-     * {@link org.obicere.cc.methods.protocol.Buffer#MAXIMUM_BUFFER_SIZE maximum buffer size}. This
+     * {@link org.obicere.cc.util.protocol.Buffer#MAXIMUM_BUFFER_SIZE maximum buffer size}. This
      * method does not check if the amount of items written requires a clear. So with a single item
      * written, with a minimal initial size and a very large growth factor: this method may flag the
      * buffer as eligible for a clear.
@@ -221,7 +221,7 @@ public class StreamConsumer {
      *
      * @return <code>true</code> if the buffer should clear.
      * @see Buffer#MAXIMUM_BUFFER_SIZE
-     * @see org.obicere.cc.methods.protocol.Buffer#length()
+     * @see org.obicere.cc.util.protocol.Buffer#length()
      */
 
     public synchronized boolean shouldClear() {
@@ -286,8 +286,8 @@ public class StreamConsumer {
      * the value.
      *
      * @param value The value to write.
-     * @see org.obicere.cc.methods.protocol.consumers.BooleanConsumer
-     * @see org.obicere.cc.methods.protocol.consumers.AbstractConsumer#IDENTIFIER_BOOLEAN
+     * @see org.obicere.cc.util.protocol.consumers.BooleanConsumer
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_BOOLEAN
      */
 
     public synchronized void write(final boolean value) {
@@ -299,8 +299,8 @@ public class StreamConsumer {
      * value.
      *
      * @param value The value to write.
-     * @see org.obicere.cc.methods.protocol.consumers.ByteConsumer
-     * @see org.obicere.cc.methods.protocol.consumers.AbstractConsumer#IDENTIFIER_BYTE
+     * @see org.obicere.cc.util.protocol.consumers.ByteConsumer
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_BYTE
      */
 
     public synchronized void write(final byte value) {
@@ -312,8 +312,8 @@ public class StreamConsumer {
      * value spread across 2 bytes.
      *
      * @param value The value to write.
-     * @see org.obicere.cc.methods.protocol.consumers.CharConsumer
-     * @see org.obicere.cc.methods.protocol.consumers.AbstractConsumer#IDENTIFIER_CHAR
+     * @see org.obicere.cc.util.protocol.consumers.CharConsumer
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_CHAR
      */
 
     public synchronized void write(final char value) {
@@ -326,8 +326,8 @@ public class StreamConsumer {
      * but is merely provided to avoid casting.
      *
      * @param value The value to write.
-     * @see org.obicere.cc.methods.protocol.consumers.ShortConsumer
-     * @see org.obicere.cc.methods.protocol.consumers.AbstractConsumer#IDENTIFIER_SHORT
+     * @see org.obicere.cc.util.protocol.consumers.ShortConsumer
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_SHORT
      */
 
     public synchronized void write(final short value) {
@@ -339,8 +339,8 @@ public class StreamConsumer {
      * value spread across 4 bytes.
      *
      * @param value The value to write.
-     * @see org.obicere.cc.methods.protocol.consumers.IntConsumer
-     * @see org.obicere.cc.methods.protocol.consumers.AbstractConsumer#IDENTIFIER_INT
+     * @see org.obicere.cc.util.protocol.consumers.IntConsumer
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_INT
      */
 
     public synchronized void write(final int value) {
@@ -352,8 +352,8 @@ public class StreamConsumer {
      * value spread across 8 bytes.
      *
      * @param value The value to write.
-     * @see org.obicere.cc.methods.protocol.consumers.LongConsumer
-     * @see org.obicere.cc.methods.protocol.consumers.AbstractConsumer#IDENTIFIER_LONG
+     * @see org.obicere.cc.util.protocol.consumers.LongConsumer
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_LONG
      */
 
     public synchronized void write(final long value) {
@@ -365,8 +365,8 @@ public class StreamConsumer {
      * value spread across 4 bytes.
      *
      * @param value The value to write.
-     * @see org.obicere.cc.methods.protocol.consumers.FloatConsumer
-     * @see org.obicere.cc.methods.protocol.consumers.AbstractConsumer#IDENTIFIER_FLOAT
+     * @see org.obicere.cc.util.protocol.consumers.FloatConsumer
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_FLOAT
      */
 
     public synchronized void write(final float value) {
@@ -378,8 +378,8 @@ public class StreamConsumer {
      * value spread across 8 bytes.
      *
      * @param value The value to write.
-     * @see org.obicere.cc.methods.protocol.consumers.DoubleConsumer
-     * @see org.obicere.cc.methods.protocol.consumers.AbstractConsumer#IDENTIFIER_DOUBLE
+     * @see org.obicere.cc.util.protocol.consumers.DoubleConsumer
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_DOUBLE
      */
 
     public synchronized void write(final double value) {
@@ -396,8 +396,8 @@ public class StreamConsumer {
      *
      * @param value The value to write.
      * @throws java.lang.NullPointerException If the given <tt>String</tt> is <code>null</code>.
-     * @see org.obicere.cc.methods.protocol.consumers.StringConsumer
-     * @see org.obicere.cc.methods.protocol.consumers.AbstractConsumer#IDENTIFIER_STRING
+     * @see org.obicere.cc.util.protocol.consumers.StringConsumer
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_STRING
      */
 
     public synchronized void write(final String value) {

@@ -1,6 +1,6 @@
-package org.obicere.cc.methods.protocol.consumers;
+package org.obicere.cc.util.protocol.consumers;
 
-import org.obicere.cc.methods.protocol.Buffer;
+import org.obicere.cc.util.protocol.Buffer;
 
 import java.util.InputMismatchException;
 import java.util.Objects;

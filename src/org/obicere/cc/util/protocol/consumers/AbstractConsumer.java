@@ -1,6 +1,6 @@
-package org.obicere.cc.methods.protocol.consumers;
+package org.obicere.cc.util.protocol.consumers;
 
-import org.obicere.cc.methods.protocol.Buffer;
+import org.obicere.cc.util.protocol.Buffer;
 
 import java.util.InputMismatchException;
 
@@ -12,7 +12,7 @@ public abstract class AbstractConsumer {
     /**
      * The basic identifier for a <tt>boolean</tt>,
      *
-     * @see org.obicere.cc.methods.protocol.StreamConsumer#identifierFor
+     * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_BOOLEAN = 0x01;
 
@@ -20,7 +20,7 @@ public abstract class AbstractConsumer {
      * The basic identifier for a signed <tt>byte</tt>. Unless otherwise specified, the unsigned
      * type would be <tt>IDENTIFIER_BYTE + 1</tt>.
      *
-     * @see org.obicere.cc.methods.protocol.StreamConsumer#identifierFor
+     * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_BYTE = 0x02;
 
@@ -28,7 +28,7 @@ public abstract class AbstractConsumer {
      * The basic identifier for a signed <tt>short</tt>. Unless otherwise specified, the unsigned
      * type would be <tt>IDENTIFIER_SHORT + 1</tt>.
      *
-     * @see org.obicere.cc.methods.protocol.StreamConsumer#identifierFor
+     * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_SHORT = 0x04;
 
@@ -36,7 +36,7 @@ public abstract class AbstractConsumer {
      * The basic identifier for a UTF-16 <tt>char</tt>. All characters added to this protocol should
      * be in a UTF-16 format.
      *
-     * @see org.obicere.cc.methods.protocol.StreamConsumer#identifierFor
+     * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_CHAR = 0x06;
 
@@ -44,7 +44,7 @@ public abstract class AbstractConsumer {
      * The basic identifier for a signed <tt>int</tt>. Unless otherwise specified, the unsigned type
      * would be <tt>IDENTIFIER_INT + 1</tt>.
      *
-     * @see org.obicere.cc.methods.protocol.StreamConsumer#identifierFor
+     * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_INT = 0x07;
 
@@ -52,7 +52,7 @@ public abstract class AbstractConsumer {
      * The basic identifier for a signed <tt>long</tt>. Unless otherwise specified, the unsigned
      * type would be <tt>IDENTIFIER_LONG + 1</tt>.
      *
-     * @see org.obicere.cc.methods.protocol.StreamConsumer#identifierFor
+     * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_LONG = 0x09;
 
@@ -60,7 +60,7 @@ public abstract class AbstractConsumer {
      * The basic identifier for a signed <tt>float</tt>. Unless otherwise specified, the unsigned
      * type would be <tt>IDENTIFIER_FLOAT + 1</tt>.
      *
-     * @see org.obicere.cc.methods.protocol.StreamConsumer#identifierFor
+     * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_FLOAT = 0x0B;
 
@@ -68,7 +68,7 @@ public abstract class AbstractConsumer {
      * The basic identifier for a signed <tt>double</tt>. Unless otherwise specified, the unsigned
      * type would be <tt>IDENTIFIER_DOUBLE + 1</tt>.
      *
-     * @see org.obicere.cc.methods.protocol.StreamConsumer#identifierFor
+     * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_DOUBLE = 0x0D;
 
@@ -76,7 +76,7 @@ public abstract class AbstractConsumer {
      * The basic identifier for a UTF-16 <tt>String</tt>. All characters added to this protocol
      * should be in a UTF-16 format.
      *
-     * @see org.obicere.cc.methods.protocol.StreamConsumer#identifierFor
+     * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_STRING = 0x0F;
 
@@ -93,7 +93,7 @@ public abstract class AbstractConsumer {
      * @see AbstractConsumer#IDENTIFIER_LONG
      * @see AbstractConsumer#IDENTIFIER_FLOAT
      * @see AbstractConsumer#IDENTIFIER_DOUBLE
-     * @see org.obicere.cc.methods.protocol.StreamConsumer#identifierFor
+     * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_ARRAY = 0x10;
 

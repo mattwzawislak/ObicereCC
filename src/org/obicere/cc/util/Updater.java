@@ -1,12 +1,12 @@
-package org.obicere.cc.methods;
+package org.obicere.cc.util;
 
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.configuration.Global.URLs;
 import org.obicere.cc.gui.Splash;
+import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.ProjectLoader;
 import org.obicere.cc.shutdown.RunnerSourceHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
-import org.obicere.cc.projects.Project;
 
 import javax.swing.JOptionPane;
 import java.io.BufferedReader;
@@ -22,6 +22,7 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,6 +74,8 @@ public class Updater {
             e.printStackTrace();
         }
         // Halley's Comment
+
+        final AtomicBoolean fileChanged = new AtomicBoolean(false);
         for (final String src : sources) {
             final byte[] updatedClientInfo = downloadCurrentClientInfo(src);
             if (updatedClientInfo == null) {
@@ -86,10 +89,19 @@ public class Updater {
             for (final Project p : ProjectLoader.getData()) {
                 currentRunnersList.put(p.getRunnerClass().getCanonicalName(), p.getVersion());
             }
-            updatedRunnersList.keySet().stream().filter(OUTDATED_FILTER).forEach(key -> download(key, src));
+            updatedRunnersList.keySet().stream().filter(OUTDATED_FILTER).forEach(key -> {
+                download(key, src);
+                if (!fileChanged.get()) {
+                    fileChanged.set(true);
+                }
+            });
         }
-        currentRunnersList = null;
+        currentRunnersList = null; // Seems sloppy to de-allocate memory
+        // Consider changing to a instance-based updater
         updatedRunnersList = null;
+        if (fileChanged.get()) {
+            ProjectLoader.loadCurrent();
+        }
     }
 
     private static void download(final String name, final String src) {

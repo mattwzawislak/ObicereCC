@@ -1,4 +1,4 @@
-package org.obicere.cc.methods;
+package org.obicere.cc.util;
 
 /**
  * @author Obicere

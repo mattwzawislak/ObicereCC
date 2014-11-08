@@ -1,4 +1,4 @@
-package org.obicere.cc.methods.protocol;
+package org.obicere.cc.util.protocol;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

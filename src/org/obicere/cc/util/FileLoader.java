@@ -1,4 +1,4 @@
-package org.obicere.cc.methods;
+package org.obicere.cc.util;
 
 import java.io.File;
 import java.io.IOException;

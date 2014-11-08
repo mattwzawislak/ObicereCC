@@ -1,4 +1,4 @@
-package org.obicere.cc.methods;
+package org.obicere.cc.util;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

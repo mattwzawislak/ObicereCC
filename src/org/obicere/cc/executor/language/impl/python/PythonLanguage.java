@@ -7,7 +7,7 @@ import org.obicere.cc.executor.language.CodeFormatter;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.executor.language.LanguageIdentifier;
 import org.obicere.cc.executor.language.LanguageStreamer;
-import org.obicere.cc.methods.protocol.MethodInvocationProtocol;
+import org.obicere.cc.util.protocol.MethodInvocationProtocol;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.Runner;
 

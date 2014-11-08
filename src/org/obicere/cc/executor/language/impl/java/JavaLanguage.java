@@ -39,7 +39,7 @@ public class JavaLanguage extends Language {
     };
 
     //skeleton
-    private static final String SKELETON = "private class ${name} {\n\t\n\tprivate ${return} ${method}(${parameter}){\n\t\t\n\t}\n}";
+    private static final String SKELETON = "public class ${name} {\n\t\n\tpublic ${return} ${method}(${parameter}){\n\t\t\n\t}\n}";
 
     //literal
     private static final String[] LITERALS = new String[]{

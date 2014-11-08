@@ -63,8 +63,6 @@ public class CodePane extends JTextPane {
 
     private final Language language;
 
-    private Thread styleThread;
-
     public CodePane(final String content, final Language language) {
         this.language = language;
 
@@ -243,9 +241,6 @@ public class CodePane extends JTextPane {
     }
 
     public void styleDocument() {
-        if (styleThread != null) {
-            styleThread.interrupt();
-        }
         final Rectangle visible = getVisibleRect();
         final Point start = new Point(visible.x, visible.y);
         final Point end = new Point(visible.x + visible.width, visible.y + visible.height);
@@ -263,34 +258,35 @@ public class CodePane extends JTextPane {
         final int startRender = (min < 0 ? 0 : min);
         final int endRender = (max < 0 ? getText().length() : max);
 
-        styleThread = new Thread(() -> {
-            try {
-                checkForUpdates(); // Be sure to get the latest changes.
-                final StyledDocument style = getStyledDocument();
-                final DocumentInspector inspector = new DocumentInspector(language);
-                inspector.apply(getText(), startRender, endRender);
-                final List<TypeDocumentIndexer> segments = inspector.getContent();
-                for (final TypeDocumentIndexer next : segments) {
-                    if (next == null) {
-                        continue;
-                    }
-                    final Bound bound = next.getBound();
-                    final SimpleAttributeSet set;
-                    if (next.isKeyWord()) {
-                        set = KEYWORD_SET;
-                    } else if (next.isLiteral()) {
-                        set = STRING_SET;
-                    } else {
-                        set = NORMAL_SET;
-                    }
-                    style.setCharacterAttributes(bound.getMin(), bound.getMax(), set, true);
-                }
-                styleThread = null;
-            } catch (final Error | Exception ignored) { // All errors here are about interruption
+        checkForUpdates(); // Be sure to get the latest changes.
+
+        final StyledDocument style = getStyledDocument();
+        final DocumentInspector inspector = new DocumentInspector(language);
+
+        inspector.apply(getText(), startRender, endRender);
+        final List<TypeDocumentIndexer> segments = inspector.getContent();
+
+        for (final TypeDocumentIndexer next : segments) {
+            if (next == null) {
+                continue;
+            }
+            final Bound bound = next.getBound();
+            final SimpleAttributeSet set;
+            switch (next.getFlag()) {
+                case LITERAL:
+                    set = STRING_SET;
+                    break;
+                case KEYWORD:
+                case OPERATOR:
+                    set = KEYWORD_SET;
+                    break;
+                default:
+                    set = NORMAL_SET;
+                    break;
 
             }
-        });
-        styleThread.start();
+            style.setCharacterAttributes(bound.getMin(), bound.getMax(), set, true);
+        }
     }
 
     public int getCaretLine() {

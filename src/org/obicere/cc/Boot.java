@@ -4,7 +4,7 @@ import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.gui.Splash;
-import org.obicere.cc.methods.Updater;
+import org.obicere.cc.util.Updater;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 
 import javax.swing.SwingUtilities;

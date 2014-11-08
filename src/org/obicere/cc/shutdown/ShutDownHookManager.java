@@ -1,7 +1,7 @@
 package org.obicere.cc.shutdown;
 
 import org.obicere.cc.gui.FrameManager;
-import org.obicere.cc.methods.Reflection;
+import org.obicere.cc.util.Reflection;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

@@ -1,8 +1,8 @@
 package org.obicere.cc.projects;
 
 import org.obicere.cc.executor.language.Language;
-import org.obicere.cc.methods.IOUtils;
-import org.obicere.cc.methods.Reflection;
+import org.obicere.cc.util.IOUtils;
+import org.obicere.cc.util.Reflection;
 
 import java.io.File;
 import java.io.IOException;

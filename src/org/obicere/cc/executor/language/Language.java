@@ -6,7 +6,7 @@ import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.compiler.ProcessExecutor;
 import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.gui.projects.Editor;
-import org.obicere.cc.methods.StringSubstitute;
+import org.obicere.cc.util.StringSubstitute;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
 

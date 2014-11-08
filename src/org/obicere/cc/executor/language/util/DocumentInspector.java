@@ -16,6 +16,8 @@ public class DocumentInspector {
 
     private LinkedList<TypeDocumentIndexer> content;
 
+    private TypeDocumentIndexer polled;
+
     public DocumentInspector(final Language language) {
         this.language = language;
     }
@@ -26,7 +28,7 @@ public class DocumentInspector {
         content = new LinkedList<>();
         removeLiterals(code);
         int start = rawCode.lastIndexOf(' ', index);
-        if(start < 0){
+        if (start < 0) {
             start = 0;
         }
         for (int i = start; i < delta; i++) {
@@ -39,7 +41,7 @@ public class DocumentInspector {
                     ++size;
                 }
                 --i;
-                content.add(new TypeDocumentIndexer(groupStart, groupStart + size, TypeDocumentIndexer.TypeFlag.PLAINTEXT));
+                addIndexer(groupStart, groupStart + size, TypeDocumentIndexer.TypeFlag.PLAINTEXT);
                 continue;
             }
             if (i >= length - 1) {
@@ -71,11 +73,15 @@ public class DocumentInspector {
             } else {
                 flag = TypeDocumentIndexer.TypeFlag.PLAINTEXT;
             }
-            content.add(new TypeDocumentIndexer(groupStart, groupStart + result.length(), flag));
+            addIndexer(groupStart, groupStart + result.length(), flag);
         }
     }
 
     public LinkedList<TypeDocumentIndexer> getContent() {
+        if (polled != null) {
+            content.add(polled);
+            polled = null;
+        }
         return content;
     }
 
@@ -101,6 +107,21 @@ public class DocumentInspector {
             }
         }
         return code;
+    }
+
+    private void addIndexer(final int start, final int end, final TypeDocumentIndexer.TypeFlag flag) {
+        if (polled != null) {
+            if (polled.getFlag() == flag) {
+                // We can chain the two together to avoid redundancy
+                polled = new TypeDocumentIndexer(polled.getBound().getMin(), end, flag);
+            } else {
+                // Add previous, poll the new indexer
+                content.add(polled);
+                polled = new TypeDocumentIndexer(start, end, flag);
+            }
+        } else {
+            polled = new TypeDocumentIndexer(start, end, flag);
+        }
     }
 
 }

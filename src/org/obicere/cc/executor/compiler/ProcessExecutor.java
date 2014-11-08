@@ -1,6 +1,6 @@
 package org.obicere.cc.executor.compiler;
 
-import org.obicere.cc.methods.StringSubstitute;
+import org.obicere.cc.util.StringSubstitute;
 
 import java.io.File;
 import java.util.LinkedHashMap;

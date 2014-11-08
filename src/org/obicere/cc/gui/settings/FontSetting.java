@@ -1,6 +1,6 @@
 package org.obicere.cc.gui.settings;
 
-import org.obicere.cc.methods.FontUtils;
+import org.obicere.cc.util.FontUtils;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 
 import javax.swing.Box;

@@ -1,6 +1,6 @@
 package org.obicere.cc.executor.language;
 
-import org.obicere.cc.methods.Reflection;
+import org.obicere.cc.util.Reflection;
 
 import java.util.Collection;
 import java.util.HashMap;

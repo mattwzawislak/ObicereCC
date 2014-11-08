@@ -1,7 +1,7 @@
 package org.obicere.cc.projects;
 
 import org.obicere.cc.executor.Case;
-import org.obicere.cc.methods.SimpleRandom;
+import org.obicere.cc.util.SimpleRandom;
 
 public abstract class Runner {
 

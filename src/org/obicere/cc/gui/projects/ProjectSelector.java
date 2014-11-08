@@ -33,7 +33,7 @@ public class ProjectSelector extends JPanel {
         final Border border = BorderFactory.createRaisedSoftBevelBorder();
         layout.setMaximizeOtherDimension(true);
         selector.setLayout(layout);
-        final List<Project> projectList = ProjectLoader.loadCurrent();
+        final List<Project> projectList = ProjectLoader.getData();
         Collections.sort(projectList, new ProjectComparator());
         for (final Project project : projectList) {
             final ProjectPanel panel = new ProjectPanel(project);

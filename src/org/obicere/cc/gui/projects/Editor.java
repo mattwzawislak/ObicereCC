@@ -163,7 +163,7 @@ public class Editor extends JPanel {
                 codePane.styleDocument();
                 return;
             }
-            JOptionPane.showMessageDialog(null, "Error deleting current code!");
+            JOptionPane.showMessageDialog(null, "Code files either did not exist or failed to be deleted.");
         }
 
     }

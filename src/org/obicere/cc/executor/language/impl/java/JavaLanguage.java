@@ -73,6 +73,8 @@ public class JavaLanguage extends Language {
     private static final String INTEGER   = "int";
     //float
     private static final String FLOAT     = "double";
+    // boolean
+    private static final String BOOLEAN   = "boolean";
 
     private static final String OPEN_ARRAY = "[";
 
@@ -191,6 +193,11 @@ public class JavaLanguage extends Language {
     @Override
     protected String getFloatType() {
         return FLOAT;
+    }
+
+    @Override
+    protected String getBooleanType() {
+        return BOOLEAN;
     }
 
     @Override

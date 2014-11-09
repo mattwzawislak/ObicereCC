@@ -6,9 +6,9 @@ import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.compiler.ProcessExecutor;
 import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.gui.projects.Editor;
-import org.obicere.cc.util.StringSubstitute;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
+import org.obicere.cc.util.StringSubstitute;
 
 import javax.swing.JOptionPane;
 import java.io.File;
@@ -157,6 +157,10 @@ public abstract class Language {
         return "";
     }
 
+    protected String getBooleanType() {
+        return "";
+    }
+
     protected String getArrayOpen() {
         return "";
     }
@@ -229,6 +233,7 @@ public abstract class Language {
     }
 
     private String getStringForClass(final Class<?> cls) {
+        System.out.println(cls);
         final StringBuilder builder = new StringBuilder();
         final String clsName = cls.getSimpleName().replaceAll("(\\[|\\])+", "");
         switch (clsName) {
@@ -249,6 +254,11 @@ public abstract class Language {
                 builder.append(getFloatType());
                 break;
 
+            case "boolean":
+            case "Boolean":
+                builder.append(getBooleanType());
+                break;
+
             case "String":
                 builder.append(getStringType());
                 break;
@@ -257,6 +267,7 @@ public abstract class Language {
         if (count >= 1) {
             builder.append(getArray(count));
         }
+        System.out.println(builder);
         return builder.toString();
     }
 

@@ -56,8 +56,8 @@ public class DocumentInspector {
                     c = code.charAt(++i);
                 }
                 --i;
-            } else if (Character.isLetterOrDigit(c) || c == '_' || c == '$') {
-                while (i < length - 1 && (Character.isLetterOrDigit(c) || c == '_' || c == '$') && c != 0) {
+            } else if (Character.isLetterOrDigit(c)) {
+                while (i < length - 1 && Character.isLetterOrDigit(c) && c != 0) {
                     match.append(c);
                     c = code.charAt(++i);
                 }

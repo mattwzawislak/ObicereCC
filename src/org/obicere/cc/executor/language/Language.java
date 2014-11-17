@@ -267,7 +267,6 @@ public abstract class Language {
         if (count >= 1) {
             builder.append(getArray(count));
         }
-        System.out.println(builder);
         return builder.toString();
     }
 

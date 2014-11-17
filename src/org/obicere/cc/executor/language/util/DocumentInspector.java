@@ -33,31 +33,14 @@ public class DocumentInspector {
         }
         for (int i = start; i < delta; i++) {
             final int groupStart = i;
-            char next = code.charAt(i);
-            if (Character.isWhitespace(next)) {
-                int size = 0;
-                while (i < length - 1 && Character.isWhitespace(next)) {
-                    next = code.charAt(++i);
-                    ++size;
-                }
-                --i;
-                addIndexer(groupStart, groupStart + size, TypeDocumentIndexer.TypeFlag.PLAINTEXT);
-                continue;
-            }
             if (i >= length - 1) {
                 break;
             }
             final StringBuilder match = new StringBuilder(1);
             char c = code.charAt(i);
-            final boolean literal = (c == 0);
-            if (literal) {
-                while (i < length - 1 && c == 0) {
-                    match.append(c);
-                    c = code.charAt(++i);
-                }
-                --i;
-            } else if (Character.isLetterOrDigit(c)) {
-                while (i < length - 1 && Character.isLetterOrDigit(c) && c != 0) {
+            final boolean literal = c == 0;
+            if (!literal && Character.isLetterOrDigit(c)) {
+                while (i < length - 1 && Character.isLetterOrDigit(c)) {
                     match.append(c);
                     c = code.charAt(++i);
                 }
@@ -65,15 +48,9 @@ public class DocumentInspector {
             }
 
             final String result = match.toString();
-            final TypeDocumentIndexer.TypeFlag flag;
             if (language.isKeyword(result)) {
-                flag = TypeDocumentIndexer.TypeFlag.KEYWORD;
-            } else if (literal) {
-                flag = TypeDocumentIndexer.TypeFlag.LITERAL;
-            } else {
-                flag = TypeDocumentIndexer.TypeFlag.PLAINTEXT;
+                addIndexer(groupStart, groupStart + result.length(), TypeDocumentIndexer.TypeFlag.KEYWORD);
             }
-            addIndexer(groupStart, groupStart + result.length(), flag);
         }
     }
 
@@ -100,6 +77,9 @@ public class DocumentInspector {
             final int length = key.length();
             while (start > -1) { // For each instance
                 final int end = start + key.length();
+
+                addIndexer(start, end, TypeDocumentIndexer.TypeFlag.LITERAL);
+
                 final int nextSearchStart = start + length;
                 code.replace(start, end, CharBuffer.allocate(length).toString());
                 start = code.indexOf(key, nextSearchStart);
@@ -111,9 +91,9 @@ public class DocumentInspector {
 
     private void addIndexer(final int start, final int end, final TypeDocumentIndexer.TypeFlag flag) {
         if (polled != null) {
-            if (polled.getFlag() == flag) {
+            if (polled.getFlag() == flag && polled.getBound().getEnd() == start) {
                 // We can chain the two together to avoid redundancy
-                polled = new TypeDocumentIndexer(polled.getBound().getMin(), end, flag);
+                polled = new TypeDocumentIndexer(polled.getBound().getStart(), end, flag);
             } else {
                 // Add previous, poll the new indexer
                 content.add(polled);

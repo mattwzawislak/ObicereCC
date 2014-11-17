@@ -40,19 +40,18 @@ import java.util.List;
 
 public class CodePane extends JTextPane {
 
-    private static final String             MASTER_SPLIT = "([(\\[\\]);\\{}\0.])";
-    private static final SimpleAttributeSet KEYWORD_SET  = new SimpleAttributeSet();
-    private static final SimpleAttributeSet NORMAL_SET   = new SimpleAttributeSet();
-    private static final SimpleAttributeSet STRING_SET   = new SimpleAttributeSet();
+    private static final SimpleAttributeSet KEYWORD_SET   = new SimpleAttributeSet();
+    private static final SimpleAttributeSet PLAINTEXT_SET = new SimpleAttributeSet();
+    private static final SimpleAttributeSet LITERAL_SET   = new SimpleAttributeSet();
     private static Font editorFont;
 
     private static final EditorHook         EDITOR     = ShutDownHookManager.hookByClass(EditorHook.class);
     private static final CodeCompletionHook COMPLETION = ShutDownHookManager.hookByClass(CodeCompletionHook.class);
 
     static {
-        StyleConstants.setForeground(STRING_SET, EDITOR.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));
+        StyleConstants.setForeground(LITERAL_SET, EDITOR.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));
         StyleConstants.setForeground(KEYWORD_SET, EDITOR.getPropertyAsColor(EditorHook.KEYWORD_HIGHLIGHT_COLOR));
-        StyleConstants.setForeground(NORMAL_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_HIGHLIGHT_COLOR));
+        StyleConstants.setForeground(PLAINTEXT_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_HIGHLIGHT_COLOR));
 
         editorFont = new Font(EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
     }
@@ -230,9 +229,9 @@ public class CodePane extends JTextPane {
     private void checkForUpdates() {
         final long editorUpdate = EDITOR.getLastEditorUpdate();
         if (lastUpdate != editorUpdate) {
-            StyleConstants.setForeground(STRING_SET, EDITOR.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));
+            StyleConstants.setForeground(LITERAL_SET, EDITOR.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));
             StyleConstants.setForeground(KEYWORD_SET, EDITOR.getPropertyAsColor(EditorHook.KEYWORD_HIGHLIGHT_COLOR));
-            StyleConstants.setForeground(NORMAL_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_HIGHLIGHT_COLOR));
+            StyleConstants.setForeground(PLAINTEXT_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_HIGHLIGHT_COLOR));
 
             editorFont = new Font(EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
             lastUpdate = editorUpdate;
@@ -241,31 +240,28 @@ public class CodePane extends JTextPane {
     }
 
     public void styleDocument() {
+        final String document = getText();
+        final int characterCount = document.length();
+
         final Rectangle visible = getVisibleRect();
         final Point start = new Point(visible.x, visible.y);
         final Point end = new Point(visible.x + visible.width, visible.y + visible.height);
 
-        int min;
-        int max;
-        try {
-            min = viewToModel(start);
-            max = viewToModel(end);
-        } catch (final NullPointerException e) {
-            min = getCaretPosition() - 250;
-            max = getCaretPosition() + 250;
-        }
+        final int min = viewToModel(start);
+        final int max = viewToModel(end);
 
         final int startRender = (min < 0 ? 0 : min);
-        final int endRender = (max < 0 ? getText().length() : max);
+        final int endRender = (max > characterCount ? characterCount : max);
 
         checkForUpdates(); // Be sure to get the latest changes.
 
         final StyledDocument style = getStyledDocument();
         final DocumentInspector inspector = new DocumentInspector(language);
 
-        inspector.apply(getText(), startRender, endRender);
+        inspector.apply(document, startRender, endRender);
         final List<TypeDocumentIndexer> segments = inspector.getContent();
 
+        style.setCharacterAttributes(startRender, endRender, PLAINTEXT_SET, true);
         for (final TypeDocumentIndexer next : segments) {
             if (next == null) {
                 continue;
@@ -274,18 +270,18 @@ public class CodePane extends JTextPane {
             final SimpleAttributeSet set;
             switch (next.getFlag()) {
                 case LITERAL:
-                    set = STRING_SET;
+                    set = LITERAL_SET;
                     break;
                 case KEYWORD:
                 case OPERATOR:
                     set = KEYWORD_SET;
                     break;
                 default:
-                    set = NORMAL_SET;
+                    set = PLAINTEXT_SET;
                     break;
 
             }
-            style.setCharacterAttributes(bound.getMin(), bound.getMax(), set, true);
+            style.setCharacterAttributes(bound.getStart(), bound.getDelta(), set, true);
         }
     }
 

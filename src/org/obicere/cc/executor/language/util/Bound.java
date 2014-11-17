@@ -7,32 +7,32 @@ package org.obicere.cc.executor.language.util;
 
 public class Bound implements Comparable<Bound> {
 
-    private final int min;
-    private final int max;
+    private final int start;
+    private final int end;
 
     private final int delta;
 
     public Bound(final int a, final int b) {
         if (a <= b) {
-            min = a;
-            max = b;
+            start = a;
+            end = b;
         } else {
-            min = b;
-            max = a;
+            start = b;
+            end = a;
         }
-        delta = max - min;
+        delta = end - start;
     }
 
     public int getDelta() {
         return delta;
     }
 
-    public int getMin() {
-        return min;
+    public int getStart() {
+        return start;
     }
 
-    public int getMax() {
-        return max;
+    public int getEnd() {
+        return end;
     }
 
     @Override
@@ -42,27 +42,27 @@ public class Bound implements Comparable<Bound> {
 
     @Override
     public int hashCode() {
-        return min;
+        return start;
     }
 
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder(10); // 10 is absolute min string length
         builder.append("Bound[");
-        builder.append(min);
+        builder.append(start);
         builder.append(",");
-        builder.append(max);
+        builder.append(end);
         builder.append("]");
         return builder.toString();
     }
 
     private boolean boundEquals(final Bound bound) {
-        return bound.min == min;
+        return bound.start == start;
     }
 
 
     @Override
     public int compareTo(final Bound o) {
-        return Integer.compare(min, o.getMin());
+        return Integer.compare(start, o.getStart());
     }
 }

@@ -233,7 +233,6 @@ public abstract class Language {
     }
 
     private String getStringForClass(final Class<?> cls) {
-        System.out.println(cls);
         final StringBuilder builder = new StringBuilder();
         final String clsName = cls.getSimpleName().replaceAll("(\\[|\\])+", "");
         switch (clsName) {

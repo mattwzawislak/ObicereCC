@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Message {
 
-    private final static String[] MESSAGES = new String[]{
+    private final String[] messages = new String[]{
             // Music
             "4 x 4 = 12",
             "                          SAIL",
@@ -45,10 +45,10 @@ public class Message {
 
     };
 
-    private static final Random SEED = new Random();
+    private final Random seed = new Random();
 
-    public static String getRandom() {
-        return MESSAGES[SEED.nextInt(MESSAGES.length)];
+    public String getRandom() {
+        return messages[seed.nextInt(messages.length)];
     }
 
 }

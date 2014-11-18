@@ -73,7 +73,7 @@ public class Splash {
 
     private Splash() {
         this.frame = new JFrame();
-        this.message = Message.getRandom();
+        this.message = new Message().getRandom();
         final String username = HOOK.getPropertyAsString(SplashScreenHook.USER_NAME);
         if (username == null || username.length() == 0) {
             this.name = System.getProperty("user.name");

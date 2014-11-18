@@ -12,6 +12,8 @@ import javax.swing.JLabel;
  */
 public class BooleanSetting extends SettingPanel {
 
+    private JCheckBox box;
+
     public BooleanSetting(final SettingsShutDownHook hook, final String value, final String description) {
         super(hook, value, description);
     }
@@ -24,15 +26,21 @@ public class BooleanSetting extends SettingPanel {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
         final JLabel label = new JLabel(getDescriptor());
-        final JCheckBox allowed = new JCheckBox();
-        allowed.setSelected(hook.getPropertyAsBoolean(value));
-        allowed.addChangeListener(e -> {
-            final boolean selected = allowed.isSelected();
+
+        this.box = new JCheckBox();
+
+        box.setSelected(hook.getPropertyAsBoolean(value));
+        box.addChangeListener(e -> {
+            final boolean selected = box.isSelected();
             hook.toggleSetting(value, selected);
         });
 
         add(label);
         add(Box.createHorizontalGlue());
-        add(allowed);
+        add(box);
+    }
+
+    public JCheckBox getCheckBox() {
+        return box;
     }
 }

@@ -64,4 +64,8 @@ public class ColorSetting extends SettingPanel {
         g.drawRect(0, 0, COLOR_SELECTOR_SIZE, COLOR_SELECTOR_SIZE);
         return new ImageIcon(image);
     }
+
+    public Color getSelectedColor(){
+        return selectedColor;
+    }
 }

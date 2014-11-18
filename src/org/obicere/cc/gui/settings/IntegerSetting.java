@@ -13,6 +13,10 @@ import javax.swing.SpinnerNumberModel;
  */
 public class IntegerSetting extends SettingPanel {
 
+    private static final int DEFAULT_MIN       = 0;   // For now, integer settings are only used for
+    private static final int DEFAULT_MAX       = 70;  // setting font sizes. This can be adjusted
+    private static final int DEFAULT_INCREMENT = 1;   // if requested.
+
     public IntegerSetting(final SettingsShutDownHook hook, final String key, final String description) {
         super(hook, key, description);
     }
@@ -27,7 +31,7 @@ public class IntegerSetting extends SettingPanel {
 
         final JLabel description = new JLabel(getDescriptor());
 
-        final SpinnerNumberModel model = new SpinnerNumberModel(hook.getPropertyAsInt(key), 0, 70, 1);
+        final SpinnerNumberModel model = new SpinnerNumberModel(hook.getPropertyAsInt(key), DEFAULT_MIN, DEFAULT_MAX, DEFAULT_INCREMENT);
         final JSpinner spinner = new JSpinner(model);
 
         spinner.addChangeListener(e -> hook.setProperty(key, spinner.getValue()));

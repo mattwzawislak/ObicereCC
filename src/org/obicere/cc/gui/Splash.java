@@ -57,9 +57,9 @@ public class Splash {
     };
 
     private static final Stroke OUTLINE    = new BasicStroke(1.25f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER);
-    private static final Color  BACKGROUND = new Color(79, 79, 79);
-    private static final Color  BORDER     = new Color(199, 116, 49);
-    private static final Color  TEXT_COLOR = new Color(173, 190, 210);
+    private static final Color  BACKGROUND = new Color(0x4f4f4f);
+    private static final Color  BORDER     = new Color(0xC77431);
+    private static final Color  TEXT_COLOR = new Color(0xADBED2);
     private static final Font   FONT       = new Font("Consolas", Font.PLAIN, 14);
 
     private static Splash instance;

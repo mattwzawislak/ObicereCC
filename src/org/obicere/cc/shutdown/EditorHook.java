@@ -41,7 +41,7 @@ public class EditorHook extends SettingsShutDownHook {
     private long lastEditorUpdate = 0;
 
     public EditorHook() {
-        super("Editor Settings", NAME, PRIORITY_WINDOW_CLOSING);
+        super(GROUP_NAME, NAME, PRIORITY_WINDOW_CLOSING);
         providePanel(ENABLED_STYLING, new BooleanSetting(this, ENABLED_STYLING, ENABLED_STYLING_DESCRIPTION));
         providePanel(STRING_STYLING_COLOR, new ColorSetting(this, STRING_STYLING_COLOR, STRING_STYLING_DESCRIPTION));
         providePanel(KEYWORD_STYLING_COLOR, new ColorSetting(this, KEYWORD_STYLING_COLOR, KEYWORD_STYLING_DESCRIPTION));

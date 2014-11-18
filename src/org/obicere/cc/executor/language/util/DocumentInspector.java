@@ -22,16 +22,12 @@ public class DocumentInspector {
         this.language = language;
     }
 
-    public void apply(final String rawCode, final int index, final int delta) {
-        final StringBuilder code = new StringBuilder(rawCode.trim());
+    public void apply(final String rawCode, final int start, final int end) {
+        final StringBuilder code = new StringBuilder(rawCode);
         final int length = code.length();
         content = new LinkedList<>();
         removeLiterals(code);
-        int start = rawCode.lastIndexOf(' ', index);
-        if (start < 0) {
-            start = 0;
-        }
-        for (int i = start; i < delta; i++) {
+        for (int i = start; i < end; i++) {
             final int groupStart = i;
             if (i >= length - 1) {
                 break;

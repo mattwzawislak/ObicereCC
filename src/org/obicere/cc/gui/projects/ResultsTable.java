@@ -42,7 +42,6 @@ public class ResultsTable extends JTable implements TableCellRenderer {
         setEnabled(false);
         model.setColumnIdentifiers(HEADERS);
         model.setColumnCount(HEADERS.length);
-        model.insertRow(0, HEADERS);
 
         final TableColumnModel columns = getColumnModel();
         fixSize(columns, 0, 125);
@@ -58,8 +57,8 @@ public class ResultsTable extends JTable implements TableCellRenderer {
         synchronized (getTreeLock()) {
             final DefaultTableModel m = (DefaultTableModel) getModel();
             final int rowCount = m.getRowCount();
-            for (int i = 1; i < rowCount; i++) { // Remove all rows but the header
-                m.removeRow(1);
+            for (int i = 0; i < rowCount; i++) { // Remove all rows but the header
+                m.removeRow(0);
             }
             if (results != null && results.length > 0) {
                 resultsCorrect = new boolean[results.length];
@@ -70,7 +69,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
                         wrong = true;
                     }
                     final Object[] arr = {stringValue(results[i].getCorrectAnswer()), stringValue(results[i].getResult()), stringValue(results[i].getParameters())};
-                    m.insertRow(i + 1, arr); // +1 for header offset
+                    m.insertRow(i, arr); // +1 for header offset
                 }
                 if (!wrong) {
                     hook.setComplete(project.getName(), true);
@@ -105,12 +104,8 @@ public class ResultsTable extends JTable implements TableCellRenderer {
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column) {
         final String data = String.valueOf(value);
         final JLabel label = new JLabel(data);
-        if (row == 0) { // Headers
-            label.setFont(label.getFont().deriveFont(Font.BOLD));
-            return label;
-        }
         label.setToolTipText(data);
-        label.setForeground(resultsCorrect[row - 1] ? CORRECT : Color.RED);
+        label.setForeground(resultsCorrect[row] ? CORRECT : Color.RED);
         return label;
     }
 

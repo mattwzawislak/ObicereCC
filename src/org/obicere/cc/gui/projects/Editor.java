@@ -63,7 +63,9 @@ public class Editor extends JPanel {
         final JPanel buttons = new JPanel();
         final JPanel instructionPanel = new JPanel();
 
-        final JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsTable, rightSide);
+        final JScrollPane resultsScrollPane = new JScrollPane(resultsTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        final JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsScrollPane, rightSide);
         final JSplitPane textSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, instructionPanel, mainSplit);
 
         run.setToolTipText("Runs the project. (Ctrl+R)");

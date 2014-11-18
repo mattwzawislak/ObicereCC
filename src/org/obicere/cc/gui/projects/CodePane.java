@@ -49,9 +49,9 @@ public class CodePane extends JTextPane {
     private static final CodeCompletionHook COMPLETION = ShutDownHookManager.hookByClass(CodeCompletionHook.class);
 
     static {
-        StyleConstants.setForeground(LITERAL_SET, EDITOR.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));
-        StyleConstants.setForeground(KEYWORD_SET, EDITOR.getPropertyAsColor(EditorHook.KEYWORD_HIGHLIGHT_COLOR));
-        StyleConstants.setForeground(PLAINTEXT_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_HIGHLIGHT_COLOR));
+        StyleConstants.setForeground(LITERAL_SET, EDITOR.getPropertyAsColor(EditorHook.STRING_STYLING_COLOR));
+        StyleConstants.setForeground(KEYWORD_SET, EDITOR.getPropertyAsColor(EditorHook.KEYWORD_STYLING_COLOR));
+        StyleConstants.setForeground(PLAINTEXT_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_STYLING_COLOR));
 
         editorFont = new Font(EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
     }
@@ -229,9 +229,9 @@ public class CodePane extends JTextPane {
     private void checkForUpdates() {
         final long editorUpdate = EDITOR.getLastEditorUpdate();
         if (lastUpdate != editorUpdate) {
-            StyleConstants.setForeground(LITERAL_SET, EDITOR.getPropertyAsColor(EditorHook.STRING_HIGHLIGHT_COLOR));
-            StyleConstants.setForeground(KEYWORD_SET, EDITOR.getPropertyAsColor(EditorHook.KEYWORD_HIGHLIGHT_COLOR));
-            StyleConstants.setForeground(PLAINTEXT_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_HIGHLIGHT_COLOR));
+            StyleConstants.setForeground(LITERAL_SET, EDITOR.getPropertyAsColor(EditorHook.STRING_STYLING_COLOR));
+            StyleConstants.setForeground(KEYWORD_SET, EDITOR.getPropertyAsColor(EditorHook.KEYWORD_STYLING_COLOR));
+            StyleConstants.setForeground(PLAINTEXT_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_STYLING_COLOR));
 
             editorFont = new Font(EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
             lastUpdate = editorUpdate;
@@ -240,6 +240,9 @@ public class CodePane extends JTextPane {
     }
 
     public void styleDocument() {
+        if(!EDITOR.getPropertyAsBoolean(EditorHook.ENABLED_STYLING)){
+            return;
+        }
         final String document = getText();
         final int characterCount = document.length();
 

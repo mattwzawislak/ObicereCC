@@ -1,5 +1,6 @@
 package org.obicere.cc.shutdown;
 
+import org.obicere.cc.gui.settings.BooleanSetting;
 import org.obicere.cc.gui.settings.ColorSetting;
 import org.obicere.cc.gui.settings.FontSetting;
 import org.obicere.cc.gui.settings.IntegerSetting;
@@ -13,17 +14,21 @@ public class EditorHook extends SettingsShutDownHook {
 
     public static final String NAME = "editor.settings";
 
-    @HookValue("java.awt.Color[r=40,g=116,b=167]")
-    public static final String STRING_HIGHLIGHT_COLOR       = "color.highlight.string";
-    public static final String STRING_HIGHLIGHT_DESCRIPTION = "Highlight Color for Strings: ";
+    @HookValue("true")
+    public static final String ENABLED_STYLING             = "color.styling.enabled";
+    public static final String ENABLED_STYLING_DESCRIPTION = "Allow styling of editor";
 
-    @HookValue("java.awt.Color[r=120,g=43,b=8]")
-    public static final String KEYWORD_HIGHLIGHT_COLOR       = "color.highlight.keyword";
-    public static final String KEYWORD_HIGHLIGHT_DESCRIPTION = "Highlight Color for Keywords: ";
+    @HookValue("40,116,167")
+    public static final String STRING_STYLING_COLOR       = "color.styling.string";
+    public static final String STRING_STYLING_DESCRIPTION = "Styling color for literals: ";
 
-    @HookValue("java.awt.Color[r=36,g=36,b=36]")
-    public static final String NORMAL_HIGHLIGHT_COLOR       = "color.highlight.normal";
-    public static final String NORMAL_HIGHLIGHT_DESCRIPTION = "Editor text Color: ";
+    @HookValue("120,43,8")
+    public static final String KEYWORD_STYLING_COLOR       = "color.styling.keyword";
+    public static final String KEYWORD_STYLING_DESCRIPTION = "Styling color for keywords: ";
+
+    @HookValue("36,36,36")
+    public static final String NORMAL_STYLING_COLOR       = "color.styling.normal";
+    public static final String NORMAL_STYLING_DESCRIPTION = "Editor text color: ";
 
     @HookValue("Consolas")
     public static final String EDITOR_FONT_TYPE             = "font.type";
@@ -37,9 +42,10 @@ public class EditorHook extends SettingsShutDownHook {
 
     public EditorHook() {
         super("Editor Settings", NAME, PRIORITY_WINDOW_CLOSING);
-        providePanel(STRING_HIGHLIGHT_COLOR, new ColorSetting(this, STRING_HIGHLIGHT_COLOR, STRING_HIGHLIGHT_DESCRIPTION));
-        providePanel(KEYWORD_HIGHLIGHT_COLOR, new ColorSetting(this, KEYWORD_HIGHLIGHT_COLOR, KEYWORD_HIGHLIGHT_DESCRIPTION));
-        providePanel(NORMAL_HIGHLIGHT_COLOR, new ColorSetting(this, NORMAL_HIGHLIGHT_COLOR, NORMAL_HIGHLIGHT_DESCRIPTION));
+        providePanel(ENABLED_STYLING, new BooleanSetting(this, ENABLED_STYLING, ENABLED_STYLING_DESCRIPTION));
+        providePanel(STRING_STYLING_COLOR, new ColorSetting(this, STRING_STYLING_COLOR, STRING_STYLING_DESCRIPTION));
+        providePanel(KEYWORD_STYLING_COLOR, new ColorSetting(this, KEYWORD_STYLING_COLOR, KEYWORD_STYLING_DESCRIPTION));
+        providePanel(NORMAL_STYLING_COLOR, new ColorSetting(this, NORMAL_STYLING_COLOR, NORMAL_STYLING_DESCRIPTION));
         providePanel(EDITOR_FONT_SIZE, new IntegerSetting(this, EDITOR_FONT_SIZE, EDITOR_FONT_SIZE_DESCRIPTION));
         providePanel(EDITOR_FONT_TYPE, new FontSetting(this, EDITOR_FONT_TYPE, EDITOR_FONT_TYPE_DESCRIPTION));
     }

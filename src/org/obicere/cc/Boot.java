@@ -1,5 +1,6 @@
 package org.obicere.cc;
 
+import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.executor.language.LanguageHandler;
 import org.obicere.cc.gui.FrameManager;
@@ -20,6 +21,7 @@ public class Boot {
 
     public static void main(final String[] args) {
         final long startBoot = System.currentTimeMillis();
+        final Domain access = new Domain();
         Paths.build();
         LanguageHandler.load();
         ShutDownHookManager.setup();
@@ -32,7 +34,7 @@ public class Boot {
             e.printStackTrace();
             return;
         }
-        Updater.update();
+        access.getUpdater().run();
         Splash.setStatus("Loading framework");
         SwingUtilities.invokeLater(() -> {
             try {

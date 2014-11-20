@@ -38,7 +38,7 @@ public class FrameManager {
     private static JTabbedPane tabs;
 
     public static void buildGUI() {
-        final JFrame frame = new JFrame("Obicere Computing Challenges v" + Updater.clientVersion());
+        final JFrame frame = new JFrame("Obicere Computing Challenges v"/* + Updater.clientVersion()*/);
         final JPanel main = new JPanel(new BorderLayout());
         final LayoutHook hook = ShutDownHookManager.hookByClass(LayoutHook.class);
         tabs = new JTabbedPane(SwingConstants.LEFT);

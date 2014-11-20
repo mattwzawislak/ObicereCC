@@ -1,7 +1,9 @@
 package org.obicere.cc.util;
 
+import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.configuration.Global.Paths;
 import org.obicere.cc.configuration.Global.URLs;
+import org.obicere.cc.configuration.StartupTask;
 import org.obicere.cc.gui.Splash;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.ProjectLoader;
@@ -25,30 +27,23 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class Updater {
+public class Updater extends StartupTask {
 
-    private static final Logger log = Logger.getLogger(Updater.class.getCanonicalName());
+    private double updatedClientVersion = 0.0;
 
-    private static double updatedClientVersion = 0.0;
-    private static double currentClientVersion = 1.00;
+    private LinkedHashMap<String, Double> updatedRunnersList = new LinkedHashMap<>();
+    private LinkedHashMap<String, Double> currentRunnersList = new LinkedHashMap<>();
 
-    private static LinkedHashMap<String, Double> updatedRunnersList = new LinkedHashMap<>();
-    private static LinkedHashMap<String, Double> currentRunnersList = new LinkedHashMap<>();
+    private final Predicate<String> OUTDATED_FILTER = key -> !currentRunnersList.containsKey(key) || updatedRunnersList.get(key) > currentRunnersList.get(key);
 
-    private static final Predicate<String> OUTDATED_FILTER = key -> !currentRunnersList.containsKey(key) || updatedRunnersList.get(key) > currentRunnersList.get(key);
+    private final RunnerSourceHook HOOK = ShutDownHookManager.hookByClass(RunnerSourceHook.class);
 
-    private static final RunnerSourceHook HOOK = ShutDownHookManager.hookByClass(RunnerSourceHook.class);
-
-    private Updater() {
+    public Updater(final Domain access) {
+        super(access);
     }
 
-    public static double clientVersion() {
-        return currentClientVersion;
-    }
-
-    public static void update() {
+    public void run() {
         ProjectLoader.loadCurrent();
         if (!isInternetReachable()) {
             return;
@@ -82,7 +77,7 @@ public class Updater {
                 return;
             }
             parseUpdate(updatedClientInfo, src);
-            if (updatedClientVersion > currentClientVersion) {
+            if (updatedClientVersion > getDomain().getClientVersion()) {
                 JOptionPane.showMessageDialog(null, "Update available - Please download again.", "Update", JOptionPane.INFORMATION_MESSAGE);
                 System.exit(0);
             }
@@ -96,15 +91,12 @@ public class Updater {
                 }
             });
         }
-        currentRunnersList = null; // Seems sloppy to de-allocate memory
-        // Consider changing to a instance-based updater
-        updatedRunnersList = null;
         if (fileChanged.get()) {
             ProjectLoader.loadCurrent();
         }
     }
 
-    private static void download(final String name, final String src) {
+    private void download(final String name, final String src) {
         try {
             final String runnerName;
             if (name.endsWith(".class")) {
@@ -142,7 +134,7 @@ public class Updater {
 
     }
 
-    private static void parseUpdate(final byte[] data, final String src) {
+    private void parseUpdate(final byte[] data, final String src) {
         try {
             final BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(data)));
             if (src.equals(URLs.BIN)) {
@@ -158,7 +150,7 @@ public class Updater {
         }
     }
 
-    private static byte[] downloadCurrentClientInfo(final String src) {
+    private byte[] downloadCurrentClientInfo(final String src) {
         try {
             return IOUtils.download(new URL(src + "version.dat"));
         } catch (final IOException ignored) {
@@ -167,7 +159,7 @@ public class Updater {
         return null;
     }
 
-    public static boolean isInternetReachable() {
+    public boolean isInternetReachable() {
         Splash.setStatus("Checking connection");
         try {
             final URL url = new URL(URLs.HOME);

@@ -12,7 +12,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,8 +43,8 @@ public class ResultsTable extends JTable implements TableCellRenderer {
         model.setColumnCount(HEADERS.length);
 
         final TableColumnModel columns = getColumnModel();
-        fixSize(columns, 0, 125);
-        fixSize(columns, 1, 125);
+        //fixSize(columns, 0, 125);
+        //fixSize(columns, 1, 125);
     }
 
     private void fixSize(final TableColumnModel model, final int column, final int size){
@@ -68,8 +67,13 @@ public class ResultsTable extends JTable implements TableCellRenderer {
                     if (!wrong && !resultsCorrect[i]) {
                         wrong = true;
                     }
-                    final Object[] arr = {stringValue(results[i].getCorrectAnswer()), stringValue(results[i].getResult()), stringValue(results[i].getParameters())};
-                    m.insertRow(i, arr); // +1 for header offset
+                    final Result result = results[i];
+                    final String correct = stringValue(result.getCorrectAnswer());
+                    final String answer = stringValue(result.getResult());
+                    final String params = stringValue(result.getParameters());
+
+                    final Object[] arr = {correct, answer, params};
+                    m.insertRow(i, arr);
                 }
                 if (!wrong) {
                     hook.setComplete(project.getName(), true);

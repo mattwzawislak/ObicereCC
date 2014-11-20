@@ -50,7 +50,7 @@ public class Splash {
             new Color(0x333333)
     };
 
-    private static final float[] ALPHA = new float[]{
+    private final float[] alpha = new float[]{
             1,
             1,
             1
@@ -101,7 +101,7 @@ public class Splash {
                     final AffineTransform transform = new AffineTransform();
                     transform.rotate(Math.toRadians(120 * i), CENTER_X, CENTER_Y);
                     final Shape newShape = transform.createTransformedShape(POLYGON);
-                    final AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, ALPHA[i]);
+                    final AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha[i]);
 
                     newG.setStroke(OUTLINE);
                     newG.setColor(COLORS[i]);
@@ -195,7 +195,7 @@ public class Splash {
 
         public void mouseExited(final MouseEvent e) {
             for (int i = 0; i < 3; i++) {
-                ALPHA[i] = 1;
+                alpha[i] = 1;
             }
             frame.repaint();
         }
@@ -217,7 +217,7 @@ public class Splash {
                 int anglePiece = 270 - 120 * i;
                 int difference = Math.abs(angle - anglePiece);
                 int fixedAngle = 180 - Math.abs(180 - difference);
-                ALPHA[i] = fixedAngle / 180f;
+                alpha[i] = fixedAngle / 180f;
             }
             frame.repaint();
         }

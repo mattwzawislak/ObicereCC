@@ -1,14 +1,12 @@
 package org.obicere.cc.util;
 
 import org.obicere.cc.configuration.Domain;
-import org.obicere.cc.configuration.Global.Paths;
+import org.obicere.cc.configuration.DomainAccess;
 import org.obicere.cc.configuration.Global.URLs;
-import org.obicere.cc.configuration.StartupTask;
-import org.obicere.cc.gui.Splash;
+import org.obicere.cc.configuration.Paths;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.ProjectLoader;
 import org.obicere.cc.shutdown.RunnerSourceHook;
-import org.obicere.cc.shutdown.ShutDownHookManager;
 
 import javax.swing.JOptionPane;
 import java.io.BufferedReader;
@@ -28,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
-public class Updater extends StartupTask {
+public class Updater extends DomainAccess {
 
     private double updatedClientVersion = 0.0;
 
@@ -37,19 +35,20 @@ public class Updater extends StartupTask {
 
     private final Predicate<String> OUTDATED_FILTER = key -> !currentRunnersList.containsKey(key) || updatedRunnersList.get(key) > currentRunnersList.get(key);
 
-    private final RunnerSourceHook HOOK = ShutDownHookManager.hookByClass(RunnerSourceHook.class);
 
     public Updater(final Domain access) {
         super(access);
     }
 
+    @Override
     public void run() {
         ProjectLoader.loadCurrent();
         if (!isInternetReachable()) {
             return;
         }
         final HashSet<String> sources = new HashSet<>();
-        final boolean downloadMain = HOOK.getPropertyAsBoolean(RunnerSourceHook.DOWNLOAD_FROM_MAIN_SOURCE);
+        final RunnerSourceHook hook = access.getHookManager().hookByClass(RunnerSourceHook.class);
+        final boolean downloadMain = hook.getPropertyAsBoolean(RunnerSourceHook.DOWNLOAD_FROM_MAIN_SOURCE);
         if (downloadMain) { // Note that this will allow updates
             sources.add(URLs.BIN);
         }
@@ -77,7 +76,7 @@ public class Updater extends StartupTask {
                 return;
             }
             parseUpdate(updatedClientInfo, src);
-            if (updatedClientVersion > getDomain().getClientVersion()) {
+            if (updatedClientVersion > getAccess().getClientVersion()) {
                 JOptionPane.showMessageDialog(null, "Update available - Please download again.", "Update", JOptionPane.INFORMATION_MESSAGE);
                 System.exit(0);
             }
@@ -104,7 +103,7 @@ public class Updater extends StartupTask {
             } else {
                 runnerName = name;
             }
-            Splash.setStatus("Downloading " + name);
+            access.getSplash().setStatus("Downloading " + name);
 
             final byte[] data = IOUtils.download(new URL(src + runnerName.replace(".", "/") + ".class"));
 
@@ -160,7 +159,7 @@ public class Updater extends StartupTask {
     }
 
     public boolean isInternetReachable() {
-        Splash.setStatus("Checking connection");
+        access.getSplash().setStatus("Checking connection");
         try {
             final URL url = new URL(URLs.HOME);
             final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();

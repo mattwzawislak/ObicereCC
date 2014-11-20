@@ -1,8 +1,7 @@
 package org.obicere.cc.gui.projects;
 
+import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.executor.language.Language;
-import org.obicere.cc.executor.language.LanguageHandler;
-import org.obicere.cc.gui.FrameManager;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -53,7 +52,7 @@ public class ProjectSelectorControls extends JPanel {
         final ItemListener listener = e -> search(search.getText());
 
         final JLabel languageLabel = new JLabel("Selected Language: ");
-        languageSelector = new JComboBox<>(new Vector<>(LanguageHandler.getSupportedLanguages()));
+        languageSelector = new JComboBox<>(new Vector<>(Domain.getGlobalDomain().getLanguageManager().getSupportedLanguages()));
 
         complete = new JCheckBox("Complete");
         incomplete = new JCheckBox("Incomplete");
@@ -122,7 +121,7 @@ public class ProjectSelectorControls extends JPanel {
             fixedKey = key.replaceAll("\\s+", "");
             fixedKey = fixedKey.replace(DEFAULT, "");
         }
-        final ProjectSelector projectSelector = FrameManager.getTab(ProjectTabPanel.class).getProjectSelector();
+        final ProjectSelector projectSelector = Domain.getGlobalDomain().getFrameManager().getTab(ProjectTabPanel.class).getProjectSelector();
         projectSelector.refine(fixedKey, complete.isSelected(), name.isSelected(), incomplete.isSelected());
     }
 

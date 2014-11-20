@@ -1,5 +1,6 @@
 package org.obicere.cc.gui.projects;
 
+import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.executor.language.CodeFormatter;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.executor.language.util.Bound;
@@ -7,7 +8,6 @@ import org.obicere.cc.executor.language.util.DocumentInspector;
 import org.obicere.cc.executor.language.util.TypeDocumentIndexer;
 import org.obicere.cc.shutdown.CodeCompletionHook;
 import org.obicere.cc.shutdown.EditorHook;
-import org.obicere.cc.shutdown.ShutDownHookManager;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -45,8 +45,8 @@ public class CodePane extends JTextPane {
     private static final SimpleAttributeSet LITERAL_SET   = new SimpleAttributeSet();
     private static Font editorFont;
 
-    private static final EditorHook         EDITOR     = ShutDownHookManager.hookByClass(EditorHook.class);
-    private static final CodeCompletionHook COMPLETION = ShutDownHookManager.hookByClass(CodeCompletionHook.class);
+    private static final EditorHook         EDITOR     = Domain.getGlobalDomain().getHookManager().hookByClass(EditorHook.class);
+    private static final CodeCompletionHook COMPLETION = Domain.getGlobalDomain().getHookManager().hookByClass(CodeCompletionHook.class);
 
     static {
         StyleConstants.setForeground(LITERAL_SET, EDITOR.getPropertyAsColor(EditorHook.STRING_STYLING_COLOR));
@@ -240,7 +240,7 @@ public class CodePane extends JTextPane {
     }
 
     public void styleDocument() {
-        if(!EDITOR.getPropertyAsBoolean(EditorHook.ENABLED_STYLING)){
+        if (!EDITOR.getPropertyAsBoolean(EditorHook.ENABLED_STYLING)) {
             return;
         }
         final String document = getText();

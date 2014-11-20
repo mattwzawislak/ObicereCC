@@ -1,12 +1,12 @@
 package org.obicere.cc.gui.projects;
 
+import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.layout.WrapLayout;
+import org.obicere.cc.projects.Project;
 import org.obicere.cc.shutdown.LayoutHook;
 import org.obicere.cc.shutdown.SaveProgressHook;
-import org.obicere.cc.shutdown.ShutDownHookManager;
-import org.obicere.cc.projects.Project;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -24,8 +24,8 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
-import java.util.TimerTask;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class Editor extends JPanel {
 
@@ -38,7 +38,7 @@ public class Editor extends JPanel {
     private final Project      project;
     private final Font         defaultInstructionFont;
     private final Language     language;
-    private final SaveProgressHook hook = ShutDownHookManager.hookByClass(SaveProgressHook.class);
+    private final SaveProgressHook hook = Domain.getGlobalDomain().getHookManager().hookByClass(SaveProgressHook.class);
 
     public Editor(final Project project, final Language language) {
         super(new BorderLayout());
@@ -51,7 +51,7 @@ public class Editor extends JPanel {
         this.defaultInstructionFont = instructions.getFont();
         this.language = language;
 
-        final LayoutHook hook = ShutDownHookManager.hookByClass(LayoutHook.class);
+        final LayoutHook hook = Domain.getGlobalDomain().getHookManager().hookByClass(LayoutHook.class);
 
         final JButton reset = new JButton("Reset");
         final JButton run = new JButton("Run");

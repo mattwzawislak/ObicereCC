@@ -1,5 +1,6 @@
 package org.obicere.cc.gui.projects;
 
+import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.shutdown.SaveProgressHook;
 import org.obicere.cc.shutdown.ShutDownHookManager;
@@ -23,7 +24,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
     private static final String[] HEADERS          = new String[]{"Correct Answer", "Your Answer", "Parameters"};
 
     private final Project project;
-    private final SaveProgressHook hook = ShutDownHookManager.hookByClass(SaveProgressHook.class);
+    private final SaveProgressHook hook = Domain.getGlobalDomain().getHookManager().hookByClass(SaveProgressHook.class);
 
     private boolean[] resultsCorrect;
 
@@ -47,7 +48,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
         //fixSize(columns, 1, 125);
     }
 
-    private void fixSize(final TableColumnModel model, final int column, final int size){
+    private void fixSize(final TableColumnModel model, final int column, final int size) {
         model.getColumn(column).setMinWidth(size);
         model.getColumn(column).setMaxWidth(size);
     }

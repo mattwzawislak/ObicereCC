@@ -1,26 +1,22 @@
 package org.obicere.cc.shutdown;
 
-import org.obicere.cc.gui.FrameManager;
+import org.obicere.cc.configuration.Domain;
+import org.obicere.cc.configuration.DomainAccess;
 import org.obicere.cc.util.Reflection;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-public class ShutDownHookManager {
+public class ShutDownHookManager extends DomainAccess {
 
-    private static final Logger log = Logger.getLogger(SettingsShutDownHook.class.getCanonicalName());
+    private final ShutDownHook[] hooks;
 
-    private static final ShutDownHook[] HOOKS;
-
-    static {
+    public ShutDownHookManager(final Domain access) {
+        super(access);
         final Stream<Class<?>> hooks = Reflection.where(c -> ShutDownHook.class.isAssignableFrom(c) && !ShutDownHook.class.equals(c) && !SettingsShutDownHook.class.equals(c));
         final List<ShutDownHook> goodHooks = new LinkedList<>();
         hooks.forEach(e -> {
@@ -33,44 +29,36 @@ public class ShutDownHookManager {
                 goodHooks.add(hook);
             }
         });
-        HOOKS = new ShutDownHook[goodHooks.size()];
+        this.hooks = new ShutDownHook[goodHooks.size()];
         goodHooks.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         final Iterator<ShutDownHook> iterator = goodHooks.iterator();
         for (int i = 0; iterator.hasNext(); i++) {
-            HOOKS[i] = iterator.next();
+            this.hooks[i] = iterator.next();
         }
     }
 
-    private ShutDownHookManager() {
+    public ShutDownHook[] getShutDownHooks() {
+        return hooks;
     }
 
-    public static ShutDownHook[] getShutDownHooks() {
-        return HOOKS;
-    }
-
-    public static void setup() {
-        for (final ShutDownHook hook : HOOKS) {
+    @Override
+    public void run() {
+        for (final ShutDownHook hook : hooks) {
             log.log(Level.INFO, "Adding hook: " + hook.getName());
             switch (hook.getHookPriority()) {
                 case ShutDownHook.PRIORITY_RUNTIME_SHUTDOWN:
                     Runtime.getRuntime().addShutdownHook(hook);
                     break;
                 case ShutDownHook.PRIORITY_WINDOW_CLOSING:
-                    final WindowListener listener = new WindowAdapter() {
-                        @Override
-                        public void windowClosing(final WindowEvent e) {
-                            hook.start();
-                        }
-                    };
-                    FrameManager.WINDOW_CLOSING_HOOKS.add(listener);
+                    access.getFrameManager().addWindowClosingHook(hook);
                     break;
             }
         }
     }
 
-    public static ShutDownHook hookByName(final String name) {
+    public ShutDownHook hookByName(final String name) {
         Objects.requireNonNull(name);
-        for (final ShutDownHook hook : HOOKS) {
+        for (final ShutDownHook hook : hooks) {
             if (name.equals(hook.getName())) {
                 return hook;
             }
@@ -78,14 +66,13 @@ public class ShutDownHookManager {
         throw new HookNotFoundException(name);
     }
 
-    public static <T extends ShutDownHook> T hookByClass(final Class<T> cls) {
+    public <T extends ShutDownHook> T hookByClass(final Class<T> cls) {
         Objects.requireNonNull(cls);
-        for (final ShutDownHook hook : HOOKS) {
+        for (final ShutDownHook hook : hooks) {
             if (cls.isInstance(hook)) {
                 return cls.cast(hook);
             }
         }
         throw new HookNotFoundException(cls.getCanonicalName());
     }
-
 }

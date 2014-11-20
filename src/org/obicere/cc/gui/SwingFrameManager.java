@@ -1,13 +1,13 @@
 package org.obicere.cc.gui;
 
+import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.Editor;
+import org.obicere.cc.shutdown.ShutDownHook;
 import org.obicere.cc.util.Reflection;
-import org.obicere.cc.util.Updater;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.shutdown.LayoutHook;
-import org.obicere.cc.shutdown.ShutDownHookManager;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,29 +18,40 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.LinkedList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class FrameManager {
+public class SwingFrameManager extends AbstractFrameManager {
 
-    private static final Logger log = Logger.getLogger(FrameManager.class.getCanonicalName());
-
-    public static final LinkedList<WindowListener> WINDOW_CLOSING_HOOKS = new LinkedList<>();
+    private final LinkedList<WindowListener> windowClosingHooks = new LinkedList<>();
 
     private static final Dimension TAB_SIZE = new Dimension(170, 30);
 
-    private static final LinkedList<JPanel> MAIN_TABS = new LinkedList<>();
+    private final LinkedList<JPanel> mainTabs = new LinkedList<>();
 
-    private static JTabbedPane tabs;
+    private JFrame frame;
 
-    public static void buildGUI() {
-        final JFrame frame = new JFrame("Obicere Computing Challenges v"/* + Updater.clientVersion()*/);
+    private JTabbedPane tabs;
+
+    public SwingFrameManager(final Domain access) {
+        super(access);
+    }
+
+    @Override
+    public Window getWindow() {
+        return frame;
+    }
+
+    @Override
+    public void run() {
+        frame = new JFrame("Obicere Computing Challenges v" + getAccess().getClientVersion());
+
         final JPanel main = new JPanel(new BorderLayout());
-        final LayoutHook hook = ShutDownHookManager.hookByClass(LayoutHook.class);
+        final LayoutHook hook = access.getHookManager().hookByClass(LayoutHook.class);
         tabs = new JTabbedPane(SwingConstants.LEFT);
         tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
@@ -60,7 +71,7 @@ public class FrameManager {
             mainPane.add(tabFill);
 
             final JPanel tab = (JPanel) Reflection.newInstance(e);
-            MAIN_TABS.add(tab);
+            mainTabs.add(tab);
             tabs.add(tab);
             tabs.setTabComponentAt(manifest.index(), mainPane);
         });
@@ -79,7 +90,7 @@ public class FrameManager {
             }
         });
 
-        WINDOW_CLOSING_HOOKS.forEach(frame::addWindowListener);
+        windowClosingHooks.forEach(frame::addWindowListener);
 
         frame.setIconImage(Global.ICON);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -94,26 +105,36 @@ public class FrameManager {
             frame.setSize(width, height);
             frame.setLocationRelativeTo(null);
         }
-        Splash.setStatus("Complete");
+        access.getSplash().setStatus("Complete");
     }
 
-    public synchronized static void openProject(final Project project, final Language language) {
+    @Override
+    public void addWindowClosingHook(final ShutDownHook hook) {
+        windowClosingHooks.add(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                hook.start();
+            }
+        });
+    }
+
+    public synchronized void openProject(final Project project, final Language language) {
         if (project == null) {
             return;
         }
         final Editor editor = new Editor(project, language);
         editor.setInstructionsText(project.getDescription(), false);
-        if (tabByName(project.getName(), language) == null) {
+        if (getTab(project.getName(), language) == null) {
             final int index = tabs.getTabCount();
             tabs.add(editor, index);
             tabs.setTabComponentAt(index, new TabPane(project, language));
         }
-        tabs.setSelectedComponent(tabByName(project.getName(), language));
+        tabs.setSelectedComponent(getTab(project.getName(), language));
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T getTab(final Class<T> cls) {
-        for (final JPanel tab : MAIN_TABS) {
+    public <T> T getTab(final Class<T> cls) {
+        for (final JPanel tab : mainTabs) {
             if (tab.getClass().equals(cls)) {
                 return (T) tab;
             }
@@ -121,7 +142,8 @@ public class FrameManager {
         return null;
     }
 
-    public synchronized static Editor tabByName(final String name, final Language language) {
+    @Override
+    public synchronized Editor getTab(final String name, final Language language) {
         for (final Component c : tabs.getComponents()) {
             if (c instanceof Editor) {
                 final Editor c1 = (Editor) c;
@@ -133,8 +155,8 @@ public class FrameManager {
         return null;
     }
 
-    public synchronized static void removeTab(final String name, final Language language) {
-        final Editor cur = tabByName(name, language);
+    public synchronized void removeTab(final String name, final Language language) {
+        final Editor cur = getTab(name, language);
         if (cur != null) {
             tabs.remove(cur);
             tabs.setSelectedIndex(0); // Move back to selection screen

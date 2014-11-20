@@ -1,7 +1,7 @@
 package org.obicere.cc.gui.projects;
 
+import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.configuration.Global;
-import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.projects.Project;
 
 import javax.swing.Box;
@@ -50,7 +50,7 @@ public class ProjectPanel extends JPanel {
         options.add(open);
         options.setPreferredSize(new Dimension(60, 100));
 
-        open.addActionListener(e -> FrameManager.openProject(project, ProjectSelectorControls.getControls().getSelectedLanguage()));
+        open.addActionListener(e -> Domain.getGlobalDomain().getFrameManager().openProject(project, ProjectSelectorControls.getControls().getSelectedLanguage()));
 
         name.setPreferredSize(PROJECT_PANEL_MANIFEST_SIZE);
         name.setFont(name.getFont().deriveFont(14f));

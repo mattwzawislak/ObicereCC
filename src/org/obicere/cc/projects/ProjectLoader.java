@@ -1,6 +1,6 @@
 package org.obicere.cc.projects;
 
-import org.obicere.cc.configuration.Global;
+import org.obicere.cc.configuration.Paths;
 import org.obicere.cc.util.Reflection;
 
 import java.util.LinkedList;
@@ -25,7 +25,7 @@ public class ProjectLoader {
         if (!DATA.isEmpty()) {
             resetData();
         }
-        final LinkedList<Class<?>> list = Reflection.loadClassesFrom(Global.Paths.SOURCES);
+        final LinkedList<Class<?>> list = Reflection.loadClassesFrom(Paths.SOURCES);
         final Class<Runner> cls = Runner.class;
         Reflection.filterAsSubclassOf(cls, list);
         list.forEach(ProjectLoader::add);

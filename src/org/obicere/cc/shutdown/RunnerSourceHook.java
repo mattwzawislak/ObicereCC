@@ -1,6 +1,6 @@
 package org.obicere.cc.shutdown;
 
-import org.obicere.cc.configuration.Global;
+import org.obicere.cc.configuration.Paths;
 import org.obicere.cc.gui.settings.BooleanSetting;
 import org.obicere.cc.gui.settings.ButtonSetting;
 
@@ -29,7 +29,7 @@ public class RunnerSourceHook extends SettingsShutDownHook {
         providePanel(DOWNLOAD_FROM_MAIN_SOURCE, new BooleanSetting(this, DOWNLOAD_FROM_MAIN_SOURCE, DOWNLOAD_FROM_MAIN_DESCRIPTION));
         providePanel(EDIT_SOURCES_BUTTON, new ButtonSetting(this, EDIT_SOURCES_BUTTON, EDIT_SOURCES_DESCRIPTION, EDIT_SOURCES_ACTION, () -> {
             final Desktop desktop = Desktop.getDesktop();
-            final File sourceFile = new File(Global.Paths.DATA, "sources.txt");
+            final File sourceFile = new File(Paths.DATA, "sources.txt");
 
             if (desktop.isSupported(Desktop.Action.EDIT)) {
                 if (sourceFile.exists()) {

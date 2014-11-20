@@ -1,8 +1,10 @@
 package org.obicere.cc.gui;
 
+import org.obicere.cc.configuration.Domain;
+import org.obicere.cc.configuration.DomainAccess;
 import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Message;
-import org.obicere.cc.shutdown.ShutDownHookManager;
+import org.obicere.cc.shutdown.ShutDownHook;
 import org.obicere.cc.shutdown.SplashScreenHook;
 
 import javax.swing.JFrame;
@@ -27,11 +29,9 @@ import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Splash {
+public class Splash extends DomainAccess {
 
     private static final Logger log = Logger.getLogger(Splash.class.getCanonicalName());
-
-    private static final SplashScreenHook HOOK = ShutDownHookManager.hookByClass(SplashScreenHook.class);
 
     private static final int WIDTH  = 600;
     private static final int HEIGHT = 200;
@@ -62,26 +62,34 @@ public class Splash {
     private static final Color  TEXT_COLOR = new Color(0xADBED2);
     private static final Font   FONT       = new Font("Consolas", Font.PLAIN, 14);
 
-    private static Splash instance;
-    private static String status = "Loading";
+    private String status = "Loading";
 
     private final JFrame frame;
-    private final String message;
-    private final String name;
 
     private boolean should;
 
-    private Splash() {
+    public Splash(final Domain access) {
+        super(access);
         this.frame = new JFrame();
-        this.message = new Message().getRandom();
-        final String username = HOOK.getPropertyAsString(SplashScreenHook.USER_NAME);
-        if (username == null || username.length() == 0) {
-            this.name = System.getProperty("user.name");
-        } else {
-            this.name = username;
+    }
+
+    @Override
+    public void run() {
+        final ShutDownHook hook = access.getHookManager().hookByClass(SplashScreenHook.class);
+
+        if (hook.getPropertyAsBoolean(SplashScreenHook.NO_SPLASH)) {
+            return;
         }
 
-        final BufferedImage background = buildBackground();
+        final String username = hook.getPropertyAsString(SplashScreenHook.USER_NAME);
+        final String name;
+        if (username == null || username.length() == 0) {
+            name = System.getProperty("user.name");
+        } else {
+            name = username;
+        }
+
+        final BufferedImage background = buildBackground(name);
         final JPanel splash = new JPanel() {
 
             @Override
@@ -127,9 +135,10 @@ public class Splash {
                 }
             }
         });
+        frame.setVisible(true);
     }
 
-    private BufferedImage buildBackground() {
+    private BufferedImage buildBackground(final String name) {
         final BufferedImage background = new BufferedImage(600, 200, BufferedImage.TYPE_INT_ARGB);
 
         final Graphics2D g = (Graphics2D) background.getGraphics();
@@ -143,6 +152,7 @@ public class Splash {
         g.setFont(FONT);
         g.drawString("Welcome to Obicere Computing Challenges, " + name, 10, 15);
 
+        final String message = new Message().getRandom();
         final String[] split = message.split("\n");
         int y = 105;
         final int height = g.getFontMetrics().getHeight();
@@ -154,22 +164,10 @@ public class Splash {
         return background;
     }
 
-    public static void display() {
-        instance = new Splash();
-        if (HOOK.getPropertyAsBoolean(SplashScreenHook.NO_SPLASH)) {
-            return;
-        }
-        instance.getFrame().setVisible(true);
-    }
-
-    public static Splash getInstance() {
-        return instance;
-    }
-
-    public static void setStatus(final String status) {
+    public void setStatus(final String status) {
         log.log(Level.INFO, status);
-        Splash.status = status;
-        SwingUtilities.invokeLater(instance.getFrame()::repaint);
+        this.status = status;
+        SwingUtilities.invokeLater(frame::repaint);
         // This method might not be called on swing worker thread
         // Better be sure not to tie up calling thread.
     }

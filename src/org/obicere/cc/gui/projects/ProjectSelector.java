@@ -1,6 +1,7 @@
 package org.obicere.cc.gui.projects;
 
-import org.obicere.cc.gui.FrameManager;
+import org.obicere.cc.configuration.Domain;
+import org.obicere.cc.gui.SwingFrameManager;
 import org.obicere.cc.gui.layout.VerticalFlowLayout;
 import org.obicere.cc.gui.layout.WrapLayout;
 import org.obicere.cc.projects.Project;
@@ -22,7 +23,7 @@ import java.util.List;
 public class ProjectSelector extends JPanel {
 
     private final ArrayList<ProjectPanel> projects = new ArrayList<>();
-    private final SaveProgressHook        hook     = ShutDownHookManager.hookByClass(SaveProgressHook.class);
+    private final SaveProgressHook        hook     = Domain.getGlobalDomain().getHookManager().hookByClass(SaveProgressHook.class);
 
     private final JPanel[] difficultyPanels = new JPanel[5];
 
@@ -60,7 +61,7 @@ public class ProjectSelector extends JPanel {
     }
 
     public static void setComplete(final String name, final boolean complete) {
-        FrameManager.getTab(ProjectTabPanel.class).getProjectSelector().setProjectComplete(name, complete);
+        Domain.getGlobalDomain().getFrameManager().getTab(ProjectTabPanel.class).getProjectSelector().setProjectComplete(name, complete);
     }
 
     public void setProjectComplete(final String name, final boolean complete) {

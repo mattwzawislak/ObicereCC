@@ -3,9 +3,7 @@ package org.obicere.cc.configuration;
 import java.awt.AWTError;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.File;
 import java.net.URL;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Global {
@@ -67,26 +65,6 @@ public class Global {
 
     public static enum OS {
         WINDOWS, MAC, LINUX, OTHER
-    }
-
-    public static class Paths {
-
-        public static final String APP_DATA = getAppData();
-        public static final String HOME     = APP_DATA + File.separator + "ObicereCC";
-        public static final String SOURCES  = HOME + File.separator + "sources";
-        public static final String DATA     = HOME + File.separator + "data";
-        public static final String LANGUAGE = DATA + File.separator + "language";
-
-        public static final String[] PATHS = new String[]{APP_DATA, HOME, SOURCES, DATA, LANGUAGE};
-
-        public static void build() {
-            for (final String s : PATHS) {
-                final File file = new File(s);
-                if (!file.exists() && !file.mkdir()) {
-                    log.log(Level.WARNING, "Failed to create folder {0}.", file);
-                }
-            }
-        }
     }
 
     public static class URLs {

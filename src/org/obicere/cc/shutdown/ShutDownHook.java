@@ -1,6 +1,6 @@
 package org.obicere.cc.shutdown;
 
-import org.obicere.cc.configuration.Global;
+import org.obicere.cc.configuration.Paths;
 import org.obicere.cc.util.IOUtils;
 
 import java.awt.Color;
@@ -34,7 +34,7 @@ public abstract class ShutDownHook extends Thread {
     public ShutDownHook(final String name, final int priority) {
         super(name);
         this.priority = priority;
-        this.propertiesFile = new File(Global.Paths.DATA, name.concat(".properties"));
+        this.propertiesFile = new File(Paths.DATA, name.concat(".properties"));
         loadProperties();
     }
 

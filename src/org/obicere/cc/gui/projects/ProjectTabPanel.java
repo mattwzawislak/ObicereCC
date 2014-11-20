@@ -8,6 +8,8 @@ import java.awt.BorderLayout;
 @MainTabPanel(name = "Projects", index = 0)
 public class ProjectTabPanel extends JPanel {
 
+    public static final String NAME = "Projects";
+
     private final ProjectSelector projectSelector;
 
     public ProjectTabPanel() {

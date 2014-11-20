@@ -1,10 +1,10 @@
 package org.obicere.cc.executor.language;
 
-import org.obicere.cc.configuration.Global;
+import org.obicere.cc.configuration.Domain;
+import org.obicere.cc.configuration.Paths;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.compiler.ProcessExecutor;
-import org.obicere.cc.gui.FrameManager;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
@@ -30,7 +30,7 @@ public abstract class Language {
     protected Language(final String name) {
         try {
             this.name = name;
-            this.directory = new File(Global.Paths.DATA, name);
+            this.directory = new File(Paths.DATA, name);
             if (!directory.exists() && !directory.mkdir()) {
                 log.log(Level.WARNING, "Failed to create directory for " + name);
             }
@@ -270,7 +270,7 @@ public abstract class Language {
     }
 
     public void displayError(final Project project, final String... error) {
-        final Editor editor = FrameManager.tabByName(project.getName(), this);
+        final Editor editor = Domain.getGlobalDomain().getFrameManager().getTab(project.getName(), this);
         final StringBuilder builder = new StringBuilder();
         final String path = project.getFile(this).getAbsolutePath();
         for (final String str : error) {

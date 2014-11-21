@@ -107,13 +107,26 @@ public class JavaLanguage extends Language {
         return builder.toString();
     }
 
+    private String buildNamelessParameters(final Project project) {
+        final StringBuilder builder = new StringBuilder();
+        final Parameter[] params = project.getRunner().getParameters();
+
+        for (int i = 0; i < params.length; i++) {
+            if (i != 0) {
+                builder.append(", ");
+            }
+            builder.append(params[i].getType().getSimpleName());
+        }
+        return builder.toString();
+    }
+
     @Override
     public Result[] compileAndRun(final Project project) {
         final File file = project.getFile(this);
         final String[] message = getProcessExecutor().process(file);
         if (message.length == 0) {
+            final Runner runner = project.getRunner();
             try {
-                final Runner runner = project.getRunner();
                 final Parameter[] parameters = runner.getParameters();
                 Case[] cases;
                 try {
@@ -135,6 +148,10 @@ public class JavaLanguage extends Language {
                 final Function<Case, FutureTask<Object>> supplier = c -> new FutureTask<>(() -> method.invoke(invoke.newInstance(), c.getParameters()));
                 final LanguageExecutorService service = new LanguageExecutorService(cases, supplier);
                 return service.requestResults();
+            } catch (final NoSuchMethodException m) {
+                displayError(project, "Method not found.\n" +
+                                      "You must have a method " + runner.getMethodName() + "(" + buildNamelessParameters(project) + ") defined.");
+                return null;
             } catch (final Exception e) {
                 // java.lang.AssertionError blah blah blah
                 // ...

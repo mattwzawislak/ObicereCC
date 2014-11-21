@@ -2,15 +2,13 @@ package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.executor.Result;
-import org.obicere.cc.shutdown.SaveProgressHook;
-import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.projects.Project;
+import org.obicere.cc.shutdown.SaveProgressHook;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.lang.reflect.Array;
@@ -38,19 +36,11 @@ public class ResultsTable extends JTable implements TableCellRenderer {
             }
         };
 
+        setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         setModel(model);
         setEnabled(false);
         model.setColumnIdentifiers(HEADERS);
         model.setColumnCount(HEADERS.length);
-
-        final TableColumnModel columns = getColumnModel();
-        //fixSize(columns, 0, 125);
-        //fixSize(columns, 1, 125);
-    }
-
-    private void fixSize(final TableColumnModel model, final int column, final int size) {
-        model.getColumn(column).setMinWidth(size);
-        model.getColumn(column).setMaxWidth(size);
     }
 
     public void setResults(final Result[] results) {
@@ -60,6 +50,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
             for (int i = 0; i < rowCount; i++) { // Remove all rows but the header
                 m.removeRow(0);
             }
+
             if (results != null && results.length > 0) {
                 resultsCorrect = new boolean[results.length];
                 boolean wrong = false;
@@ -112,6 +103,11 @@ public class ResultsTable extends JTable implements TableCellRenderer {
         label.setToolTipText(data);
         label.setForeground(resultsCorrect[row] ? CORRECT : Color.RED);
         return label;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportWidth() {
+        return getPreferredSize().getWidth() < getParent().getWidth();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.obicere.cc.process;
 
 import org.obicere.cc.configuration.Domain;
+import org.obicere.cc.gui.Splash;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -16,11 +17,12 @@ public class SwingLauncher extends AbstractLauncher {
     @Override
     public void launch() {
         final Domain access = new Domain();
+        final Splash splash = access.getSplash();
         access.getPaths().run();
         access.getLanguageManager().run();
         access.getHookManager().run();
         try {
-            SwingUtilities.invokeAndWait(access.getSplash()::run);
+            SwingUtilities.invokeAndWait(splash::run);
         } catch (final InterruptedException ignored) {
             return;
         } catch (final InvocationTargetException e) {
@@ -29,7 +31,7 @@ public class SwingLauncher extends AbstractLauncher {
             return;
         }
         access.getUpdater().run();
-        access.getSplash().setStatus("Loading framework");
+        splash.setStatus("Loading framework");
         SwingUtilities.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -47,8 +49,8 @@ public class SwingLauncher extends AbstractLauncher {
                 e.printStackTrace();
             }
             access.getFrameManager().buildGUI();
-            access.getSplash().shouldDispose(true);
-            access.getSplash().dispose();
+            splash.shouldDispose(true);
+            splash.dispose();
         });
     }
 }

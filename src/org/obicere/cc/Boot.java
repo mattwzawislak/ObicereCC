@@ -3,6 +3,8 @@ package org.obicere.cc;
 import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.process.AbstractLauncher;
 import org.obicere.cc.process.SwingLauncher;
+import org.obicere.cc.util.Argument;
+import org.obicere.cc.util.ArgumentParser;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -16,16 +18,21 @@ public class Boot {
     public static void main(final String[] args) {
         final Logger log = Logger.getLogger(Boot.class.getCanonicalName());
         final long startBoot = System.currentTimeMillis();
+        final ArgumentParser parser = new ArgumentParser(args);
 
+        final Argument<String> launcherName = new Argument<String>("launcher", "swing", "l");
+
+        parser.parse();
         final AbstractLauncher launcher;
-        if(args.length == 0){
-            launcher = new SwingLauncher();
-        } else {
-            launcher = null;
-        }
-        if(launcher == null){
-            log.severe("Failed to launch program with specified program arguments.");
-            return;
+        switch (launcherName.get()){
+            case "jfx":
+            case "awt":
+                log.warning("Launcher type not supported at this time. Defaulting to swing.");
+            case "swing":
+                launcher = new SwingLauncher();
+                break;
+                default:
+                    throw new IllegalArgumentException("Invalid argument for default launcher: " + launcherName.get());
         }
         launcher.launch();
 

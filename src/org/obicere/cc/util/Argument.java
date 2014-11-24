@@ -1,7 +1,5 @@
 package org.obicere.cc.util;
 
-import com.sun.org.apache.xpath.internal.Arg;
-
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -16,12 +14,15 @@ public class Argument {
     private final String preset;
     private       String setTo;
 
+    private final boolean conditional;
+
     public Argument(final String name, final String preset) {
         Objects.requireNonNull(name);
         this.name = name;
         this.preset = preset;
         this.setTo = preset;
-        this.aliases = new java.lang.String[0];
+        this.conditional = false;
+        this.aliases = new String[0];
     }
 
     public Argument(final String name, final String preset, final String... aliases) {
@@ -29,6 +30,7 @@ public class Argument {
         this.name = name;
         this.preset = preset;
         this.setTo = preset;
+        this.conditional = false;
         if (aliases == null) {
             this.aliases = new java.lang.String[0];
         } else {
@@ -37,11 +39,25 @@ public class Argument {
     }
 
     public Argument(final String name, final boolean preset) {
-
+        Objects.requireNonNull(name);
+        this.name = name;
+        this.preset = String.valueOf(preset);
+        this.setTo = this.preset;
+        this.conditional = true;
+        this.aliases = new String[0];
     }
 
     public Argument(final String name, final boolean preset, final String... aliases) {
-
+        Objects.requireNonNull(name);
+        this.name = name;
+        this.preset = String.valueOf(preset);
+        this.setTo = this.preset;
+        this.conditional = true;
+        if (aliases == null) {
+            this.aliases = new java.lang.String[0];
+        } else {
+            this.aliases = aliases;
+        }
     }
 
     public boolean isDefault() {
@@ -50,8 +66,19 @@ public class Argument {
 
     public String set(final String newValue) {
         final String oldValue = setTo;
-        this.setTo = newValue;
+        if (newValue == null) {
+            this.setTo = null;
+        } else {
+            this.setTo = newValue.toLowerCase();
+        }
         return oldValue;
+    }
+
+    public String set(final boolean value) {
+        if (!isConditional()) {
+            return null;
+        }
+        return set(String.valueOf(value));
     }
 
     public String get() {
@@ -68,6 +95,10 @@ public class Argument {
 
     public String[] getAliases() {
         return aliases;
+    }
+
+    public boolean isConditional() {
+        return conditional;
     }
 
     @Override

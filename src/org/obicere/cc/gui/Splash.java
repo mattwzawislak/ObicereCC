@@ -176,6 +176,11 @@ public class Splash extends DomainAccess {
         this.should = should;
     }
 
+    public void safelyDispose() {
+        shouldDispose(true);
+        dispose();
+    }
+
     public void dispose() {
         frame.dispose();
     }

@@ -4,8 +4,13 @@ import org.obicere.cc.executor.language.LanguageManager;
 import org.obicere.cc.gui.AbstractFrameManager;
 import org.obicere.cc.gui.Splash;
 import org.obicere.cc.gui.SwingFrameManager;
+import org.obicere.cc.process.StartingProcess;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.util.Updater;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Obicere
@@ -25,7 +30,10 @@ public class Domain {
     private Paths                paths;
     private LanguageManager      languageManager;
 
+    private List<StartingProcess> startingProcesses = new LinkedList<>();
+
     public Domain() {
+        // Would be bloody amazing to get this to be dynamic... Reflection can be messy though
         // Initialize elements in access
         updater = new Updater(this);
         frameManager = new SwingFrameManager(this);
@@ -33,7 +41,14 @@ public class Domain {
         splash = new Splash(this);
         paths = new Paths(this);
         languageManager = new LanguageManager(this);
+        //
+        startingProcesses.add(updater);
+        startingProcesses.add(hookManager);
+        startingProcesses.add(paths);
+        startingProcesses.add(languageManager);
+        Collections.sort(startingProcesses);
         // Then allow access to elements
+
         fullyQualified = true;
         globalDomain = this;
     }
@@ -47,6 +62,11 @@ public class Domain {
         if (!fullyQualified) {
             throw new IllegalAccessError("Cannot access domain until it is fully qualified.");
         }
+    }
+
+    public List<StartingProcess> getStartingProcesses() {
+        checkQualification();
+        return startingProcesses;
     }
 
     public Updater getUpdater() {
@@ -75,6 +95,7 @@ public class Domain {
     }
 
     public LanguageManager getLanguageManager() {
+        checkQualification();
         return languageManager;
     }
 

@@ -1,7 +1,7 @@
 package org.obicere.cc.executor.language;
 
 import org.obicere.cc.configuration.Domain;
-import org.obicere.cc.configuration.DomainAccess;
+import org.obicere.cc.process.StartingProcess;
 import org.obicere.cc.util.Reflection;
 
 import java.util.Collection;
@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
-public class LanguageManager extends DomainAccess {
+public class LanguageManager extends StartingProcess {
 
     private final Map<String, Language> supported = new HashMap<>();
 
@@ -29,6 +29,11 @@ public class LanguageManager extends DomainAccess {
 
     public Language getLanguage(final String name) {
         return supported.get(name);
+    }
+
+    @Override
+    public int priority() {
+        return 1;
     }
 
     @Override

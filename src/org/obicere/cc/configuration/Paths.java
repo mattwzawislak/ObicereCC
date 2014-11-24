@@ -1,12 +1,14 @@
 package org.obicere.cc.configuration;
 
+import org.obicere.cc.process.StartingProcess;
+
 import java.io.File;
 import java.util.logging.Level;
 
 /**
  * @author Obicere
  */
-public class Paths extends DomainAccess {
+public class Paths extends StartingProcess {
 
     public static final String APP_DATA = Global.getAppData();
     public static final String HOME     = APP_DATA + File.separator + "ObicereCC";
@@ -18,6 +20,11 @@ public class Paths extends DomainAccess {
 
     public Paths(final Domain access) {
         super(access);
+    }
+
+    @Override
+    public int priority() {
+        return 0;
     }
 
     @Override

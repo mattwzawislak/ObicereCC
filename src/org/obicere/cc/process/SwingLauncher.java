@@ -18,9 +18,6 @@ public class SwingLauncher extends AbstractLauncher {
     public void launch() {
         final Domain access = new Domain();
         final Splash splash = access.getSplash();
-        access.getPaths().run();
-        access.getLanguageManager().run();
-        access.getHookManager().run();
         try {
             SwingUtilities.invokeAndWait(splash::run);
         } catch (final InterruptedException ignored) {
@@ -30,7 +27,9 @@ public class SwingLauncher extends AbstractLauncher {
             e.printStackTrace();
             return;
         }
-        access.getUpdater().run();
+
+        access.getStartingProcesses().forEach(StartingProcess::run);
+
         splash.setStatus("Loading framework");
         SwingUtilities.invokeLater(() -> {
             try {
@@ -49,8 +48,7 @@ public class SwingLauncher extends AbstractLauncher {
                 e.printStackTrace();
             }
             access.getFrameManager().buildGUI();
-            splash.shouldDispose(true);
-            splash.dispose();
+            splash.safelyDispose();
         });
     }
 }

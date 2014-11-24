@@ -2,6 +2,7 @@ package org.obicere.cc.shutdown;
 
 import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.configuration.DomainAccess;
+import org.obicere.cc.process.StartingProcess;
 import org.obicere.cc.util.Reflection;
 
 import java.util.Iterator;
@@ -11,7 +12,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
-public class ShutDownHookManager extends DomainAccess {
+public class ShutDownHookManager extends StartingProcess {
 
     private final ShutDownHook[] hooks;
 
@@ -39,6 +40,11 @@ public class ShutDownHookManager extends DomainAccess {
 
     public ShutDownHook[] getShutDownHooks() {
         return hooks;
+    }
+
+    @Override
+    public int priority() {
+        return 3;
     }
 
     @Override

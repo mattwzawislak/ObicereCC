@@ -4,6 +4,7 @@ import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.configuration.DomainAccess;
 import org.obicere.cc.configuration.Global.URLs;
 import org.obicere.cc.configuration.Paths;
+import org.obicere.cc.process.StartingProcess;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.ProjectLoader;
 import org.obicere.cc.shutdown.RunnerSourceHook;
@@ -26,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
-public class Updater extends DomainAccess {
+public class Updater extends StartingProcess {
 
     private double updatedClientVersion = 0.0;
 
@@ -38,6 +39,11 @@ public class Updater extends DomainAccess {
 
     public Updater(final Domain access) {
         super(access);
+    }
+
+    @Override
+    public int priority() {
+        return 2;
     }
 
     @Override
@@ -76,7 +82,7 @@ public class Updater extends DomainAccess {
                 return;
             }
             parseUpdate(updatedClientInfo, src);
-            if (updatedClientVersion > getAccess().getClientVersion()) {
+            if (updatedClientVersion > access.getClientVersion()) {
                 JOptionPane.showMessageDialog(null, "Update available - Please download again.", "Update", JOptionPane.INFORMATION_MESSAGE);
                 System.exit(0);
             }

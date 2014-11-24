@@ -1,5 +1,6 @@
 package org.obicere.cc.executor.language.impl.java;
 
+import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.executor.Case;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
@@ -82,8 +83,8 @@ public class JavaLanguage extends Language {
 
     private static final CodeFormatter FORMATTER = new JavaCodeFormatter();
 
-    public JavaLanguage() {
-        super("Java");
+    public JavaLanguage(final Domain access) {
+        super(access, "Java");
     }
 
     @Override

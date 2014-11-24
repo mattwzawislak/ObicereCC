@@ -4,6 +4,7 @@ import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.process.StartingProcess;
 import org.obicere.cc.util.Reflection;
 
+import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,8 @@ public class LanguageManager extends StartingProcess {
             final Stream<Class<?>> languageClasses = Reflection.hasAnnotation(LanguageIdentifier.class);
             languageClasses.forEach(cls -> {
                 try {
-                    final Language language = (Language) Reflection.newInstance(cls);
+                    final Constructor<?> constructor = cls.getConstructor(Domain.class);
+                    final Language language = (Language) constructor.newInstance(access);
                     final String name = language.getName();
                     supported.put(name, language);
 

@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 /**
  * @author Obicere
  */
-public abstract class DomainAccess implements Runnable {
+public abstract class DomainAccess {
 
     protected final Logger log = Logger.getLogger(DomainAccess.class.getCanonicalName());
 

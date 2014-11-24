@@ -1,5 +1,6 @@
 package org.obicere.cc.executor.language.impl.python;
 
+import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.language.Casing;
@@ -56,8 +57,8 @@ public class PythonLanguage extends Language {
 
     public static final boolean INCLUDE_PARAMETERS = false;
 
-    public PythonLanguage() {
-        super("Python");
+    public PythonLanguage(final Domain access) {
+        super(access, "Python");
         requestStreamer();
     }
 

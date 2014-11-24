@@ -1,6 +1,7 @@
 package org.obicere.cc.executor.language;
 
 import org.obicere.cc.configuration.Domain;
+import org.obicere.cc.configuration.DomainAccess;
 import org.obicere.cc.configuration.Paths;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
@@ -16,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public abstract class Language {
+public abstract class Language extends DomainAccess {
 
     private static final Logger log = Logger.getLogger(Language.class.getCanonicalName());
 
@@ -27,7 +28,8 @@ public abstract class Language {
 
     private LanguageStreamer streamer;
 
-    protected Language(final String name) {
+    protected Language(final Domain access, final String name) {
+        super(access);
         try {
             this.name = name;
             this.directory = new File(Paths.DATA, name);
@@ -270,7 +272,7 @@ public abstract class Language {
     }
 
     public void displayError(final Project project, final String... error) {
-        final Editor editor = Domain.getGlobalDomain().getFrameManager().getTab(project.getName(), this);
+        final Editor editor = access.getFrameManager().getTab(project.getName(), this);
         final StringBuilder builder = new StringBuilder();
         final String path = project.getFile(this).getAbsolutePath();
         for (final String str : error) {

@@ -1,5 +1,6 @@
 package org.obicere.cc;
 
+import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.process.AbstractLauncher;
 import org.obicere.cc.process.SwingLauncher;
 import org.obicere.cc.util.Argument;
@@ -20,13 +21,15 @@ public class Boot {
         parser.provide(launcherName);
 
         parser.parse();
+
+        final Domain access = new Domain();
         final AbstractLauncher launcher;
         switch (launcherName.get()) {
             case "javafx":
             case "awt":
                 log.warning("Launcher type not supported at this time. Defaulting to swing.");
             case "swing":
-                launcher = new SwingLauncher();
+                launcher = new SwingLauncher(access);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid argument for default launcher: " + launcherName.get());

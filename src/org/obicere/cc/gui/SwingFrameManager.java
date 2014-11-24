@@ -47,7 +47,7 @@ public class SwingFrameManager extends AbstractFrameManager {
     }
 
     @Override
-    public void run() {
+    public void buildGUI() {
         frame = new JFrame("Obicere Computing Challenges v" + getAccess().getClientVersion());
 
         final JPanel main = new JPanel(new BorderLayout());

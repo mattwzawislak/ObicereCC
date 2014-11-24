@@ -30,8 +30,6 @@ public abstract class AbstractFrameManager extends DomainAccess {
 
     public abstract void addWindowClosingHook(final ShutDownHook hook);
 
-    public void buildGUI() {
-        run();
-    }
+    public abstract void buildGUI();
 
 }

@@ -14,9 +14,12 @@ import java.util.logging.Level;
  */
 public class SwingLauncher extends AbstractLauncher {
 
+    public SwingLauncher(final Domain access){
+        super(access);
+    }
+
     @Override
     public void launch() {
-        final Domain access = new Domain();
         final Splash splash = access.getSplash();
         try {
             SwingUtilities.invokeAndWait(splash::run);

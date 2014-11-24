@@ -1,13 +1,15 @@
 package org.obicere.cc.process;
 
-import java.util.logging.Logger;
-
+import org.obicere.cc.configuration.Domain;
+import org.obicere.cc.configuration.DomainAccess;
 /**
  * @author Obicere
  */
-public abstract class AbstractLauncher {
+public abstract class AbstractLauncher extends DomainAccess{
 
-    protected final Logger log = Logger.getLogger(AbstractLauncher.class.getCanonicalName());
+    public AbstractLauncher(final Domain access) {
+        super(access);
+    }
 
     public abstract void launch();
 

@@ -29,7 +29,7 @@ import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Splash extends DomainAccess {
+public class Splash extends DomainAccess implements Runnable {
 
     private static final Logger log = Logger.getLogger(Splash.class.getCanonicalName());
 

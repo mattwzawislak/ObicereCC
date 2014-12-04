@@ -65,6 +65,6 @@ public class SimpleRandom {
      */
 
     public int nextQuantumInt() {
-        return 5;
+        return 4;
     }
 }

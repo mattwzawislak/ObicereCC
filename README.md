@@ -1,11 +1,9 @@
 ObicereCC
 =========
-ObicereCC is a program used to help develop programming skills. By
-applying yourself to solve these problems, you could vastly increase
-your programming abilities and logical techniques. Most of these 
-problems have more than one way to solve them, but it's up to you 
-to find the best solution. The project is completely open-sourced,
-so even those more familiar with programming languages can learn.
+ObicereCC challenges users by providing a problem-solving 
+environment. Users can also add their own problems to the program
+and share them online. The entire program is written in Java right 
+now, but the framework is able to add any other programming language. 
 
 =========
 ObicereCC is free software: you can redistribute it and/or modify

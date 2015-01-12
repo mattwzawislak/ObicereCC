@@ -32,10 +32,12 @@ public class ProjectSelector extends JPanel {
         final JPanel selector = new JPanel();
         final VerticalFlowLayout layout = new VerticalFlowLayout(VerticalFlowLayout.TOP);
         final Border border = BorderFactory.createRaisedSoftBevelBorder();
+        final List<Project> projectList = ProjectLoader.getData();
+
         layout.setMaximizeOtherDimension(true);
         selector.setLayout(layout);
-        final List<Project> projectList = ProjectLoader.getData();
         Collections.sort(projectList, new ProjectComparator());
+
         for (final Project project : projectList) {
             final ProjectPanel panel = new ProjectPanel(project);
             projects.add(panel);

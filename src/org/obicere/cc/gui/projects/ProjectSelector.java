@@ -76,20 +76,22 @@ public class ProjectSelector extends JPanel {
     }
 
     public void refine(final String key, final boolean complete, final boolean name, final boolean incomplete) {
-        for (final JPanel panel : difficultyPanels) {
-            panel.removeAll();
-        }
-        for (final ProjectPanel p : projects) {
-            final Project project = p.getProject();
-            final String pName = project.getName();
-            final boolean pComplete = hook.isComplete(pName);
-            if (name && pName.toLowerCase().contains(key.toLowerCase()) || key.isEmpty()) {
-                if (complete && pComplete || incomplete && !pComplete) {
-                    difficultyPanels[project.getDifficulty() - 1].add(p);
+        synchronized (getTreeLock()) {
+            for (final JPanel panel : difficultyPanels) {
+                panel.removeAll();
+            }
+            for (final ProjectPanel p : projects) {
+                final Project project = p.getProject();
+                final String pName = project.getName();
+                final boolean pComplete = hook.isComplete(pName);
+                if (name && pName.toLowerCase().contains(key.toLowerCase()) || key.isEmpty()) {
+                    if (complete && pComplete || incomplete && !pComplete) {
+                        difficultyPanels[project.getDifficulty() - 1].add(p);
+                    }
                 }
             }
+            revalidate();
+            updateUI();
         }
-        revalidate();
-        updateUI();
     }
 }

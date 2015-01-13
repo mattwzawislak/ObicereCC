@@ -150,7 +150,8 @@ public class Editor extends JPanel {
     }
 
     public void clearSaveFiles() {
-        final int n = JOptionPane.showConfirmDialog(null, "This will delete all progress on this project." + System.lineSeparator() + "Do you wish to continue?", "Continue?", JOptionPane.YES_NO_OPTION);
+        final String message = "This will delete all progress on this project.\nDo you wish to continue?";
+        final int n = JOptionPane.showConfirmDialog(null, message, "Continue?", JOptionPane.YES_NO_OPTION);
         if (n == JOptionPane.YES_OPTION) {
             final File sourceFile = new File(project.getFileName(language) + language.getSourceExtension());
             final File compiledFile = new File(project.getFileName(language) + language.getCompiledExtension());
@@ -185,7 +186,8 @@ public class Editor extends JPanel {
             public void run() {
                 if (thread.isAlive()) {
                     thread.interrupt();
-                    SwingUtilities.invokeLater(() -> setInstructionsText(language.getName() + ": program execution timed out after 10 seconds.", true));
+                    final String message = language.getName() + ": program execution timed out after 10 seconds.";
+                    SwingUtilities.invokeLater(() -> setInstructionsText(message, true));
                 }
             }
         }, 10000);

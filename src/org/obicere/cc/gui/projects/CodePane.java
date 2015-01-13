@@ -22,7 +22,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -44,7 +43,9 @@ public class CodePane extends JTextPane {
     private static final SimpleAttributeSet KEYWORD_SET   = new SimpleAttributeSet();
     private static final SimpleAttributeSet PLAINTEXT_SET = new SimpleAttributeSet();
     private static final SimpleAttributeSet LITERAL_SET   = new SimpleAttributeSet();
-    private static final Font EDITOR_FONT;
+
+    private static final int    FONT_SIZE;
+    private static final String FONT_FAMILY_NAME;
 
     private static final EditorHook         EDITOR     = Domain.getGlobalDomain().getHookManager().hookByClass(EditorHook.class);
     private static final CodeCompletionHook COMPLETION = Domain.getGlobalDomain().getHookManager().hookByClass(CodeCompletionHook.class);
@@ -54,7 +55,8 @@ public class CodePane extends JTextPane {
         StyleConstants.setForeground(KEYWORD_SET, EDITOR.getPropertyAsColor(EditorHook.KEYWORD_STYLING_COLOR));
         StyleConstants.setForeground(PLAINTEXT_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_STYLING_COLOR));
 
-        EDITOR_FONT = new Font(EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
+        FONT_FAMILY_NAME = EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE);
+        FONT_SIZE = EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE);
     }
 
     private HashMap<Character, Long> lastHit = new HashMap<>();
@@ -71,7 +73,7 @@ public class CodePane extends JTextPane {
 
         setContentType("java");
         setText(content);
-        setTabStops(EDITOR_FONT);
+        setTabStops(FONT_FAMILY_NAME, FONT_SIZE);
 
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Compile");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
@@ -186,10 +188,10 @@ public class CodePane extends JTextPane {
         }
     }
 
-    private void setTabStops(final Font font) {
+    private void setTabStops(final String familyName, final int size) {
         final StyleContext context = StyleContext.getDefaultStyleContext();
         final TabStop[] tabs = new TabStop[50];
-        final FontMetrics metrics = getFontMetrics(font);
+        final FontMetrics metrics = getFontMetrics(new Font(familyName, Font.PLAIN, size));
         // Create a string of length equal to the tab size by formatting
         final int width = metrics.stringWidth(String.format(String.format("%%%ss", language.getTabSize()), " "));
         for (int i = 0; i < tabs.length; i++) {
@@ -198,8 +200,8 @@ public class CodePane extends JTextPane {
         final TabSet tabSet = new TabSet(tabs);
 
         final AttributeSet params1 = context.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.TabSet, tabSet);
-        final AttributeSet params2 = context.addAttribute(params1, StyleConstants.FontSize, font.getSize());
-        final AttributeSet params3 = context.addAttribute(params2, StyleConstants.FontFamily, font.getFamily());
+        final AttributeSet params2 = context.addAttribute(params1, StyleConstants.FontSize, size);
+        final AttributeSet params3 = context.addAttribute(params2, StyleConstants.FontFamily, familyName);
         final StyledDocument doc = getStyledDocument();
         doc.setParagraphAttributes(0, getText().length(), params3, true);
     }
@@ -242,10 +244,11 @@ public class CodePane extends JTextPane {
             StyleConstants.setForeground(KEYWORD_SET, EDITOR.getPropertyAsColor(EditorHook.KEYWORD_STYLING_COLOR));
             StyleConstants.setForeground(PLAINTEXT_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_STYLING_COLOR));
 
-            final Font newFont = new Font(EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
+            final String familyName = EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE);
+            final int size = EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE);
             lastUpdate = editorUpdate;
 
-            setTabStops(newFont);
+            setTabStops(familyName, size);
         }
     }
 

@@ -22,6 +22,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.PlainDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -43,7 +44,7 @@ public class CodePane extends JTextPane {
     private static final SimpleAttributeSet KEYWORD_SET   = new SimpleAttributeSet();
     private static final SimpleAttributeSet PLAINTEXT_SET = new SimpleAttributeSet();
     private static final SimpleAttributeSet LITERAL_SET   = new SimpleAttributeSet();
-    private static Font editorFont;
+    private static final Font EDITOR_FONT;
 
     private static final EditorHook         EDITOR     = Domain.getGlobalDomain().getHookManager().hookByClass(EditorHook.class);
     private static final CodeCompletionHook COMPLETION = Domain.getGlobalDomain().getHookManager().hookByClass(CodeCompletionHook.class);
@@ -53,7 +54,7 @@ public class CodePane extends JTextPane {
         StyleConstants.setForeground(KEYWORD_SET, EDITOR.getPropertyAsColor(EditorHook.KEYWORD_STYLING_COLOR));
         StyleConstants.setForeground(PLAINTEXT_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_STYLING_COLOR));
 
-        editorFont = new Font(EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
+        EDITOR_FONT = new Font(EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
     }
 
     private HashMap<Character, Long> lastHit = new HashMap<>();
@@ -67,20 +68,10 @@ public class CodePane extends JTextPane {
 
         final InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
         final ActionMap actionMap = getActionMap();
-        final StyleContext sc = StyleContext.getDefaultStyleContext();
-        final TabStop[] tabs = new TabStop[50];
-        final FontMetrics metrics = getFontMetrics(editorFont);
-        // Create a string of length equal to the tab size by formatting
-        final int width = metrics.stringWidth(String.format(String.format("%%%ss", language.getTabSize()), " "));
-        for (int i = 0; i < tabs.length; i++) {
-            tabs[i] = new TabStop(width * i);
-        }
-        final TabSet tabSet = new TabSet(tabs);
-        final AttributeSet paraSet = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.TabSet, tabSet);
+
         setContentType("java");
-        setFont(editorFont);
-        setParagraphAttributes(paraSet, false);
         setText(content);
+        setTabStops(EDITOR_FONT);
 
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Compile");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
@@ -195,6 +186,24 @@ public class CodePane extends JTextPane {
         }
     }
 
+    private void setTabStops(final Font font) {
+        final StyleContext context = StyleContext.getDefaultStyleContext();
+        final TabStop[] tabs = new TabStop[50];
+        final FontMetrics metrics = getFontMetrics(font);
+        // Create a string of length equal to the tab size by formatting
+        final int width = metrics.stringWidth(String.format(String.format("%%%ss", language.getTabSize()), " "));
+        for (int i = 0; i < tabs.length; i++) {
+            tabs[i] = new TabStop(width * i);
+        }
+        final TabSet tabSet = new TabSet(tabs);
+
+        final AttributeSet params1 = context.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.TabSet, tabSet);
+        final AttributeSet params2 = context.addAttribute(params1, StyleConstants.FontSize, font.getSize());
+        final AttributeSet params3 = context.addAttribute(params2, StyleConstants.FontFamily, font.getFamily());
+        final StyledDocument doc = getStyledDocument();
+        doc.setParagraphAttributes(0, getText().length(), params3, true);
+    }
+
     private char getClosingCharacter(final char c) {
         switch (c) {
             case '(':
@@ -233,9 +242,10 @@ public class CodePane extends JTextPane {
             StyleConstants.setForeground(KEYWORD_SET, EDITOR.getPropertyAsColor(EditorHook.KEYWORD_STYLING_COLOR));
             StyleConstants.setForeground(PLAINTEXT_SET, EDITOR.getPropertyAsColor(EditorHook.NORMAL_STYLING_COLOR));
 
-            editorFont = new Font(EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
+            final Font newFont = new Font(EDITOR.getPropertyAsString(EditorHook.EDITOR_FONT_TYPE), Font.PLAIN, EDITOR.getPropertyAsInt(EditorHook.EDITOR_FONT_SIZE));
             lastUpdate = editorUpdate;
-            setFont(editorFont);
+
+            setTabStops(newFont);
         }
     }
 

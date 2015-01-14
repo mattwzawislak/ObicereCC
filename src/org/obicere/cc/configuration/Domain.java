@@ -13,13 +13,26 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * The domain provides access to common elements that contain information pertaining to different
+ * classes across the application.
+ * <p>
+ * The domain provides global a global context to be shared by any aspect of the program. There
+ * should only be one domain at a time. If there exists more than one domain, then there will
+ * effectively be multiple application contexts. Each context will - most likely - be different,
+ * which means global state variables may get mixed up.
+ * <p>
+ * There are measures to counter this error though. The boot should be responsible for instantiating
+ * the domain. The dedicated boot can therefore also handle startup tasks.
+ *
  * @author Obicere
+ * @version 1.0
+ * @see #getStartingProcesses()
  */
 public class Domain {
 
     private static final double CURRENT_CLIENT_VERSION = 1.00;
 
-    private static Domain globalDomain;
+    private volatile static Domain globalDomain;
 
     private volatile boolean fullyQualified = false;
 
@@ -32,7 +45,16 @@ public class Domain {
 
     private List<StartingProcess> startingProcesses = new LinkedList<>();
 
+    /**
+     * Constructs a new global domain and qualifies it.
+     *
+     * @throws java.lang.AssertionError if a fully qualified domain already exists.
+     */
+
     public Domain() {
+        if (fullyQualified || globalDomain != null) {
+            throw new AssertionError("A global domain has already been qualified.");
+        }
         // Would be bloody amazing to get this to be dynamic... Reflection can be messy though
         // Initialize elements in access
         updater = new Updater(this);
@@ -52,6 +74,17 @@ public class Domain {
         fullyQualified = true;
         globalDomain = this;
     }
+
+    /**
+     * Provides access to a domain without inheriting {@link org.obicere.cc.configuration.DomainAccess
+     * access} to the domain. This value is instantiated and fully qualified once a domain has
+     * already been made.
+     * <p>
+     * Note, that the initial domain and this domain are the same instance. Unless some reflection
+     * trickery happens, but a good person wouldn't do that... would they?
+     *
+     * @return  The initial domain - fully qualified.
+     */
 
     public static Domain getGlobalDomain() {
         globalDomain.checkQualification();

@@ -9,7 +9,34 @@ import org.obicere.cc.util.ArgumentParser;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * @author Obicere
+ * @version 1.0
+ * @see #main(String[])
+ */
+
 public class Boot {
+
+    /**
+     * Starts the default application-based launcher. As of v1.0 this is the only supported method
+     * of running the application.
+     * <p>
+     * No specific VM arguments are needed.
+     * <p>
+     * If on a Windows machine, enabling the arguments for the TCP LoopBack may increase speeds when
+     * compiling non-Java languages. This can be done (if supported on your VM) through
+     * <code></code>windows.enableFastLocalTcpLoopback</code>.
+     * <p>
+     * The list of supported program arguments and their usage is as follows:
+     * <pre>
+     * -launcher &lt;launcher-type&gt;
+     *     Aliases: l
+     *     Available Arguments: swing (default)
+     * </pre>
+     * <p>
+     *
+     * @param args As specified above under the list of supported program arguments.
+     */
 
     public static void main(final String[] args) {
         final Logger log = Logger.getLogger(Boot.class.getCanonicalName());

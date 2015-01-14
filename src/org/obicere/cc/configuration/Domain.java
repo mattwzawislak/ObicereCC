@@ -3,7 +3,6 @@ package org.obicere.cc.configuration;
 import org.obicere.cc.executor.language.LanguageManager;
 import org.obicere.cc.gui.AbstractFrameManager;
 import org.obicere.cc.gui.Splash;
-import org.obicere.cc.gui.SwingFrameManager;
 import org.obicere.cc.process.StartingProcess;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.util.Updater;
@@ -27,6 +26,7 @@ import java.util.List;
  * @author Obicere
  * @version 1.0
  * @see #getStartingProcesses()
+ * @see org.obicere.cc.configuration.DomainAccess
  */
 public class Domain {
 
@@ -80,6 +80,9 @@ public class Domain {
      * domain access} to the domain. This value is instantiated and fully qualified once a domain
      * has already been made.
      * <p>
+     * This was provided to allow domain access to classes that OOP-based access would be
+     * unreasonable.
+     * <p>
      * Note, that the initial domain and this domain are the same instance. Unless some reflection
      * trickery happens, but a good person wouldn't do that... would they?
      *
@@ -100,6 +103,8 @@ public class Domain {
      * <p>
      * That didn't make sense. This basically is like trying to create an instance of an interface
      * through reflection. Don't do it.
+     *
+     * @throws java.lang.IllegalAccessError If the domain has not been fully qualified.
      */
 
     private void checkQualification() {
@@ -136,7 +141,7 @@ public class Domain {
      * <p>
      * todo: stop questioning self so much
      *
-     * @return
+     * @return The instance of the global updater.
      *
      * @see org.obicere.cc.util.Updater
      */
@@ -147,15 +152,32 @@ public class Domain {
     }
 
     /**
-     * Provides domain access to the frame manager. This should be selected pre- wait what the fuck
+     * Provides domain access to the frame manager. Note that the manager is lazily set by the boot
+     * sequence, so it may not be readily available. It is suggested to access the frame manager
+     * after the boot sequence has finished and the process has been handed off to the launcher.
      *
-     * @return
+     * @return The instance of the currently used frame manager.
      */
 
     public AbstractFrameManager getFrameManager() {
         checkQualification();
         return frameManager;
     }
+
+    /**
+     * Sets the frame manager whenever needed. There are measures in place to ensure that the
+     * manager is only ever set once. And to ensure that a non-null manager was provided. Should
+     * either of these be violated, the manager will not be set.
+     * <p>
+     * Note that this means that potentially unsafe access could still be used to modify the
+     * manager. If do choose to go down this path, please dispose of the original manager - however
+     * that is done - as to not create memory leaks.
+     *
+     * @param manager Attempts to set the global frame manager instance to this instance.
+     *
+     * @throws java.lang.NullPointerException If the given <code>manager</code> is <code>null</code>.
+     * @throws java.lang.AssertionError       If a frame manager has already been set.
+     */
 
     public void setFrameManager(final AbstractFrameManager manager) {
         if (manager == null) {
@@ -167,25 +189,76 @@ public class Domain {
         this.frameManager = manager;
     }
 
+    /**
+     * Provides domain access to the global hook manager. This is used for both UI settings and
+     * program data that must persist. Access to the hook manager - and other domain-access-points
+     * for that matter - should only be done once the hook manager task is completed. This is
+     * because the hook manager may update important settings to their non-default values.
+     * <p>
+     * However, access has been granted in the case that a boot sequence wishes to remove a certain
+     * feature of the hook manager, inject their own hook, or just in general break things and blame
+     * me for it.
+     * <p>
+     * todo:consider adding a hook manager notify to signal when safe access is available.
+     *
+     * @return The global hook manager instance.
+     */
+
     public ShutDownHookManager getHookManager() {
         checkQualification();
         return hookManager;
     }
+
+    /**
+     * Provides access to the splash screen. This is used primarily to show status updates during
+     * the boot sequence. Beyond that it is useless and should be disposed of afterwards.
+     * <p>
+     * This is also globally available in case a developer wishes to implement their own splash
+     * screen specific to the launcher.
+     *
+     * @return The default globally available splash screen.
+     */
 
     public Splash getSplash() {
         checkQualification();
         return splash;
     }
 
+    /**
+     * Provides access to the path creator. This should always be the first process to be completed,
+     * since any file access within the project's folders require this. This will handle the default
+     * file system for the program, so no usage for this is present as of v1.0.
+     *
+     * @return The default folder management system.
+     */
+
     public Paths getPaths() {
         checkQualification();
         return paths;
     }
 
+    /**
+     * Provides access to the language files. This is used primarily in the UI such that different
+     * languages can be selected by the user easily. Domain access has been provided though, so that
+     * if additional settings are added that pertain to the languages, the system won't have to be
+     * redone.
+     *
+     * @return The global language manager instance.
+     */
+
     public LanguageManager getLanguageManager() {
         checkQualification();
         return languageManager;
     }
+
+    /**
+     * Provides the client version. This has been provided here since this pertains to a global
+     * field. That way if a system were to change formats between versions, these changes can be
+     * reflected without creating permanent changes. Also provides the client version to be
+     * displayed on the top of the UI - if that feature is deemed desirable by the launcher.
+     *
+     * @return The current client version.
+     */
 
     public double getClientVersion() {
         return CURRENT_CLIENT_VERSION;

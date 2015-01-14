@@ -1,8 +1,7 @@
 package org.obicere.cc.util;
 
 import org.obicere.cc.configuration.Domain;
-import org.obicere.cc.configuration.DomainAccess;
-import org.obicere.cc.configuration.Global.URLs;
+import org.obicere.cc.configuration.Configuration.URLs;
 import org.obicere.cc.configuration.Paths;
 import org.obicere.cc.process.StartingProcess;
 import org.obicere.cc.projects.Project;

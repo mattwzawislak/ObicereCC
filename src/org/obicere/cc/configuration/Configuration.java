@@ -6,15 +6,15 @@ import java.awt.Toolkit;
 import java.net.URL;
 import java.util.logging.Logger;
 
-public class Global {
+public class Configuration {
 
-    private static final Logger log = Logger.getLogger(Global.class.getCanonicalName());
+    private static final Logger log = Logger.getLogger(Configuration.class.getCanonicalName());
 
     public static final Image CLOSE_IMAGE;
     public static final Image COMPLETE_IMAGE;
     public static final Image ICON;
 
-    private static OS selectedOS;
+    private static volatile OS selectedOS;
 
     static {
         CLOSE_IMAGE = loadImage(URLs.CLOSE);
@@ -25,7 +25,7 @@ public class Global {
     private static Image loadImage(final String url) {
         try {
             final Toolkit tk = Toolkit.getDefaultToolkit();
-            final URL path = Global.class.getClassLoader().getResource(url);
+            final URL path = Configuration.class.getClassLoader().getResource(url);
             final Image img = tk.createImage(path);
             tk.prepareImage(img, -1, -1, null);
             return img;

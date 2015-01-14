@@ -1,7 +1,7 @@
 package org.obicere.cc.gui;
 
+import org.obicere.cc.configuration.Configuration;
 import org.obicere.cc.configuration.Domain;
-import org.obicere.cc.configuration.Global;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.shutdown.ShutDownHook;
@@ -92,7 +92,7 @@ public class SwingFrameManager extends AbstractFrameManager {
 
         windowClosingHooks.forEach(frame::addWindowListener);
 
-        frame.setIconImage(Global.ICON);
+        frame.setIconImage(Configuration.ICON);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.add(main);
         frame.setVisible(true);

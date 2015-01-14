@@ -1,7 +1,7 @@
 package org.obicere.cc.gui;
 
+import org.obicere.cc.configuration.Configuration;
 import org.obicere.cc.configuration.Domain;
-import org.obicere.cc.configuration.Global;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.projects.Project;
 
@@ -19,7 +19,7 @@ public class TabPane extends JPanel {
 
     public TabPane(final Project project, final Language language) {
         final JLabel label = new JLabel(project.getName());
-        final JButton close = new JButton(new ImageIcon(Global.CLOSE_IMAGE));
+        final JButton close = new JButton(new ImageIcon(Configuration.CLOSE_IMAGE));
 
         close.setPreferredSize(new Dimension(24, 24));
         close.setContentAreaFilled(false);

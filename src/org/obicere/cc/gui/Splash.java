@@ -1,8 +1,8 @@
 package org.obicere.cc.gui;
 
+import org.obicere.cc.configuration.Configuration;
 import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.configuration.DomainAccess;
-import org.obicere.cc.configuration.Global;
 import org.obicere.cc.configuration.Message;
 import org.obicere.cc.shutdown.ShutDownHook;
 import org.obicere.cc.shutdown.SplashScreenHook;
@@ -122,7 +122,7 @@ public class Splash extends DomainAccess implements Runnable {
         final Mouse mouse = new Mouse();
         splash.addMouseListener(mouse);
         splash.addMouseMotionListener(mouse);
-        frame.setIconImage(Global.ICON);
+        frame.setIconImage(Configuration.ICON);
         frame.setUndecorated(true);
         frame.setSize(600, 200);
         frame.setLocationRelativeTo(null);

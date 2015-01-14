@@ -2,7 +2,7 @@ package org.obicere.cc.executor.compiler;
 
 import java.io.IOException;
 
-import org.obicere.cc.configuration.Global;
+import org.obicere.cc.configuration.Configuration;
 
 public class Command {
 
@@ -26,7 +26,7 @@ public class Command {
         try {
             final String command;
             final String failure;
-            switch (Global.getOS()) {
+            switch (Configuration.getOS()) {
                 case WINDOWS:
                     command = "where " + program;
                     failure = "INFO: Could not find files for the given pattern(s).";

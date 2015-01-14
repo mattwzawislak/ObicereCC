@@ -10,7 +10,7 @@ import java.util.logging.Level;
  */
 public class Paths extends StartingProcess {
 
-    public static final String APP_DATA = Global.getAppData();
+    public static final String APP_DATA = Configuration.getAppData();
     public static final String HOME     = APP_DATA + File.separator + "ObicereCC";
     public static final String SOURCES  = HOME + File.separator + "sources";
     public static final String DATA     = HOME + File.separator + "data";

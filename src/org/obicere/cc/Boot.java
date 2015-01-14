@@ -1,6 +1,7 @@
 package org.obicere.cc;
 
 import org.obicere.cc.configuration.Domain;
+import org.obicere.cc.gui.SwingFrameManager;
 import org.obicere.cc.process.AbstractLauncher;
 import org.obicere.cc.process.SwingLauncher;
 import org.obicere.cc.util.Argument;
@@ -57,6 +58,7 @@ public class Boot {
                 log.warning("Launcher type not supported at this time. Defaulting to swing.");
             case "swing":
                 launcher = new SwingLauncher(access);
+                access.setFrameManager(new SwingFrameManager(access));
                 break;
             default:
                 throw new IllegalArgumentException("Invalid argument for default launcher: " + launcherName.get());
@@ -67,3 +69,4 @@ public class Boot {
         log.log(Level.INFO, "Boot time: {0}ms", bootTime);
     }
 }
+

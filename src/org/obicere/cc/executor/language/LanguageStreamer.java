@@ -123,6 +123,6 @@ public class LanguageStreamer {
         for (int i = 0; i < params.length; i++) {
             args[i] = params[i].getType().getSimpleName();
         }
-        return executor.process(exec, args);
+        return executor.process(exec, (Object[]) args);
     }
 }

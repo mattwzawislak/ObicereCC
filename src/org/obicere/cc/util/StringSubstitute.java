@@ -41,16 +41,11 @@ public class StringSubstitute implements Cloneable {
     }
 
     @Override
-    public Object clone() {
-        try {
-            super.clone();
-            final Map<String, String> newWords = new LinkedHashMap<>();
-            words.forEach(newWords::put);
-            return new StringSubstitute(newWords, true);
-        } catch (final CloneNotSupportedException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public Object clone() throws CloneNotSupportedException {
+        super.clone();
+        final Map<String, String> newWords = new LinkedHashMap<>();
+        words.forEach(newWords::put);
+        return new StringSubstitute(newWords, true);
     }
 
     public void put(final String key, final String value) {

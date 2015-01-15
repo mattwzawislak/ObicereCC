@@ -3,14 +3,13 @@ package org.obicere.cc.executor.compiler;
 import org.obicere.cc.util.StringSubstitute;
 
 import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class CommandExecutor {
 
     private static final String ERROR_NO_PROCESS = "Could not find process. Make sure your path is set correctly.";
 
-    private final StringSubstitute substitute;
+    private final String sourceExt;
+    private final String compiledExt;
 
     private final String    name;
     private final Command[] commands;
@@ -20,12 +19,8 @@ public class CommandExecutor {
     public CommandExecutor(final String name, final String sourceExt, final String compiledExt, final Command[] commands) {
         this.name = name;
         this.commands = commands;
-
-        final Map<String, String> map = new LinkedHashMap<>();
-        map.put("sext", sourceExt);
-        map.put("cext", compiledExt);
-
-        this.substitute = new StringSubstitute(map);
+        this.sourceExt = sourceExt;
+        this.compiledExt = compiledExt;
     }
 
     public Command getCompilerCommand() {
@@ -78,7 +73,11 @@ public class CommandExecutor {
         }
 
         final String exec = command.getFormat();
-        final StringSubstitute substitute = (StringSubstitute) this.substitute.clone();
+        final StringSubstitute substitute = new StringSubstitute();
+
+
+        substitute.put("sext", sourceExt);
+        substitute.put("cext", compiledExt);
 
         substitute.put("exec", command.getProgram());
         substitute.put("path", file.getParent());

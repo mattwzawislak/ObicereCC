@@ -2,6 +2,21 @@ package org.obicere.cc.configuration;
 
 import java.util.Random;
 
+/**
+ * Contains a list of messages to display on the splash screen. These are
+ * just jokes and not to be taken seriously.
+ * <p>
+ * The lines in each message is separated by the standard <code>\n</code>
+ * escape sequence. Due to the size of the standard splash screen, up to
+ * 4-5 lines may only be visible. No restrictions have been placed, but
+ * this is the suggested maximum. The splash screen should be utilizing a
+ * monospaced font. With this, up to about 55 characters will fit
+ * comfortably per line.
+ *
+ * @author Obicere
+ * @version 1.0
+ */
+
 public class Message {
 
     private final String[] messages = new String[]{
@@ -46,6 +61,13 @@ public class Message {
     };
 
     private final Random seed = new Random();
+
+    /**
+     * Retrieves a random message from the set of messages. Each with
+     * roughly the same probability.
+     *
+     * @return The pseudo-randomly selected message.
+     */
 
     public String getRandom() {
         return messages[seed.nextInt(messages.length)];

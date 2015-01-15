@@ -5,7 +5,7 @@ import org.obicere.cc.configuration.DomainAccess;
 import org.obicere.cc.configuration.Paths;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
-import org.obicere.cc.executor.compiler.ProcessExecutor;
+import org.obicere.cc.executor.compiler.CommandExecutor;
 import org.obicere.cc.gui.projects.Editor;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
@@ -24,7 +24,7 @@ public abstract class Language extends DomainAccess {
     private final String name;
 
     private final File            directory;
-    private final ProcessExecutor processExecutor;
+    private final CommandExecutor commandExecutor;
 
     private LanguageStreamer streamer;
 
@@ -32,7 +32,7 @@ public abstract class Language extends DomainAccess {
         super(access);
         try {
             this.name = name;
-            this.directory = new File(Paths.DATA, name);
+            this.directory = new File(Paths.FOLDER_DATA, name);
             if (!directory.exists() && !directory.mkdir()) {
                 log.log(Level.WARNING, "Failed to create directory for " + name);
             }
@@ -40,7 +40,7 @@ public abstract class Language extends DomainAccess {
             final String cmp = getCompiledExtension();
             final Command[] commands = getCommands();
 
-            this.processExecutor = new ProcessExecutor(name, src, cmp, commands);
+            this.commandExecutor = new CommandExecutor(name, src, cmp, commands);
 
         } catch (final Exception e) {
             e.printStackTrace();
@@ -86,8 +86,8 @@ public abstract class Language extends DomainAccess {
         return directory;
     }
 
-    protected ProcessExecutor getProcessExecutor() {
-        return processExecutor;
+    protected CommandExecutor getCommandExecutor() {
+        return commandExecutor;
     }
 
 

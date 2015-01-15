@@ -34,7 +34,7 @@ public abstract class ShutDownHook extends Thread {
     public ShutDownHook(final String name, final int priority) {
         super(name);
         this.priority = priority;
-        this.propertiesFile = new File(Paths.DATA, name.concat(".properties"));
+        this.propertiesFile = new File(Paths.FOLDER_DATA, name.concat(".properties"));
         loadProperties();
     }
 

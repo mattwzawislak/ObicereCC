@@ -2,7 +2,7 @@ package org.obicere.cc.executor.language;
 
 import org.obicere.cc.executor.Case;
 import org.obicere.cc.executor.Result;
-import org.obicere.cc.executor.compiler.ProcessExecutor;
+import org.obicere.cc.executor.compiler.CommandExecutor;
 import org.obicere.cc.util.IOUtils;
 import org.obicere.cc.util.protocol.BasicProtocol;
 import org.obicere.cc.util.protocol.MethodInvocationProtocol;
@@ -112,7 +112,7 @@ public class LanguageStreamer {
         return error.toArray(new String[error.size()]);
     }
 
-    public String[] runProcess(final ProcessExecutor executor, final File exec, final int port, final Project project) {
+    public String[] runProcess(final CommandExecutor executor, final File exec, final int port, final Project project) {
         final Parameter[] params = project.getRunner().getParameters();
 
         // The format for args should be like so:

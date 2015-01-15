@@ -57,7 +57,7 @@ public class Updater extends StartingProcess {
             sources.add(Paths.SITE_BIN);
         }
         try {
-            final File sourceFile = new File(Paths.DATA, "sources.txt");
+            final File sourceFile = new File(Paths.FOLDER_DATA, "sources.txt");
             if (sourceFile.exists() || sourceFile.createNewFile()) {
                 final BufferedReader br = new BufferedReader(new FileReader(sourceFile));
                 String next;
@@ -123,7 +123,7 @@ public class Updater extends StartingProcess {
                 fileName = runnerName;
             }
 
-            final File packageDirectory = new File(Paths.SOURCES, directory.replace(".", File.separator));
+            final File packageDirectory = new File(Paths.FOLDER_SOURCES, directory.replace(".", File.separator));
             if (!packageDirectory.exists() && !packageDirectory.mkdirs()) {
                 throw new IOException("Failed to create proper package: " + packageDirectory);
             }

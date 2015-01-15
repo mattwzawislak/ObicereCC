@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ProcessExecutor {
+public class CommandExecutor {
 
     private static final String ERROR_NO_PROCESS = "Could not find process. Make sure your path is set correctly.";
 
@@ -17,7 +17,7 @@ public class ProcessExecutor {
 
     private Command workingCommand;
 
-    public ProcessExecutor(final String name, final String sourceExt, final String compiledExt, final Command[] commands) {
+    public CommandExecutor(final String name, final String sourceExt, final String compiledExt, final Command[] commands) {
         this.name = name;
         this.commands = commands;
 

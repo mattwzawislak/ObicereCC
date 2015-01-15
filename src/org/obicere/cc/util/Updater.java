@@ -1,7 +1,6 @@
 package org.obicere.cc.util;
 
 import org.obicere.cc.configuration.Domain;
-import org.obicere.cc.configuration.Configuration.URLs;
 import org.obicere.cc.configuration.Paths;
 import org.obicere.cc.process.StartingProcess;
 import org.obicere.cc.projects.Project;
@@ -55,7 +54,7 @@ public class Updater extends StartingProcess {
         final RunnerSourceHook hook = access.getHookManager().hookByClass(RunnerSourceHook.class);
         final boolean downloadMain = hook.getPropertyAsBoolean(RunnerSourceHook.DOWNLOAD_FROM_MAIN_SOURCE);
         if (downloadMain) { // Note that this will allow updates
-            sources.add(URLs.BIN);
+            sources.add(Paths.SITE_BIN);
         }
         try {
             final File sourceFile = new File(Paths.DATA, "sources.txt");
@@ -141,7 +140,7 @@ public class Updater extends StartingProcess {
     private void parseUpdate(final byte[] data, final String src) {
         try {
             final BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(data)));
-            if (src.equals(URLs.BIN)) {
+            if (src.equals(Paths.SITE_BIN)) {
                 updatedClientVersion = Double.parseDouble(in.readLine());
             }
             String s;
@@ -166,7 +165,7 @@ public class Updater extends StartingProcess {
     public boolean isInternetReachable() {
         access.getSplash().setStatus("Checking connection");
         try {
-            final URL url = new URL(URLs.HOME);
+            final URL url = new URL(Paths.SITE_HOME);
             final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
             final long responseStart = System.currentTimeMillis();
             urlConn.connect();

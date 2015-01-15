@@ -71,100 +71,10 @@ public class CodePane extends JTextPane {
         final InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
         final ActionMap actionMap = getActionMap();
 
+        setKeyMaps(inputMap, actionMap);
         setContentType("java");
         setText(content);
         setTabStops(FONT_FAMILY_NAME, FONT_SIZE);
-
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Compile");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
-
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Newline");
-
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_9, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, 0, true), "Finish Open");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open");
-
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_0, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open Delay");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, 0, true), "Finish Open Delay");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open Delay");
-
-        actionMap.put("Finish Open Delay", new AbstractAction() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                final int index = getCaretPosition();
-                final String code = getText();
-                final char close = code.charAt(index - 1);
-
-                if (!lastHit.containsKey(close)) {
-                    return;
-                }
-                final long register = lastHit.get(close);
-                if (System.currentTimeMillis() - register < 1000) {
-                    setText(code.substring(0, index - 1) + code.substring(index));
-                    setCaretPosition(index);
-                    styleDocument();
-                }
-            }
-        });
-
-        actionMap.put("Finish Open", new AbstractAction() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                final int index = getCaretPosition();
-
-                final String code = getText();
-                final char open = code.charAt(index - 1); // Get the opening char at previous index
-                final char close = getClosingCharacter(open);
-                if (close == 0) {
-                    return;
-                }
-                registerHit(close);
-
-                setText(code.substring(0, index) + close + code.substring(index));
-                setCaretPosition(index);
-                styleDocument();
-            }
-        });
-        actionMap.put("Compile", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final Editor parent = (Editor) SwingUtilities.getAncestorOfClass(Editor.class, CodePane.this);
-                if (parent == null) {
-                    JOptionPane.showMessageDialog(null, "Failed to run code.", "Error", JOptionPane.WARNING_MESSAGE);
-                } else {
-                    parent.saveAndRun();
-                }
-            }
-        });
-        actionMap.put("Save", new AbstractAction() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                final Editor parent = (Editor) SwingUtilities.getAncestorOfClass(Editor.class, CodePane.this);
-                if (parent == null) {
-                    JOptionPane.showMessageDialog(null, "Failed to save code.", "Error", JOptionPane.WARNING_MESSAGE);
-                } else {
-                    parent.save();
-                }
-            }
-        });
-        actionMap.put("Newline", new AbstractAction() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                String curCode = getText();
-                //for (final String str : language.getLiteralMatches()) {
-                //    curCode = clearMatches(curCode, str);
-                //}
-                final int line = getCaretLine();
-                final int index = getCaretPosition();
-                final StringBuilder builder = new StringBuilder(getText());
-                final CodeFormatter formatter = language.getCodeFormatter();
-                final int newCaret = formatter.newlineEntered(curCode, builder, index, line, getCaretPositionInLine(line));
-
-                setText(builder.toString());
-                setCaretPosition(newCaret);
-                styleDocument();
-            }
-        });
         addCaretListener(e -> SwingUtilities.invokeLater(() -> {
             try {
                 final JTextComponent component = (JTextComponent) e.getSource();
@@ -318,5 +228,99 @@ public class CodePane extends JTextPane {
             return caret - start;
         }
         return -1;
+    }
+
+    private void setKeyMaps(final InputMap input, final ActionMap action){
+
+        input.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Compile");
+        input.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
+
+        input.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Newline");
+
+        input.put(KeyStroke.getKeyStroke(KeyEvent.VK_9, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open");
+        input.put(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, 0, true), "Finish Open");
+        input.put(KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open");
+
+        input.put(KeyStroke.getKeyStroke(KeyEvent.VK_0, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open Delay");
+        input.put(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, 0, true), "Finish Open Delay");
+        input.put(KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, KeyEvent.SHIFT_DOWN_MASK, true), "Finish Open Delay");
+
+        action.put("Finish Open Delay", new AbstractAction() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final int index = getCaretPosition();
+                final String code = getText();
+                final char close = code.charAt(index - 1);
+
+                if (!lastHit.containsKey(close)) {
+                    return;
+                }
+                final long register = lastHit.get(close);
+                if (System.currentTimeMillis() - register < 1000) {
+                    setText(code.substring(0, index - 1) + code.substring(index));
+                    setCaretPosition(index);
+                    styleDocument();
+                }
+            }
+        });
+
+        action.put("Finish Open", new AbstractAction() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final int index = getCaretPosition();
+
+                final String code = getText();
+                final char open = code.charAt(index - 1); // Get the opening char at previous index
+                final char close = getClosingCharacter(open);
+                if (close == 0) {
+                    return;
+                }
+                registerHit(close);
+
+                setText(code.substring(0, index) + close + code.substring(index));
+                setCaretPosition(index);
+                styleDocument();
+            }
+        });
+        action.put("Compile", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final Editor parent = (Editor) SwingUtilities.getAncestorOfClass(Editor.class, CodePane.this);
+                if (parent == null) {
+                    JOptionPane.showMessageDialog(null, "Failed to run code.", "Error", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    parent.saveAndRun();
+                }
+            }
+        });
+        action.put("Save", new AbstractAction() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final Editor parent = (Editor) SwingUtilities.getAncestorOfClass(Editor.class, CodePane.this);
+                if (parent == null) {
+                    JOptionPane.showMessageDialog(null, "Failed to save code.", "Error", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    parent.save();
+                }
+            }
+        });
+        action.put("Newline", new AbstractAction() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                String curCode = getText();
+                //for (final String str : language.getLiteralMatches()) {
+                //    curCode = clearMatches(curCode, str);
+                //}
+                final int line = getCaretLine();
+                final int index = getCaretPosition();
+                final StringBuilder builder = new StringBuilder(getText());
+                final CodeFormatter formatter = language.getCodeFormatter();
+                final int newCaret = formatter.newlineEntered(curCode, builder, index, line, getCaretPositionInLine(line));
+
+                setText(builder.toString());
+                setCaretPosition(newCaret);
+                styleDocument();
+            }
+        });
     }
 }

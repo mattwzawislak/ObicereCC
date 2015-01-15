@@ -10,6 +10,17 @@ import java.util.logging.Level;
  */
 public class Paths extends StartingProcess {
 
+    // Site
+    public static final String SITE_HOME = "http://www.obicere.uni.me";
+    public static final String SITE_BIN  = SITE_HOME + "/ccbin/";
+
+    // Working directory/jar
+    public static final String RESOURCES_HOME = "resource/";
+    public static final String RESOURCES_CLOSE     = RESOURCES_HOME + "close.png";
+    public static final String RESOURCES_COMPLETE  = RESOURCES_HOME + "complete.png";
+    public static final String RESOURCES_ICON      = RESOURCES_HOME + "icon.png";
+
+
     public static final String APP_DATA = Configuration.getAppData();
     public static final String HOME     = APP_DATA + File.separator + "ObicereCC";
     public static final String SOURCES  = HOME + File.separator + "sources";

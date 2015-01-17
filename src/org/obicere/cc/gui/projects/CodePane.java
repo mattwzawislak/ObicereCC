@@ -230,7 +230,7 @@ public class CodePane extends JTextPane {
         return -1;
     }
 
-    private void setKeyMaps(final InputMap input, final ActionMap action){
+    private void setKeyMaps(final InputMap input, final ActionMap action) {
 
         input.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), "Compile");
         input.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), "Save");
@@ -307,15 +307,15 @@ public class CodePane extends JTextPane {
         action.put("Newline", new AbstractAction() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                String curCode = getText();
-                //for (final String str : language.getLiteralMatches()) {
-                //    curCode = clearMatches(curCode, str);
-                //}
-                final int line = getCaretLine();
-                final int index = getCaretPosition();
-                final StringBuilder builder = new StringBuilder(getText());
                 final CodeFormatter formatter = language.getCodeFormatter();
-                final int newCaret = formatter.newlineEntered(curCode, builder, index, line, getCaretPositionInLine(line));
+                if (formatter == null) {
+                    return;
+                }
+
+                final int line = getCaretLine();
+                final int caret = getCaretPosition();
+                final StringBuilder builder = new StringBuilder(getText());
+                final int newCaret = formatter.newlineEntered(builder, caret, line, getCaretPositionInLine(line));
 
                 setText(builder.toString());
                 setCaretPosition(newCaret);

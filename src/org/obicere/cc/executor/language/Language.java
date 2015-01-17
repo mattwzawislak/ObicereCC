@@ -40,7 +40,7 @@ public abstract class Language extends DomainAccess {
             final String cmp = getCompiledExtension();
             final Command[] commands = getCommands();
 
-            this.commandExecutor = new CommandExecutor(name, src, cmp, commands);
+            this.commandExecutor = new CommandExecutor(commands, src, cmp);
 
         } catch (final Exception e) {
             e.printStackTrace();

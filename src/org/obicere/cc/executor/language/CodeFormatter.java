@@ -5,6 +5,6 @@ package org.obicere.cc.executor.language;
  */
 public interface CodeFormatter {
 
-    public int newlineEntered(final String code, final StringBuilder add, final int caret, final int row, final int column);
+    public int newlineEntered(final StringBuilder add, final int caret, final int row, final int column);
 
 }

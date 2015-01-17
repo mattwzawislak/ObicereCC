@@ -12,6 +12,10 @@ public class JavaCodeFormatter implements CodeFormatter {
 
     private static final String BRACKET_CASE_MATCH = ".*?(\\{)\\s*(\\})";
 
+    /**
+     * {@inheritDoc}
+     */
+
     @Override
     public int newlineEntered(final StringBuilder add, final int caret, final int row, final int column) {
         final StringBuilder append = new StringBuilder();

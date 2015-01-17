@@ -183,6 +183,14 @@ public abstract class Language extends DomainAccess {
 
     protected abstract Command[] getCommands();
 
+    /**
+     * Compiles and runs the set project based off of the current code
+     * saved in the file.
+     *
+     * @param project
+     * @return
+     */
+
     public abstract Result[] compileAndRun(final Project project);
 
     public abstract CodeFormatter getCodeFormatter();

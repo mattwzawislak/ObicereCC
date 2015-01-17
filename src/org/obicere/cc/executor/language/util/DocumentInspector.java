@@ -87,9 +87,9 @@ public class DocumentInspector {
 
     private void addIndexer(final int start, final int end, final TypeDocumentIndexer.TypeFlag flag) {
         if (polled != null) {
-            if (polled.getFlag() == flag && polled.getBound().getEnd() == start) {
+            if (polled.getFlag() == flag && polled.getBound().getMax() == start) {
                 // We can chain the two together to avoid redundancy
-                polled = new TypeDocumentIndexer(polled.getBound().getStart(), end, flag);
+                polled = new TypeDocumentIndexer(polled.getBound().getMin(), end, flag);
             } else {
                 // Add previous, poll the new indexer
                 content.add(polled);

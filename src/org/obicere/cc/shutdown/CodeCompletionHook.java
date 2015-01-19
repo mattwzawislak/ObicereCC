@@ -20,15 +20,15 @@ public class CodeCompletionHook extends SettingsShutDownHook {
     public static final String CURLY_BRACKET_DESCRIPTION = "Add closing curly brackets.";
 
     @HookValue("true")
-    public static final String BRACKET_COMPLETION  = "code.completion.bracket";
-    public static final String BRACKET_DESCRIPTION = "Add closing brackets.";
+    public static final String SQUARE_BRACKET_COMPLETION  = "code.completion.squarebracket";
+    public static final String SQUARE_BRACKET_DESCRIPTION = "Add closing brackets.";
 
     public CodeCompletionHook() {
         super(GROUP_NAME, NAME, PRIORITY_WINDOW_CLOSING);
 
         providePanel(PARENTHESES_COMPLETION, new BooleanSetting(this, PARENTHESES_COMPLETION, PARENTHESES_DESCRIPTION));
         providePanel(CURLY_BRACKET_COMPLETION, new BooleanSetting(this, CURLY_BRACKET_COMPLETION, CURLY_BRACKET_DESCRIPTION));
-        providePanel(BRACKET_COMPLETION, new BooleanSetting(this, BRACKET_COMPLETION, BRACKET_DESCRIPTION));
+        providePanel(SQUARE_BRACKET_COMPLETION, new BooleanSetting(this, SQUARE_BRACKET_COMPLETION, SQUARE_BRACKET_DESCRIPTION));
     }
 
 }

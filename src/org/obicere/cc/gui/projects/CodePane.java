@@ -207,7 +207,7 @@ public class CodePane extends JTextPane {
                     break;
 
             }
-            style.setCharacterAttributes(bound.getMin(), bound.getDelta(), set, true);
+            style.setCharacterAttributes(bound.getMin(), (int) bound.getDelta(), set, true);
         }
     }
 

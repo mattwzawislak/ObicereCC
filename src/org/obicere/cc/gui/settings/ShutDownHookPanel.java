@@ -5,6 +5,7 @@ import org.obicere.cc.shutdown.SettingsShutDownHook;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import java.awt.Dimension;
 import java.util.Map;
 
 /**

@@ -2,6 +2,7 @@ package org.obicere.cc.shutdown;
 
 import org.obicere.cc.gui.settings.SettingPanel;
 
+import java.awt.Dimension;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

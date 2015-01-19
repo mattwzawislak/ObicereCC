@@ -60,7 +60,7 @@ public class ResultsTable extends JTable implements TableCellRenderer {
                         wrong = true;
                     }
                     final Result result = results[i];
-                    final String correct = stringValue(result.getCorrectAnswer());
+                    final String correct = stringValue(result.getExpectedResult());
                     final String answer = stringValue(result.getResult());
                     final String params = stringValue(result.getParameters());
 

@@ -8,7 +8,6 @@ import org.obicere.cc.executor.language.Casing;
 import org.obicere.cc.executor.language.CodeFormatter;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.executor.language.LanguageExecutorService;
-import org.obicere.cc.executor.language.LanguageIdentifier;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.Runner;
@@ -25,7 +24,6 @@ import java.util.function.Function;
 /**
  * {@inheritDoc}
  */
-@LanguageIdentifier
 public class JavaLanguage extends Language {
 
     private static final String[] KEYWORDS = new String[]{
@@ -95,7 +93,7 @@ public class JavaLanguage extends Language {
      */
 
     @Override
-    public String[] getLiteralMatches() {
+    public String[] getLiteralMatchers() {
         return LITERALS;
     }
 
@@ -355,7 +353,7 @@ public class JavaLanguage extends Language {
      */
 
     @Override
-    public String[] getKeyWords() {
+    public String[] getKeywords() {
         return KEYWORDS;
     }
 

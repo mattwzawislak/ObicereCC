@@ -40,7 +40,7 @@ public class LanguageManager extends StartingProcess {
     @Override
     public void run() {
         try {
-            final Stream<Class<?>> languageClasses = Reflection.hasAnnotation(LanguageIdentifier.class);
+            final Stream<Class<?>> languageClasses = Reflection.subclassOf(Language.class);
             languageClasses.forEach(cls -> {
                 try {
                     final Constructor<?> constructor = cls.getConstructor(Domain.class);

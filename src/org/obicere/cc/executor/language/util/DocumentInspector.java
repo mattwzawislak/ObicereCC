@@ -141,7 +141,7 @@ public class DocumentInspector {
      */
 
     private void removeLiterals(final StringBuilder builder) {
-        for (final String literal : language.getLiteralMatches()) {
+        for (final String literal : language.getLiteralMatchers()) {
             clearMatches(builder, literal);
         }
     }

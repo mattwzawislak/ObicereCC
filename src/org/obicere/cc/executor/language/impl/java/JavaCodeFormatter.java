@@ -17,13 +17,13 @@ public class JavaCodeFormatter implements CodeFormatter {
      */
 
     @Override
-    public int newlineEntered(final StringBuilder add, final int caret, final int row, final int column) {
+    public int newlineEntered(final StringBuilder code, final int caret, final int row, final int column) {
         final StringBuilder append = new StringBuilder();
         append.append("\n");
 
         int newCaret = caret + 1; // accommodate for the newline
         int tabs = 0;
-        final String[] lines = add.toString().split("\n");
+        final String[] lines = code.toString().split("\n");
         final int max = Math.min(row, lines.length - 1);
         final String currentLine = lines[max];// Don't attempt to check lines when none exist
 
@@ -78,7 +78,7 @@ public class JavaCodeFormatter implements CodeFormatter {
                 newCaret++;        // two lines here with the first having an extra tab
             }
         }
-        add.insert(caret, append);
+        code.insert(caret, append);
         return newCaret;
     }
 }

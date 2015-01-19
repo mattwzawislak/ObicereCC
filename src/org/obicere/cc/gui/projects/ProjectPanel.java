@@ -18,12 +18,32 @@ import java.awt.FlowLayout;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The small widget used to launch a specific project. Provides a small description when hovered,
+ * the author of the project, the name - of course, and whether or not this project has been
+ * completed by the user. A small check-mark will be displayed to signify the completion of a
+ * project.
+ * <p>
+ * All of these panels should be the same size, independent of the actual content of the panel. This
+ * is just a symmetric policy, to help improve the look of one of the most-used view points.
+ *
+ * @author Obicere
+ * @version 1.0
+ */
+
 public class ProjectPanel extends JPanel {
 
     private static final Dimension PROJECT_PANEL_MANIFEST_SIZE = new Dimension(200, 40);
 
     private final Project project;
     private final JLabel  complete;
+
+    /**
+     * Constructs a new panel for displaying the project. This will also notify the domain to open
+     * up a new project upon the <code>open</code> button being clicked.
+     *
+     * @param project The project to base the panel off of.
+     */
 
     public ProjectPanel(final Project project) {
         super(new FlowLayout(FlowLayout.LEFT, 10, 5));
@@ -66,17 +86,62 @@ public class ProjectPanel extends JPanel {
         add(options);
     }
 
-    public void setComplete(boolean isComplete) {
+    /**
+     * Sets the icon in the frame to the complete check-mark if and only if the
+     * <code>isComplete</code> flag it set to <code>true</code>.
+     *
+     * @param isComplete Whether or not the project is now complete.
+     */
+
+    public void setComplete(final boolean isComplete) {
         complete.setIcon(isComplete ? new ImageIcon(Configuration.COMPLETE_IMAGE) : null);
     }
+
+    /**
+     * Retrieves the project used to base this panel. This is used primarily for arranging the
+     * panels by name and also when searching.
+     *
+     * @return The basis project.
+     */
 
     public Project getProject() {
         return project;
     }
 
+    /**
+     * Attempts to convert a simple string to HTML. This is just meant for tooltip texts, where the
+     * newline feeds are not considered, but the <code>&lt;br&gt;</code> tags are. HTML and Java
+     * strings do not mix, so sorry if this blows up in a burning ball of flame.
+     *
+     * @param description The description to <i>attempt</i> to create the tag for.
+     *
+     * @return The - hopefully correct - HTML format for the tooltip.
+     */
+
     private String toHTML(final String description) {
         return "<html>".concat(description.replace("\n", "<br>")).concat("</html>");
     }
+
+    /**
+     * Attempts to separate the words of the runner name into individual parts. This works the same
+     * as the {@link org.obicere.cc.executor.language.Casing} system, but the default casing types
+     * support code-oriented notation. This method will inherit whitespace to style the string
+     * correctly. Note that this is just an approximation and there may be issues with parsing the
+     * correct form of the runner's name.
+     * <p>
+     * For example, given the input string <code>"TestABC"</code>, this would split by casing and
+     * produce:
+     * <p>
+     * <code>["Test", "A", "B", "C"]</code>
+     * <p>
+     * From there, the strings will be appended by whitespace to produce:
+     * <p>
+     * <code>"Test A B C"</code>
+     *
+     * @param name The name to attempt to split into individual words.
+     *
+     * @return The parsed string hopefully in the correct format.
+     */
 
     private String separateWords(final String name) {
         final StringBuilder builder = new StringBuilder();

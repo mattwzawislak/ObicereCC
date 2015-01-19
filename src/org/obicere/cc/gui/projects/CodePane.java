@@ -424,7 +424,14 @@ public class CodePane extends JTextPane {
     }
 
     /**
-     * Provides all of the input map elements to handle code completion and formatting.
+     * Provides all of the input map elements to handle code completion and formatting. This will
+     * utilize the input mapping system of swing, so clipboard events will not trigger these
+     * actions. This does specify that they will only dispatch when the component is focused. This
+     * is to avoid events occurring when they shouldn't, which could happen very commonly with the
+     * {@link KeyEvent#VK_ENTER} or {@link KeyEvent#VK_CONTROL} keys - for example.
+     * <p>
+     * This is where all the code completion will happen, so disabling key maps will disable the
+     * code completion.
      *
      * @param input  The input map of the code pane.
      * @param action The action map of the code pane.
@@ -485,6 +492,7 @@ public class CodePane extends JTextPane {
         action.put("Compile", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // If the name was provided, we could use the domain.
                 final Editor parent = (Editor) SwingUtilities.getAncestorOfClass(Editor.class, CodePane.this);
                 if (parent == null) {
                     JOptionPane.showMessageDialog(null, "Failed to run code.", "Error", JOptionPane.WARNING_MESSAGE);
@@ -496,6 +504,7 @@ public class CodePane extends JTextPane {
         action.put("Save", new AbstractAction() {
             @Override
             public void actionPerformed(final ActionEvent e) {
+                // If the name was provided, we could use the domain.
                 final Editor parent = (Editor) SwingUtilities.getAncestorOfClass(Editor.class, CodePane.this);
                 if (parent == null) {
                     JOptionPane.showMessageDialog(null, "Failed to save code.", "Error", JOptionPane.WARNING_MESSAGE);

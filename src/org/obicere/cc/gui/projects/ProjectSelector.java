@@ -1,14 +1,12 @@
 package org.obicere.cc.gui.projects;
 
 import org.obicere.cc.configuration.Domain;
-import org.obicere.cc.gui.SwingFrameManager;
 import org.obicere.cc.gui.layout.VerticalFlowLayout;
 import org.obicere.cc.gui.layout.WrapLayout;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.ProjectComparator;
 import org.obicere.cc.projects.ProjectLoader;
 import org.obicere.cc.shutdown.SaveProgressHook;
-import org.obicere.cc.shutdown.ShutDownHookManager;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -46,7 +44,7 @@ public class ProjectSelector extends JPanel {
         }
         for (int i = 0; i < difficultyPanels.length; i++) {
             final JPanel panel = new JPanel(new WrapLayout(WrapLayout.LEFT));
-            panel.setBorder(new TitledBorder(Project.getDifficultyString(i + 1)));
+            panel.setBorder(new TitledBorder(Project.getDifficultyString(i + 1))); // Difficulty strings are 1-based
             selector.add(panel);
 
             difficultyPanels[i] = panel;
@@ -54,7 +52,7 @@ public class ProjectSelector extends JPanel {
 
         projects.forEach(e -> {
             final Project project = e.getProject();
-            difficultyPanels[project.getDifficulty() - 1].add(e);
+            difficultyPanels[project.getDifficulty() - 1].add(e); // Difficulty strings are 1-based
         });
 
         final JScrollPane scrollPane = new JScrollPane(selector);

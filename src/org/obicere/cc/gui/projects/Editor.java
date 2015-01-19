@@ -27,9 +27,36 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Used to contain all the project-dependent information about the current file. This will contain
+ * the instruction information for how to solve the current problem. It will show the results table
+ * for visualizing the cases and what answer was generated. There is also the main {@link
+ * org.obicere.cc.gui.projects.CodePane} for editing the code.
+ * <p>
+ * The instructions pane will contain the basic information on how to solve the problem. This is
+ * stored in the {@link org.obicere.cc.projects.Runner} under the {@link
+ * org.obicere.cc.projects.RunnerManifest#description()} field. Errors during runtime will also be
+ * displayed here. This is mainly to conserve space, especially since errors shouldn't happen too
+ * often, right? In the case an error appears, then buttons for copying the error and removing the
+ * error will become available.
+ * <p>
+ * The results table will show your progress towards solving the problem. Currently, all of the
+ * results will be displayed. Future releases may wish to only show the top 10-15 to avoid users
+ * hard-coding the answers. Once every result in the table is considered correct, it is seen that
+ * the project has been completed and the progress will be saved.
+ * <p>
+ * The code pane is the basic editor. This is where the user will attempt to solve the problem. The
+ * results table and the instructions panel merely help push the user to the right answer. It is
+ * important to note that one can reset the project completely if one gets lost, since not every
+ * project will explicitly mention what method needs to be present.
+ *
+ * @author Obicere
+ * @version 1.0
+ */
+
 public class Editor extends JPanel {
 
-    private static final Font CONSOLOAS_12 = new Font("Consolas", Font.PLAIN, 12);
+    private static final Font CONSOLAS_12 = new Font("Consolas", Font.PLAIN, 12);
 
     private final CodePane     codePane;
     private final ResultsTable resultsTable;
@@ -39,6 +66,15 @@ public class Editor extends JPanel {
     private final Font         defaultInstructionFont;
     private final Language     language;
     private final SaveProgressHook hook = Domain.getGlobalDomain().getHookManager().hookByClass(SaveProgressHook.class);
+
+    /**
+     * Constructs a new editor panel for the given project under the specific language. This will
+     * load all the resources needed to start the project if not started already; or continue the
+     * project from where it was last left off.
+     *
+     * @param project  The project to load.
+     * @param language The language to run the project in.
+     */
 
     public Editor(final Project project, final Language language) {
         super(new BorderLayout());
@@ -106,7 +142,7 @@ public class Editor extends JPanel {
 
         instructions.setEditable(false);
         instructions.setBackground(new Color(0xededed));
-        instructions.setFont(CONSOLOAS_12);
+        instructions.setFont(CONSOLAS_12);
         instructions.setToolTipText("Instructions and any errors will appear here.");
 
         clearError.addActionListener(e -> setInstructionsText(project.getDescription(), false));
@@ -125,17 +161,40 @@ public class Editor extends JPanel {
         instructionPanel.add(instructionButtons, BorderLayout.SOUTH);
 
         add(textSplit, BorderLayout.CENTER);
-
-        codePane.styleDocument();
     }
+
+    /**
+     * Retrieves the project name - used to name the tab within the main GUI.
+     *
+     * @return The project name.
+     */
 
     public String getProjectName() {
         return project.getName();
     }
 
+    /**
+     * The language that the current project is working under.
+     *
+     * @return The language for the current project.
+     */
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    /**
+     * Updates the instructions text to display a specific document. In the case that the document
+     * should be presented as an error, the appropriate monospaced font will be set. This will
+     * generally help when error span multiple lines with ascii styling.
+     *
+     * @param string The document to display.
+     * @param error  Whether or not to treat the document as an error.
+     */
+
     public void setInstructionsText(final String string, final boolean error) {
         if (error) {
-            instructions.setFont(CONSOLOAS_12);
+            instructions.setFont(CONSOLAS_12);
             instructionButtons.setVisible(true);
         } else {
             instructions.setFont(defaultInstructionFont);
@@ -145,9 +204,22 @@ public class Editor extends JPanel {
         instructions.setText(string);
     }
 
-    public Language getLanguage() {
-        return language;
-    }
+    /**
+     * Attempts to remove all source and compiled files of the project. If the files do not exist,
+     * an error may be thrown saying they failed to be deleted. This can be ignored in most cases.
+     * The only case where this technically should fail is if the file is open in another program.
+     * In which case, deletion may not happen completely.
+     * <p>
+     * Initially a dialog will be displayed to confirm the user's actions. In the case that the user
+     * rejects, then no files will be deleted. If the files are confirmed to be deleted, then the
+     * code pane will be reset with the default skeleton generated from the language for the
+     * project. Also, if the project was previously listed as complete, it will no longer be
+     * complete.
+     * <p>
+     * A {@link javax.swing.JOptionPane} will be displayed to notify the user of any errors.
+     *
+     * @see org.obicere.cc.executor.language.Language#getSkeleton(org.obicere.cc.projects.Project)
+     */
 
     public void clearSaveFiles() {
         final String message = "This will delete all progress on this project.\nDo you wish to continue?";
@@ -171,12 +243,26 @@ public class Editor extends JPanel {
 
     }
 
+    /**
+     * Attempts to save and then run the project. There is a hard cap of 10 seconds for this to
+     * finish. Should it not finish, then the operation will be interrupted. This interruption can
+     * be ignored if the file size is substantially large. This is of course to avoid incomplete
+     * file saves.
+     * <p>
+     * During the actual invocation of the runner: should this interrupt be called, the program
+     * should comply and cancel. There is a fail-safe to handle results that were failed to be
+     * completed in time.
+     *
+     * @see org.obicere.cc.executor.Result#newTimedOutResult(org.obicere.cc.executor.Case)
+     * @see #save()
+     */
+
     public void saveAndRun() {
-        save();
         if (codePane.getText().length() == 0) {
             return;
         }
         final Thread thread = new Thread(() -> {
+            save();
             final Result[] results = language.compileAndRun(project);
             resultsTable.setResults(results);
         });
@@ -192,6 +278,16 @@ public class Editor extends JPanel {
             }
         }, 10000);
     }
+
+    /**
+     * Attempts to save the file. This can happen independently and since we don't want to deal with
+     * interrupts on the thread, this will not be locked into such - unless needed.
+     * <p>
+     * Should this fail to save properly, a {@link javax.swing.JOptionPane} will be displayed to
+     * notify the user of the error. The actual result of why it failed will not be displayed. The
+     * user can however navigate to the saving directory and check to see what complications may be
+     * present from there.
+     */
 
     public void save() {
         if (!project.save(codePane.getText(), language)) {

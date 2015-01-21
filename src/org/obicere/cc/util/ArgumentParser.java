@@ -28,44 +28,38 @@ public class ArgumentParser {
         }
         for (int i = 0; i < args.length; i++) {
             String name = args[i];
-            String assignment = null;
             if (name == null) {
                 continue;
             }
-            name = name.replaceFirst("-*", ""); // Get rid of the preceding dashes to show it is an
+            // Get rid of the preceding dashes to show it is an
             // argument and not just a variable.
-            final int assignmentIndex = name.indexOf('=');
-            if (assignmentIndex > 0) {
-                // We have an assignment
-                name = name.substring(0, assignmentIndex);
-                assignment = name.substring(assignmentIndex + 1); // +1 to avoid the =
-            }
-            Argument argument = null;
-            top:
-            for (final Argument arg : arguments) {
-                if (arg.getName().equals(name)) {
-                    argument = arg;
-                    break;
-                }
-                for (final String alias : arg.getAliases()) {
-                    if (name.equals(alias)) {
-                        argument = arg;
-                        break top;
-                    }
-                }
-            }
+            name = name.replaceFirst("-*", "");
+
+            final Argument argument = argumentFor(name);
             if (argument == null) {
                 continue;
             }
             arguments.remove(argument);
-            if (assignment == null) { // Dealing with true/false expression iff the type is of boolean
+
+            final int assignmentIndex = name.indexOf('=');
+            if (assignmentIndex > 0) {
+                // We have an assignment
+                if(assignmentIndex + 1 == name.length()){ // No value available
+                    argument.set(null);
+                    continue;
+                }
+                name = name.substring(0, assignmentIndex);
+                final String assignment = name.substring(assignmentIndex + 1); // +1 to avoid the =
+                argument.set(assignment);
+            } else {
+                // Dealing with true/false expression iff the type is of boolean
                 if (argument.isConditional()) {
                     argument.set(true);
                 } else {
                     if (i + 1 == args.length) {
                         return; // We are at the end of the cycle, no way to deal with this value
                     }
-                    final String next = args[i + 1];
+                    final String next = args[++i];
                     if (next == null) {
                         return;
                     }
@@ -73,6 +67,20 @@ public class ArgumentParser {
                 }
             }
         }
+    }
+
+    private Argument argumentFor(final String name) {
+        for (final Argument arg : arguments) {
+            if (arg.getName().equals(name)) {
+                return arg;
+            }
+            for (final String alias : arg.getAliases()) {
+                if (name.equals(alias)) {
+                    return arg;
+                }
+            }
+        }
+        return null;
     }
 
 }

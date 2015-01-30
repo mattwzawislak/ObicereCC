@@ -7,10 +7,10 @@ import org.obicere.cc.util.Reflection;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.stream.Stream;
 
 /**
  * Loads all the classes that directly extend the {@link
@@ -92,7 +92,7 @@ public class LanguageManager extends StartingProcess {
     @Override
     public void run() {
         try {
-            final Stream<Class<?>> languageClasses = Reflection.subclassOf(Language.class);
+            final List<Class<?>> languageClasses = Reflection.subclassOf(Language.class);
             languageClasses.forEach(cls -> {
                 try {
                     final Constructor<?> constructor = cls.getConstructor(Domain.class);

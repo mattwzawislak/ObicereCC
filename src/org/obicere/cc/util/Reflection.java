@@ -3,13 +3,11 @@ package org.obicere.cc.util;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /**
  * @author Obicere
@@ -18,24 +16,11 @@ public class Reflection {
 
     private static final ClassDefiner DEFINER = new ClassDefiner();
     private static final ClassLoader  LOADER  = ClassLoader.getSystemClassLoader();
-    private static LinkedList<Class<?>> cache;
 
-    static {
-        cache = loadClasses();
-    }
-
-    @SuppressWarnings("unchecked")
-    public static List<Class<?>> list() {
-        return (List<Class<?>>) cache.clone();
-    }
-
-    public static Stream<Class<?>> stream() {
-        return cache.stream();
-    }
-
-    public static Stream<Class<?>> where(final Predicate<Class<?>> predicate) {
-        final Stream<Class<?>> stream = stream();
-        return stream.filter(predicate);
+    public static List<Class<?>> where(final Predicate<Class<?>> predicate) {
+        final List<Class<?>> list = loadClasses();
+        list.removeIf(predicate.negate());
+        return list;
     }
 
     public static void filterAsSubclassOf(final Class<?> cls, final List<Class<?>> list) {
@@ -50,19 +35,13 @@ public class Reflection {
         }
     }
 
-    public static Stream<Class<?>> subclassOf(final Class<?> cls) {
+    public static List<Class<?>> subclassOf(final Class<?> cls) {
         Objects.requireNonNull(cls);
         return where(c -> cls.isAssignableFrom(c) && !cls.equals(c));
     }
 
-    public static Stream<Class<?>> hasAnnotation(final Class<? extends Annotation> cls) {
+    public static List<Class<?>> hasAnnotation(final Class<? extends Annotation> cls) {
         return where(e -> e.getAnnotation(cls) != null);
-    }
-
-    public static Object getStaticField(final Class<?> cls, final String name) throws NoSuchFieldException, IllegalAccessException {
-        final Field field = cls.getDeclaredField(name);
-        field.setAccessible(true);
-        return field.get(null);
     }
 
     public static Object newInstance(final Class<?> cls) {
@@ -79,7 +58,7 @@ public class Reflection {
         return null;
     }
 
-    public static LinkedList<Class<?>> loadClassesFrom(final String directory) {
+    public static List<Class<?>> loadClassesFrom(final String directory) {
         final LinkedList<Class<?>> classes = new LinkedList<>();
         try {
             final List<String> loader = FileLoader.searchClassPath(directory, ".class");
@@ -92,7 +71,7 @@ public class Reflection {
                 } catch (final Exception | Error ignored) {
                 }
             });
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
         }
         return classes;
     }
@@ -110,7 +89,7 @@ public class Reflection {
                 } catch (final Error | Exception ignored) {
                 }
             });
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
         }
         return classes;
     }

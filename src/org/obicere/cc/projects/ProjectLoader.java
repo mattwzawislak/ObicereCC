@@ -25,7 +25,7 @@ public class ProjectLoader {
         if (!DATA.isEmpty()) {
             resetData();
         }
-        final LinkedList<Class<?>> list = Reflection.loadClassesFrom(Paths.FOLDER_SOURCES);
+        final List<Class<?>> list = Reflection.loadClassesFrom(Paths.FOLDER_SOURCES);
         final Class<Runner> cls = Runner.class;
         Reflection.filterAsSubclassOf(cls, list);
         list.forEach(ProjectLoader::add);

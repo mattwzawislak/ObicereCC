@@ -41,14 +41,17 @@ import java.util.List;
 
 /**
  * Used for styling a file based off of a specific programming {@link
- * org.obicere.cc.executor.language.Language}. This provides the styling used for literals and
- * keywords. It will also handle all the font, code completion and styling settings.
+ * org.obicere.cc.executor.language.Language}. This provides the styling
+ * used for literals and keywords. It will also handle all the font, code
+ * completion and styling settings.
  * <p>
- * The code pane will maintain the code completion by monitoring previous key strokes that can be
- * easily completed under the {@link org.obicere.cc.shutdown.CodeCompletionHook}. There is one
- * second of delay between when the opening character is pressed and when the closing character(s)
- * that follow are consumed. This is to ensure that given a proficient typing speed, that the code
- * completion will not conflict with the actual typing of the user.
+ * The code pane will maintain the code completion by monitoring previous
+ * key strokes that can be easily completed under the {@link
+ * org.obicere.cc.shutdown.CodeCompletionHook}. There is one second of
+ * delay between when the opening character is pressed and when the closing
+ * character(s) that follow are consumed. This is to ensure that given a
+ * proficient typing speed, that the code completion will not conflict with
+ * the actual typing of the user.
  * <p>
  * The currently supported code completion pairs as of v1.0 are:
  * <pre><ul>
@@ -58,21 +61,25 @@ import java.util.List;
  * </ul>
  * </pre>
  * <p>
- * The code completion metrics on all of these will automatically add the closing character once the
- * opening character is typed. Note, that this will not occur on document changes where snippets of
- * code are pasted, only on a keystroke. Once the closing character is added, the caret is then
- * moved to in between the brackets.
+ * The code completion metrics on all of these will automatically add the
+ * closing character once the opening character is typed. Note, that this
+ * will not occur on document changes where snippets of code are pasted,
+ * only on a keystroke. Once the closing character is added, the caret is
+ * then moved to in between the brackets.
  * <p>
- * There is also code completion present through newline feeds. The sole function of this is to help
- * provide a more seamless experience for the user. This involves adding the correct amount of tabs
- * and setting the correct caret position. This is very language specific, as the notion for what
- * deserves a tab is defined purely on the language. This should be handled by the language's {@link
- * org.obicere.cc.executor.language.CodeFormatter}. Should one not be defined, then no linefeed
- * completion will be provided.
+ * There is also code completion present through newline feeds. The sole
+ * function of this is to help provide a more seamless experience for the
+ * user. This involves adding the correct amount of tabs and setting the
+ * correct caret position. This is very language specific, as the notion
+ * for what deserves a tab is defined purely on the language. This should
+ * be handled by the language's {@link org.obicere.cc.executor.language.CodeFormatter}.
+ * Should one not be defined, then no linefeed completion will be
+ * provided.
  * <p>
- * As of v1.0, there is no listener for when hook settings are updated. Due to this, the code pane
- * will check for modifications by remembering the last update. This should be improved on future
- * releases, along with the possibility of moving some content out of this class.
+ * As of v1.0, there is no listener for when hook settings are updated. Due
+ * to this, the code pane will check for modifications by remembering the
+ * last update. This should be improved on future releases, along with the
+ * possibility of moving some content out of this class.
  *
  * @author Obicere
  * @version 1.0
@@ -111,11 +118,13 @@ public class CodePane extends JTextPane {
     private final Language language;
 
     /**
-     * Constructs a new code pane, sets the tab stops, the font styling and the input maps for
-     * handling code completion. A new code pane has to be defined for each file that will be
-     * opened. This is since each file and its metrics are unique to the language.
+     * Constructs a new code pane, sets the tab stops, the font styling and
+     * the input maps for handling code completion. A new code pane has to
+     * be defined for each file that will be opened. This is since each
+     * file and its metrics are unique to the language.
      *
-     * @param content  The default text for this code pane; from the source file.
+     * @param content  The default text for this code pane; from the source
+     *                 file.
      * @param language The language of the file opened here.
      */
 
@@ -146,11 +155,13 @@ public class CodePane extends JTextPane {
     /**
      * {@inheritDoc}
      * <p>
-     * Attempts to add default styling upon the viewport changing. This assumes that every code pane
-     * is contained within a {@link javax.swing.JScrollPane}, which is added by the swing library by
+     * Attempts to add default styling upon the viewport changing. This
+     * assumes that every code pane is contained within a {@link
+     * javax.swing.JScrollPane}, which is added by the swing library by
      * default.
      * <p>
-     * Should no such scroll pane exist, then no updating will happen automatically.
+     * Should no such scroll pane exist, then no updating will happen
+     * automatically.
      */
 
     @Override
@@ -163,16 +174,17 @@ public class CodePane extends JTextPane {
     }
 
     /**
-     * Sets the correct width for the tab stops based off of the font family name and the font size.
-     * This will use the {@link Font#PLAIN} mask, as no sane person would consider using bold or
-     * italics (or both) when writing code. At least I hope...
+     * Sets the correct width for the tab stops based off of the font
+     * family name and the font size. This will use the {@link Font#PLAIN}
+     * mask, as no sane person would consider using bold or italics (or
+     * both) when writing code. At least I hope...
      * <p>
-     * This will add up to 50 tab stops available. This should be a sufficiently large amount to
-     * handle any document.
+     * This will add up to 50 tab stops available. This should be a
+     * sufficiently large amount to handle any document.
      * <p>
-     * The value used here for the tab widths is language specific, most will use a value of
-     * <code>4</code>, however some languages will do more or less. This value is in spaces. For
-     * example with tab-size 4:
+     * The value used here for the tab widths is language specific, most
+     * will use a value of <code>4</code>, however some languages will do
+     * more or less. This value is in spaces. For example with tab-size 4:
      * <pre>
      * {@code public void foo(){
      *       System.out.println("foo");
@@ -187,9 +199,9 @@ public class CodePane extends JTextPane {
      * }
      * </pre>
      * <p>
-     * The difference is merely the extra space before the print statement. For this to be effective
-     * though, a monospaced font should always be used, however this is not enforced. Such examples
-     * would include:
+     * The difference is merely the extra space before the print statement.
+     * For this to be effective though, a monospaced font should always be
+     * used, however this is not enforced. Such examples would include:
      * <pre>
      * <ul>
      * <li> Consolas
@@ -198,8 +210,8 @@ public class CodePane extends JTextPane {
      * </ul>
      * </pre>
      *
-     * @param familyName
-     * @param size
+     * @param familyName The family name of the given font to load.
+     * @param size       The size of the font.
      *
      * @see org.obicere.cc.executor.language.Language#getTabSize()
      */
@@ -223,16 +235,18 @@ public class CodePane extends JTextPane {
     }
 
     /**
-     * Provides the closing character should the code completion settings allow this character to be
-     * automatically completed. If code completion for the pair is not set, then the
-     * <code>null</code> character is returned.
+     * Provides the closing character should the code completion settings
+     * allow this character to be automatically completed. If code
+     * completion for the pair is not set, then the <code>null</code>
+     * character is returned.
      * <p>
-     * If the character is also not supported by code completion regardless of settings, then
-     * <code>0</code> is returned.
+     * If the character is also not supported by code completion regardless
+     * of settings, then <code>0</code> is returned.
      *
      * @param c The character to match with the closing pair.
      *
-     * @return The closing pair if and only if code completion is allowed on the group.
+     * @return The closing pair if and only if code completion is allowed
+     * on the group.
      */
 
     private char getClosingCharacter(final char c) {
@@ -258,10 +272,11 @@ public class CodePane extends JTextPane {
     }
 
     /**
-     * Registers a hit to mark to handle the delay between when a character is automatically added
-     * and when it stops being automatically consumed. This is used to provide ease of the code
-     * completion, so if the user wants to type the character generated by the code completion, then
-     * two copies of the character will not appear.
+     * Registers a hit to mark to handle the delay between when a character
+     * is automatically added and when it stops being automatically
+     * consumed. This is used to provide ease of the code completion, so if
+     * the user wants to type the character generated by the code
+     * completion, then two copies of the character will not appear.
      *
      * @param c The character to consume.
      */
@@ -280,11 +295,12 @@ public class CodePane extends JTextPane {
     }
 
     /**
-     * Temporary solution until the event dispatching has been created for hook updates. This will
-     * monitor the last update to the settings. If the updates don't match, the settings are
-     * reloaded from the hook. This should be seldom checked, due to the constant time cost to check
-     * for updates, yet should be called often enough that the settings are reflected properly to
-     * the user.
+     * Temporary solution until the event dispatching has been created for
+     * hook updates. This will monitor the last update to the settings. If
+     * the updates don't match, the settings are reloaded from the hook.
+     * This should be seldom checked, due to the constant time cost to
+     * check for updates, yet should be called often enough that the
+     * settings are reflected properly to the user.
      */
 
     private void checkForUpdates() {
@@ -308,33 +324,40 @@ public class CodePane extends JTextPane {
      * specific functions to determine what should be applied to what.
      * <pre>
      * <ul>
-     * <li>{@link #PLAINTEXT_SET}: applied to all operators, names and other symbols including
+     * <li>{@link #PLAINTEXT_SET}: applied to all operators, names and
+     * other symbols including
      * whitespace.
-     * <li>{@link #KEYWORD_SET}: applies to all keywords registered by {@link
+     * <li>{@link #KEYWORD_SET}: applies to all keywords registered by
+     * {@link
      * org.obicere.cc.executor.language.Language#getKeywords()}
-     * <li>{@link #LITERAL_SET}: applies to all matches of literals by the language. This should
+     * <li>{@link #LITERAL_SET}: applies to all matches of literals by the
+     * language. This should
      * include comments, strings and characters.
      * </ul>
      * </pre>
      * <p>
-     * This has been optimized to only render what <i>should</i> be visible. This is to avoid
-     * styling a 10,000 line document when you can only see 10 lines.
+     * This has been optimized to only render what <i>should</i> be
+     * visible. This is to avoid styling a 10,000 line document when you
+     * can only see 10 lines.
      * <p>
      * The next optimization resides in the {@link org.obicere.cc.executor.language.util.DocumentInspector}
      * to reduce the number of styles that need to be applied.
      * <p>
-     * The last optimization is also based off of how the document inspector creates the styles.
-     * This will apply a one-time style across the visible document with the {@link #PLAINTEXT_SET},
-     * then filling in the appropriate style where necessary. This avoids having to switch between
-     * styles abundantly.
+     * The last optimization is also based off of how the document
+     * inspector creates the styles. This will apply a one-time style
+     * across the visible document with the {@link #PLAINTEXT_SET}, then
+     * filling in the appropriate style where necessary. This avoids having
+     * to switch between styles abundantly.
      * <p>
-     * This has to do with a prime concept applied by the {@link org.obicere.cc.executor.language.util.Flag}
-     * and how certain flags can be combined to create larger and fewer flags. Since the most costly
-     * part of this function is applying the styles, this small change makes a substantial
-     * difference.
+     * This has to do with a prime concept applied by the {@link
+     * org.obicere.cc.executor.language.util.Flag} and how certain flags
+     * can be combined to create larger and fewer flags. Since the most
+     * costly part of this function is applying the styles, this small
+     * change makes a substantial difference.
      * <p>
-     * On the last note, this will also check for updates made by the hook, so any changes in font
-     * family, font size or colors will be reflected upon the next update.
+     * On the last note, this will also check for updates made by the hook,
+     * so any changes in font family, font size or colors will be reflected
+     * upon the next update.
      */
 
     public void styleDocument() {
@@ -386,8 +409,9 @@ public class CodePane extends JTextPane {
     }
 
     /**
-     * Retrieves the current line the caret is present on. This is done by splitting the document
-     * into lines implicitly, then getting the element that contains the caret index.
+     * Retrieves the current line the caret is present on. This is done by
+     * splitting the document into lines implicitly, then getting the
+     * element that contains the caret index.
      *
      * @return The line the caret is present on.
      */
@@ -399,11 +423,12 @@ public class CodePane extends JTextPane {
     }
 
     /**
-     * Retrieves where in the given line the caret is located. This is represented by an index.
-     * Should the line not contain the caret, then <code>-1</code> is returned.
+     * Retrieves where in the given line the caret is located. This is
+     * represented by an index. Should the line not contain the caret, then
+     * <code>-1</code> is returned.
      * <p>
-     * The line should be provided, otherwise an additional check needs to be made to get the
-     * current line.
+     * The line should be provided, otherwise an additional check needs to
+     * be made to get the current line.
      *
      * @param line The line to scan for the caret.
      *
@@ -424,14 +449,16 @@ public class CodePane extends JTextPane {
     }
 
     /**
-     * Provides all of the input map elements to handle code completion and formatting. This will
-     * utilize the input mapping system of swing, so clipboard events will not trigger these
-     * actions. This does specify that they will only dispatch when the component is focused. This
-     * is to avoid events occurring when they shouldn't, which could happen very commonly with the
-     * {@link KeyEvent#VK_ENTER} or {@link KeyEvent#VK_CONTROL} keys - for example.
+     * Provides all of the input map elements to handle code completion and
+     * formatting. This will utilize the input mapping system of swing, so
+     * clipboard events will not trigger these actions. This does specify
+     * that they will only dispatch when the component is focused. This is
+     * to avoid events occurring when they shouldn't, which could happen
+     * very commonly with the {@link KeyEvent#VK_ENTER} or {@link
+     * KeyEvent#VK_CONTROL} keys - for example.
      * <p>
-     * This is where all the code completion will happen, so disabling key maps will disable the
-     * code completion.
+     * This is where all the code completion will happen, so disabling key
+     * maps will disable the code completion.
      *
      * @param input  The input map of the code pane.
      * @param action The action map of the code pane.

@@ -3,8 +3,6 @@ package org.obicere.cc.gui.settings;
 import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.gui.MainTabPanel;
 import org.obicere.cc.gui.layout.VerticalFlowLayout;
-import org.obicere.cc.gui.layout.VerticalWrapLayout;
-import org.obicere.cc.gui.layout.WrapLayout;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 import org.obicere.cc.shutdown.ShutDownHook;
 
@@ -12,11 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextField;
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.LayoutManager;
 import java.util.Map;
 
 /**

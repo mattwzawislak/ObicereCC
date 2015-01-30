@@ -26,6 +26,27 @@ package org.obicere.cc.executor.language.util;
  */
 public interface Flag {
 
+    /**
+     * Denotes whether or not the flag type allows intersection. This can
+     * be used primarily to suggest when the given element bounded by the
+     * indices has more than one attribute.
+     * <p>
+     * Of course, some flag groups it would make sense to have
+     * intersection, such as a scope indexer. However in a deterministic
+     * grammar indexer, intersections do not make sense.
+     * <p>
+     * The scope of the intersection is flag-dependent. So should a
+     * specific flag in the group require intersection, the other flags do
+     * not need to allow intersection. However, should only a single flag
+     * in the group allow intersection, there wouldn't be a valid purpose.
+     * <p>
+     * If unsure about whether or not the flag should inherit intersection,
+     * most will not. So setting this to <code>false</code> by default is
+     * recommended.
+     *
+     * @return Whether or not the given flag type allows intersection.
+     */
+
     public boolean allowsIntersection();
 
 }

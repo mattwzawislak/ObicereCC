@@ -17,73 +17,77 @@ public abstract class AbstractConsumer {
     public static final int IDENTIFIER_BOOLEAN = 0x01;
 
     /**
-     * The basic identifier for a signed <tt>byte</tt>. Unless otherwise specified, the unsigned
-     * type would be <tt>IDENTIFIER_BYTE + 1</tt>.
+     * The basic identifier for a signed <tt>byte</tt>. Unless otherwise
+     * specified, the unsigned type would be <tt>IDENTIFIER_BYTE + 1</tt>.
      *
      * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_BYTE = 0x02;
 
     /**
-     * The basic identifier for a signed <tt>short</tt>. Unless otherwise specified, the unsigned
-     * type would be <tt>IDENTIFIER_SHORT + 1</tt>.
+     * The basic identifier for a signed <tt>short</tt>. Unless otherwise
+     * specified, the unsigned type would be <tt>IDENTIFIER_SHORT +
+     * 1</tt>.
      *
      * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_SHORT = 0x04;
 
     /**
-     * The basic identifier for a UTF-16 <tt>char</tt>. All characters added to this protocol should
-     * be in a UTF-16 format.
+     * The basic identifier for a UTF-16 <tt>char</tt>. All characters
+     * added to this protocol should be in a UTF-16 format.
      *
      * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_CHAR = 0x06;
 
     /**
-     * The basic identifier for a signed <tt>int</tt>. Unless otherwise specified, the unsigned type
-     * would be <tt>IDENTIFIER_INT + 1</tt>.
+     * The basic identifier for a signed <tt>int</tt>. Unless otherwise
+     * specified, the unsigned type would be <tt>IDENTIFIER_INT + 1</tt>.
      *
      * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_INT = 0x07;
 
     /**
-     * The basic identifier for a signed <tt>long</tt>. Unless otherwise specified, the unsigned
-     * type would be <tt>IDENTIFIER_LONG + 1</tt>.
+     * The basic identifier for a signed <tt>long</tt>. Unless otherwise
+     * specified, the unsigned type would be <tt>IDENTIFIER_LONG + 1</tt>.
      *
      * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_LONG = 0x09;
 
     /**
-     * The basic identifier for a signed <tt>float</tt>. Unless otherwise specified, the unsigned
-     * type would be <tt>IDENTIFIER_FLOAT + 1</tt>.
+     * The basic identifier for a signed <tt>float</tt>. Unless otherwise
+     * specified, the unsigned type would be <tt>IDENTIFIER_FLOAT +
+     * 1</tt>.
      *
      * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_FLOAT = 0x0B;
 
     /**
-     * The basic identifier for a signed <tt>double</tt>. Unless otherwise specified, the unsigned
-     * type would be <tt>IDENTIFIER_DOUBLE + 1</tt>.
+     * The basic identifier for a signed <tt>double</tt>. Unless otherwise
+     * specified, the unsigned type would be <tt>IDENTIFIER_DOUBLE +
+     * 1</tt>.
      *
      * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_DOUBLE = 0x0D;
 
     /**
-     * The basic identifier for a UTF-16 <tt>String</tt>. All characters added to this protocol
-     * should be in a UTF-16 format.
+     * The basic identifier for a UTF-16 <tt>String</tt>. All characters
+     * added to this protocol should be in a UTF-16 format.
      *
      * @see org.obicere.cc.util.protocol.StreamConsumer#identifierFor
      */
     public static final int IDENTIFIER_STRING = 0x0F;
 
     /**
-     * The basic identifier for an array of a designed type. Revision 1.0 of the protocol dictates
-     * that a generic array is impossible and that a one-dimensional array must have a defined
-     * component type specified by an identifier.
+     * The basic identifier for an array of a designed type. Revision 1.0
+     * of the protocol dictates that a generic array is impossible and that
+     * a one-dimensional array must have a defined component type specified
+     * by an identifier.
      *
      * @see AbstractConsumer#IDENTIFIER_BOOLEAN
      * @see AbstractConsumer#IDENTIFIER_BYTE

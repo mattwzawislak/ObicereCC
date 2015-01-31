@@ -44,7 +44,7 @@ public class ArgumentParser {
             final int assignmentIndex = name.indexOf('=');
             if (assignmentIndex > 0) {
                 // We have an assignment
-                if(assignmentIndex + 1 == name.length()){ // No value available
+                if (assignmentIndex + 1 == name.length()) { // No value available
                     argument.set(null);
                     continue;
                 }

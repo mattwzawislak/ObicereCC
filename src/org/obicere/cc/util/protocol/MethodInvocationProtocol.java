@@ -7,28 +7,28 @@ import java.net.Socket;
 import java.util.Objects;
 
 /**
+ * <pre>
+ * string : method_name
+ * int : return_id
+ * int : return_dimension
+ * int : param_count $n
+ * int : param_1_id
+ * int : param_1_dimension
+ * int : param_2_id
+ * int : param_2_dimension
+ * ...
+ * int : param_n_id
+ * int : param_n_dimension
+ * int : case_count $k
+ * Object[] : case_1
+ * Object[] : case_2
+ * ...
+ * Object[] : case_k
+ * </pre>
+ *
  * @author Obicere
  */
 public class MethodInvocationProtocol extends BasicProtocol {
-
-    /**
-     * string : method_name
-     * int : return_id
-     * int : return_dimension
-     * int : param_count $n
-     * int : param_1_id
-     * int : param_1_dimension
-     * int : param_2_id
-     * int : param_2_dimension
-     * ...
-     * int : param_n_id
-     * int : param_n_dimension
-     * int : case_count $k
-     * Object[] : case_1
-     * Object[] : case_2
-     * ...
-     * Object[] : case_k
-     */
 
     public MethodInvocationProtocol(final Socket socket, final boolean autoFlush) throws IOException {
         super(socket, autoFlush);

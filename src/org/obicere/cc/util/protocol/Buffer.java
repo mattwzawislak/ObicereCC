@@ -10,10 +10,11 @@ import java.io.OutputStream;
 public class Buffer {
 
     /**
-     * The maximum size for the buffer. This values corresponds to the largest positive power of two
-     * available in indexing.
+     * The maximum size for the buffer. This values corresponds to the
+     * largest positive power of two available in indexing.
      * <p>
-     * The maximum size corresponds to: <tt>134,217,728 bytes (128MB)</tt>.
+     * The maximum size corresponds to: <tt>134,217,728 bytes
+     * (128MB)</tt>.
      */
     protected static final int MAXIMUM_BUFFER_SIZE = 1 << 30;
 

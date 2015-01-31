@@ -13,18 +13,18 @@ public class FloatConsumer extends AbstractConsumer {
         super(buffer);
     }
 
-    public float read(){
+    public float read() {
         if (nextIdentifier() != IDENTIFIER_FLOAT) {
             throw new InputMismatchException();
         }
         return Float.intBitsToFloat(readRawInt());
     }
 
-    public float readRaw(){
+    public float readRaw() {
         return Float.intBitsToFloat(readRawInt());
     }
 
-    public float[] readArray(){
+    public float[] readArray() {
         checkArray();
         final int length = readRawInt();
         final float[] array = new float[length];
@@ -34,18 +34,18 @@ public class FloatConsumer extends AbstractConsumer {
         return array;
     }
 
-    public void write(final float value){
+    public void write(final float value) {
         final int write = Float.floatToIntBits(value);
         writeIdentifier(IDENTIFIER_FLOAT);
         writeRawIntValue(write);
     }
 
-    public void writeRaw(final float value){
+    public void writeRaw(final float value) {
         final int write = Float.floatToIntBits(value);
         writeRawIntValue(write);
     }
 
-    public void write(final float[] value){
+    public void write(final float[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
         writeRawIntValue(value.length);

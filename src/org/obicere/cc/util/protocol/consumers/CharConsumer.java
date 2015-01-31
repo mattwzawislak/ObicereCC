@@ -13,18 +13,18 @@ public class CharConsumer extends AbstractConsumer {
         super(buffer);
     }
 
-    public char read(){
+    public char read() {
         if (nextIdentifier() != IDENTIFIER_CHAR) {
             throw new InputMismatchException();
         }
         return (char) readRawShort();
     }
 
-    public char readRaw(){
+    public char readRaw() {
         return (char) readRawShort();
     }
 
-    public char[] readArray(){
+    public char[] readArray() {
         checkArray();
         final int length = readRawInt();
         final char[] array = new char[length];
@@ -34,16 +34,16 @@ public class CharConsumer extends AbstractConsumer {
         return array;
     }
 
-    public void write(final char value){
+    public void write(final char value) {
         writeIdentifier(IDENTIFIER_CHAR);
         writeRawShortValue((short) value);
     }
 
-    public void writeRaw(final char value){
+    public void writeRaw(final char value) {
         writeRawShortValue((short) value);
     }
 
-    public void write(final char[] value){
+    public void write(final char[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
         writeRawIntValue(value.length);

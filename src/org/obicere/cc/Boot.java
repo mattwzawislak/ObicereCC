@@ -19,16 +19,17 @@ import java.util.logging.Logger;
 public class Boot {
 
     /**
-     * Starts the default application-based launcher. As of v1.0 this is the only supported method
-     * of running the application.
+     * Starts the default application-based launcher. As of v1.0 this is
+     * the only supported method of running the application.
      * <p>
      * No specific VM arguments are needed.
      * <p>
-     * If on a Windows machine, enabling the arguments for the TCP LoopBack may increase speeds when
-     * compiling non-Java languages. This can be done (if supported on your VM) through
-     * <code></code>windows.enableFastLocalTcpLoopback</code>.
+     * If on a Windows machine, enabling the arguments for the TCP LoopBack
+     * may increase speeds when compiling non-Java languages. This can be
+     * done (if supported on your VM) through <code></code>windows.enableFastLocalTcpLoopback</code>.
      * <p>
-     * The list of supported program arguments and their usage is as follows:
+     * The list of supported program arguments and their usage is as
+     * follows:
      * <pre>
      * -launcher &lt;launcher-type&gt;
      *     Aliases: l
@@ -36,7 +37,8 @@ public class Boot {
      * </pre>
      * <p>
      *
-     * @param args As specified above under the list of supported program arguments.
+     * @param args As specified above under the list of supported program
+     *             arguments.
      */
 
     public static void main(final String[] args) {

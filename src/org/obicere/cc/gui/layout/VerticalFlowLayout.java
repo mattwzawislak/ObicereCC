@@ -139,7 +139,7 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
 
     /**
      * The flow layout manager allows a seperation of components with gaps.
-     *  The horizontal gap will specify the space between components and
+     * The horizontal gap will specify the space between components and
      * between the components and the borders of the <code>Container</code>.
      *
      * @serial
@@ -150,8 +150,8 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
 
     /**
      * The flow layout manager allows a seperation of components with gaps.
-     *  The vertical gap will specify the space between rows and between
-     * the the rows and the borders of the <code>Container</code>.
+     * The vertical gap will specify the space between rows and between the
+     * the rows and the borders of the <code>Container</code>.
      *
      * @serial
      * @see #getHgap()
@@ -214,7 +214,6 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
      * or <code>VerticalFlowLayout.TRAILING</code>.
      *
      * @return the alignment value for this layout
-     *
      * @see VerticalFlowLayout#setAlignment
      * @since JDK1.1
      */
@@ -229,7 +228,6 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
      * <li><code>VerticalFlowLayout.TRAILING</code> </ul>
      *
      * @param align one of the alignment values shown above
-     *
      * @see #getAlignment()
      * @since JDK1.1
      */
@@ -259,7 +257,6 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
      *
      * @return the horizontal gap between components and between the
      * components and the borders of the <code>Container</code>
-     *
      * @see VerticalFlowLayout#setHgap
      * @since JDK1.1
      */
@@ -273,7 +270,6 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
      *
      * @param hgap the horizontal gap between components and between the
      *             components and the borders of the <code>Container</code>
-     *
      * @see VerticalFlowLayout#getHgap
      * @since JDK1.1
      */
@@ -287,7 +283,6 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
      *
      * @return the vertical gap between components and between the
      * components and the borders of the <code>Container</code>
-     *
      * @see VerticalFlowLayout#setVgap
      * @since JDK1.1
      */
@@ -301,7 +296,6 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
      *
      * @param vgap the vertical gap between components and between the
      *             components and the borders of the <code>Container</code>
-     *
      * @see VerticalFlowLayout#getVgap
      * @since JDK1.1
      */
@@ -323,7 +317,6 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
      * class.
      *
      * @param comp the component to remove
-     *
      * @see java.awt.Container#removeAll
      */
     public void removeLayoutComponent(Component comp) {
@@ -334,10 +327,8 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
      * <i>visible</i> components in the specified target container.
      *
      * @param target the container that needs to be laid out
-     *
      * @return the preferred dimensions to lay out the subcomponents of the
      * specified container
-     *
      * @see Container
      * @see #minimumLayoutSize
      * @see java.awt.Container#getPreferredSize
@@ -374,10 +365,8 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
      * components contained in the specified target container.
      *
      * @param target the container that needs to be laid out
-     *
      * @return the minimum dimensions to lay out the subcomponents of the
      * specified container
-     *
      * @see #preferredLayoutSize
      * @see java.awt.Container
      * @see java.awt.Container#doLayout
@@ -456,7 +445,6 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
      * <code>VerticalFlowLayout</code> object.
      *
      * @param target the specified component being laid out
-     *
      * @see Container
      * @see java.awt.Container#doLayout
      */

@@ -47,7 +47,7 @@ public class StringSetting extends SettingPanel {
                 update();
             }
 
-            private void update(){
+            private void update() {
                 hook.setProperty(key, field.getText());
             }
         });

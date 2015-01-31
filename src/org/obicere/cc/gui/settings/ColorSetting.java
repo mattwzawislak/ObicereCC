@@ -65,7 +65,7 @@ public class ColorSetting extends SettingPanel {
         return new ImageIcon(image);
     }
 
-    public Color getSelectedColor(){
+    public Color getSelectedColor() {
         return selectedColor;
     }
 }

@@ -212,7 +212,6 @@ public class CodePane extends JTextPane {
      *
      * @param familyName The family name of the given font to load.
      * @param size       The size of the font.
-     *
      * @see org.obicere.cc.executor.language.Language#getTabSize()
      */
 
@@ -244,7 +243,6 @@ public class CodePane extends JTextPane {
      * of settings, then <code>0</code> is returned.
      *
      * @param c The character to match with the closing pair.
-     *
      * @return The closing pair if and only if code completion is allowed
      * on the group.
      */
@@ -431,7 +429,6 @@ public class CodePane extends JTextPane {
      * be made to get the current line.
      *
      * @param line The line to scan for the caret.
-     *
      * @return The caret index in the given line.
      */
 

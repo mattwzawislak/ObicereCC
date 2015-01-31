@@ -14,18 +14,18 @@ public class BooleanConsumer extends AbstractConsumer {
         super(buffer);
     }
 
-    public boolean read(){
+    public boolean read() {
         if (nextIdentifier() != IDENTIFIER_BOOLEAN) {
             throw new InputMismatchException();
         }
         return readRawByte() != 0;
     }
 
-    public boolean readRaw(){
+    public boolean readRaw() {
         return readRawByte() != 0;
     }
 
-    public boolean[] readArray(){
+    public boolean[] readArray() {
         checkArray();
         final int length = readRawInt();
         final boolean[] array = new boolean[length];
@@ -35,16 +35,16 @@ public class BooleanConsumer extends AbstractConsumer {
         return array;
     }
 
-    public void write(final boolean value){
+    public void write(final boolean value) {
         writeIdentifier(IDENTIFIER_BOOLEAN);
         writeRawByteValue((byte) (value ? 1 : 0));
     }
 
-    public void writeRaw(final boolean value){
+    public void writeRaw(final boolean value) {
         writeRawByteValue((byte) (value ? 1 : 0));
     }
 
-    public void write(final boolean[] value){
+    public void write(final boolean[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
         writeRawIntValue(value.length);

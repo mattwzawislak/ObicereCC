@@ -13,14 +13,14 @@ public class StringConsumer extends AbstractConsumer {
         super(buffer);
     }
 
-    public String read(){
+    public String read() {
         if (nextIdentifier() != IDENTIFIER_STRING) {
             throw new InputMismatchException();
         }
         return readRaw();
     }
 
-    public String readRaw(){
+    public String readRaw() {
         final int length = readRawInt();
         final char[] chars = new char[length];
         for (int i = 0; i < length; i++) {
@@ -29,13 +29,13 @@ public class StringConsumer extends AbstractConsumer {
         return new String(chars);
     }
 
-    public void write(final String value){
+    public void write(final String value) {
         Objects.requireNonNull(value, "Cannot write null string to buffer.");
         writeIdentifier(IDENTIFIER_STRING);
         writeRaw(value);
     }
 
-    public void writeRaw(final String value){
+    public void writeRaw(final String value) {
         final char[] data = value.toCharArray();
         writeRawIntValue(data.length);
         for (final char c : data) {

@@ -39,7 +39,7 @@ public class IntConsumer extends AbstractConsumer {
         writeRawIntValue(value);
     }
 
-    public void writeRaw(final int value){
+    public void writeRaw(final int value) {
         writeRawIntValue(value);
     }
 

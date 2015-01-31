@@ -9,23 +9,23 @@ import java.util.Objects;
  * @author Obicere
  */
 public class ShortConsumer extends AbstractConsumer {
-    
+
     public ShortConsumer(final Buffer buffer) {
         super(buffer);
     }
 
-    public short read(){
+    public short read() {
         if (nextIdentifier() != IDENTIFIER_SHORT) {
             throw new InputMismatchException();
         }
         return readRawShort();
     }
 
-    public short readRaw(){
+    public short readRaw() {
         return readRawShort();
     }
 
-    public short[] readArray(){
+    public short[] readArray() {
         checkArray();
         final int length = readRawInt();
         final short[] array = new short[length];
@@ -35,16 +35,16 @@ public class ShortConsumer extends AbstractConsumer {
         return array;
     }
 
-    public void write(final short value){
+    public void write(final short value) {
         writeIdentifier(IDENTIFIER_SHORT);
         writeRawShortValue(value);
     }
 
-    public void writeRaw(final short value){
+    public void writeRaw(final short value) {
         writeRawShortValue(value);
     }
 
-    public void write(final short[] value){
+    public void write(final short[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
         writeRawIntValue(value.length);

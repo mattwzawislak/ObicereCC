@@ -11,17 +11,19 @@ public class VerticalWrapLayout extends VerticalFlowLayout {
     private Dimension preferredLayoutSize;
 
     /**
-     * Constructs a new <code>WrapLayout</code> with a left alignment and a default 5-unit
-     * horizontal and vertical gap.
+     * Constructs a new <code>WrapLayout</code> with a left alignment and a
+     * default 5-unit horizontal and vertical gap.
      */
     public VerticalWrapLayout() {
         super();
     }
 
     /**
-     * Constructs a new <code>FlowLayout</code> with the specified alignment and a default 5-unit
-     * horizontal and vertical gap. The value of the alignment argument must be one of
-     * <code>WrapLayout</code>, <code>WrapLayout</code>, or <code>WrapLayout</code>.
+     * Constructs a new <code>FlowLayout</code> with the specified
+     * alignment and a default 5-unit horizontal and vertical gap. The
+     * value of the alignment argument must be one of
+     * <code>WrapLayout</code>, <code>WrapLayout</code>, or
+     * <code>WrapLayout</code>.
      *
      * @param align the alignment value
      */
@@ -30,11 +32,12 @@ public class VerticalWrapLayout extends VerticalFlowLayout {
     }
 
     /**
-     * Creates a new flow layout manager with the indicated alignment and the indicated horizontal
-     * and vertical gaps.
+     * Creates a new flow layout manager with the indicated alignment and
+     * the indicated horizontal and vertical gaps.
      * <p>
-     * The value of the alignment argument must be one of <code>WrapLayout</code>,
-     * <code>WrapLayout</code>, or <code>WrapLayout</code>.
+     * The value of the alignment argument must be one of
+     * <code>WrapLayout</code>, <code>WrapLayout</code>, or
+     * <code>WrapLayout</code>.
      *
      * @param align the alignment value
      * @param hgap  the horizontal gap between components
@@ -45,12 +48,12 @@ public class VerticalWrapLayout extends VerticalFlowLayout {
     }
 
     /**
-     * Returns the preferred dimensions for this layout given the <i>visible</i> components in the
-     * specified target container.
+     * Returns the preferred dimensions for this layout given the
+     * <i>visible</i> components in the specified target container.
      *
      * @param target the component which needs to be laid out
-     *
-     * @return the preferred dimensions to lay out the subcomponents of the specified container
+     * @return the preferred dimensions to lay out the subcomponents of the
+     * specified container
      */
     @Override
     public Dimension preferredLayoutSize(Container target) {
@@ -58,12 +61,12 @@ public class VerticalWrapLayout extends VerticalFlowLayout {
     }
 
     /**
-     * Returns the minimum dimensions needed to layout the <i>visible</i> components contained in
-     * the specified target container.
+     * Returns the minimum dimensions needed to layout the <i>visible</i>
+     * components contained in the specified target container.
      *
      * @param target the component which needs to be laid out
-     *
-     * @return the minimum dimensions to lay out the subcomponents of the specified container
+     * @return the minimum dimensions to lay out the subcomponents of the
+     * specified container
      */
     @Override
     public Dimension minimumLayoutSize(Container target) {
@@ -73,11 +76,11 @@ public class VerticalWrapLayout extends VerticalFlowLayout {
     }
 
     /**
-     * Returns the minimum or preferred dimension needed to layout the target container.
+     * Returns the minimum or preferred dimension needed to layout the
+     * target container.
      *
      * @param target    target to get layout size for
      * @param preferred should preferred size be calculated
-     *
      * @return the dimension to layout the target container
      */
     private Dimension layoutSize(Container target, boolean preferred) {

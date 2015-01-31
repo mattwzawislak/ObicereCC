@@ -7,7 +7,7 @@ public class LayoutHook extends SettingsShutDownHook {
     public static final String NAME = "save.layout";
 
     @HookValue("true")
-    public static final String SAVE_LAYOUT = "save.layout";
+    public static final String SAVE_LAYOUT             = "save.layout";
     public static final String SAVE_LAYOUT_DESCRIPTION = "Save the layout: ";
 
     @HookValue("900")

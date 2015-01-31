@@ -14,7 +14,7 @@ import java.util.logging.Level;
  */
 public class SwingLauncher extends AbstractLauncher {
 
-    public SwingLauncher(final Domain access){
+    public SwingLauncher(final Domain access) {
         super(access);
     }
 

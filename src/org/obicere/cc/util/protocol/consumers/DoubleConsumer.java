@@ -13,18 +13,18 @@ public class DoubleConsumer extends AbstractConsumer {
         super(buffer);
     }
 
-    public double read(){
+    public double read() {
         if (nextIdentifier() != IDENTIFIER_DOUBLE) {
             throw new InputMismatchException();
         }
         return Double.longBitsToDouble(readRawLong());
     }
 
-    public double readRaw(){
+    public double readRaw() {
         return Double.longBitsToDouble(readRawLong());
     }
 
-    public double[] readArray(){
+    public double[] readArray() {
         checkArray();
         final int length = readRawInt();
         final double[] array = new double[length];
@@ -34,18 +34,18 @@ public class DoubleConsumer extends AbstractConsumer {
         return array;
     }
 
-    public void write(final double value){
+    public void write(final double value) {
         final long write = Double.doubleToLongBits(value);
         writeIdentifier(IDENTIFIER_DOUBLE);
         writeRawLongValue(write);
     }
 
-    public void writeRaw(final double value){
+    public void writeRaw(final double value) {
         final long write = Double.doubleToLongBits(value);
         writeRawLongValue(write);
     }
 
-    public void write(final double[] value){
+    public void write(final double[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
         writeRawIntValue(value.length);

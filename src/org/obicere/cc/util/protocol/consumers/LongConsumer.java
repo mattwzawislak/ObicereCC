@@ -13,18 +13,18 @@ public class LongConsumer extends AbstractConsumer {
         super(buffer);
     }
 
-    public long read(){
+    public long read() {
         if (nextIdentifier() != IDENTIFIER_LONG) {
             throw new InputMismatchException();
         }
         return readRawLong();
     }
 
-    public long readRaw(){
+    public long readRaw() {
         return readRawLong();
     }
 
-    public long[] readArray(){
+    public long[] readArray() {
         checkArray();
         final int length = readRawInt();
         final long[] array = new long[length];
@@ -34,16 +34,16 @@ public class LongConsumer extends AbstractConsumer {
         return array;
     }
 
-    public void write(final long value){
+    public void write(final long value) {
         writeIdentifier(IDENTIFIER_LONG);
         writeRawLongValue(value);
     }
 
-    public void writeRaw(final long value){
+    public void writeRaw(final long value) {
         writeRawLongValue(value);
     }
 
-    public void write(final long[] value){
+    public void write(final long[] value) {
         Objects.requireNonNull(value);
         writeIdentifier(IDENTIFIER_ARRAY);
         writeRawIntValue(value.length);

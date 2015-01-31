@@ -65,7 +65,6 @@ public class Configuration {
      * The image is also prepared by the default {@link java.awt.Toolkit}
      *
      * @param url The URL to load the image from.
-     *
      * @return The loaded image, if successful. Otherwise
      * <code>null</code>.
      */
@@ -98,7 +97,6 @@ public class Configuration {
      * This has only been tested on Windows machines.
      *
      * @return The default application data folder.
-     *
      * @see #getOS()
      */
 
@@ -110,7 +108,6 @@ public class Configuration {
      * Returns the value of the parsed operating system.
      *
      * @return The parsed OS value.
-     *
      * @see org.obicere.cc.configuration.Configuration.OS
      * @see #parseOS()
      */

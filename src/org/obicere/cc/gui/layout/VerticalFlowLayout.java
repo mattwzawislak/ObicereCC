@@ -63,13 +63,7 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
 
     private boolean maximizeOtherDimension = false;
 
-    public void setMaximizeOtherDimension(boolean max) {
-        maximizeOtherDimension = max;
-    }
-
-    public boolean isMaximizeOtherDimension() {
-        return maximizeOtherDimension;
-    }
+    private boolean sameWidth;
 
     /**
      * This value indicates that each row of components should be
@@ -452,6 +446,7 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
         synchronized (target.getTreeLock()) {
             Insets insets = target.getInsets();
             int maxwidth = target.getWidth() - (insets.left + insets.right + hgap * 2);
+            int constantWidth = getConstantWidth(target);
             int maxheight = target.getHeight() - (insets.top + insets.bottom + vgap * 2);
             int nmembers = target.getComponentCount();
             int x = insets.left + hgap, y = 0;
@@ -465,6 +460,9 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
                     Dimension d = m.getPreferredSize();
                     if (maximizeOtherDimension) {
                         d.width = maxwidth;
+                    }
+                    if (sameWidth) {
+                        d.width = constantWidth;
                     }
                     m.setSize(d.width, d.height);
 
@@ -486,6 +484,30 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
             }
             moveComponents(target, x, insets.top + vgap, colw, maxheight - y, start, nmembers, ltr);
         }
+    }
+
+    public void setMaximizeOtherDimension(boolean max) {
+        maximizeOtherDimension = max;
+    }
+
+    public boolean isMaximizeOtherDimension() {
+        return maximizeOtherDimension;
+    }
+
+    public boolean isSameWidth() {
+        return sameWidth;
+    }
+
+    public void setSameWidth(final boolean value) {
+        this.sameWidth = value;
+    }
+
+    private int getConstantWidth(final Container target) {
+        int max = 0;
+        for (final Component c : target.getComponents()) {
+            max = Math.max(c.getPreferredSize().width, max);
+        }
+        return max;
     }
 
     //

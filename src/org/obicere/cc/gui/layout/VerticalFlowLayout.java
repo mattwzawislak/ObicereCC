@@ -460,8 +460,7 @@ public class VerticalFlowLayout implements LayoutManager, java.io.Serializable {
                     Dimension d = m.getPreferredSize();
                     if (maximizeOtherDimension) {
                         d.width = maxwidth;
-                    }
-                    if (sameWidth) {
+                    } else if (sameWidth) {
                         d.width = constantWidth;
                     }
                     m.setSize(d.width, d.height);

@@ -8,12 +8,12 @@ import org.obicere.cc.shutdown.SettingsShutDownHook;
 import org.obicere.cc.shutdown.ShutDownHook;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.Font;
 import java.util.Map;
 
 /**
@@ -27,24 +27,23 @@ public class MainSettingsPanel extends JPanel {
 
         final VerticalFlowLayout layout = new VerticalWrapLayout(VerticalFlowLayout.LEADING);
         layout.setSameWidth(true);
-        layout.setMaximizeOtherDimension(false);
         final JPanel panel = new JPanel(layout);
         final JScrollPane scroll = new JScrollPane(panel);
 
         final ShutDownHook[] hooks = Domain.getGlobalDomain().getHookManager().getShutDownHooks();
+
+        final Font font = getFont().deriveFont(12f);
         for (final ShutDownHook hook : hooks) {
             if (hook instanceof SettingsShutDownHook) {
 
                 final SettingsShutDownHook setting = (SettingsShutDownHook) hook;
 
-                //panel.add(new JSeparator());
-                //panel.add(new JLabel(setting.getGroupName(), JLabel.CENTER));
-
                 final VerticalFlowLayout innerLayout = new VerticalFlowLayout(VerticalFlowLayout.LEADING);
                 innerLayout.setMaximizeOtherDimension(true);
                 final JPanel inner = new JPanel(innerLayout);
 
-                inner.setBorder(BorderFactory.createTitledBorder(setting.getGroupName()));
+                final Border border = BorderFactory.createTitledBorder(null, setting.getGroupName(), TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, font);
+                inner.setBorder(border);
 
                 final Map<String, SettingPanel> options = setting.getSettingPanels();
                 options.forEach(

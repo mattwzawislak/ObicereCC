@@ -1,7 +1,7 @@
 package org.obicere.cc.process;
 
 import org.obicere.cc.configuration.Domain;
-import org.obicere.cc.gui.swing.Splash;
+import org.obicere.cc.gui.Splash;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;

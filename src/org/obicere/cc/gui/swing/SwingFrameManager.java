@@ -3,6 +3,7 @@ package org.obicere.cc.gui.swing;
 import org.obicere.cc.configuration.Configuration;
 import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.executor.language.Language;
+import org.obicere.cc.gui.AbstractFrameManager;
 import org.obicere.cc.gui.swing.projects.Editor;
 import org.obicere.cc.shutdown.ShutDownHook;
 import org.obicere.cc.util.Reflection;

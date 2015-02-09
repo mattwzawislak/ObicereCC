@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public abstract class ShutDownHook extends Thread {
 
-    private static final Logger log = Logger.getLogger(ShutDownHook.class.getCanonicalName());
+    private static final Logger log = Logger.getGlobal();
 
     private static final String DYNAMIC_MATCHER_BOOLEAN     = "(?i)true|false";
     private static final String DYNAMIC_MATCHER_OCTAL       = "[+-]?0[0-7]{1,11}";

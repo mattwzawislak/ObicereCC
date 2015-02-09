@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 public abstract class DomainAccess {
 
-    protected final Logger log = Logger.getLogger(DomainAccess.class.getCanonicalName());
+    protected final Logger log = Logger.getGlobal();
 
     protected final Domain access;
 

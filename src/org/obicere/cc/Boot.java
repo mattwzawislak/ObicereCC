@@ -6,8 +6,11 @@ import org.obicere.cc.process.AbstractLauncher;
 import org.obicere.cc.process.SwingLauncher;
 import org.obicere.cc.util.Argument;
 import org.obicere.cc.util.ArgumentParser;
+import org.obicere.cc.util.PrintFormatter;
 
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
@@ -42,7 +45,10 @@ public class Boot {
      */
 
     public static void main(final String[] args) {
-        final Logger log = Logger.getLogger(Boot.class.getCanonicalName());
+
+        applyLoggerFormat();
+
+        final Logger log = Logger.getGlobal();
         final long startBoot = System.currentTimeMillis();
         final ArgumentParser parser = new ArgumentParser(args);
 
@@ -69,6 +75,19 @@ public class Boot {
 
         final long bootTime = System.currentTimeMillis() - startBoot;
         log.log(Level.INFO, "Boot time: {0}ms", bootTime);
+    }
+
+    private static void applyLoggerFormat() {
+        // be sure to reset to clear the current handlers
+        LogManager.getLogManager().reset();
+
+        final PrintFormatter formatter = new PrintFormatter();
+
+        // Console support
+        final ConsoleHandler consoleHandler = new ConsoleHandler();
+        consoleHandler.setFormatter(formatter);
+
+        Logger.getGlobal().addHandler(consoleHandler);
     }
 }
 

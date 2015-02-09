@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -230,6 +231,13 @@ public class Updater extends StartingProcess {
             final File out = new File(packageDirectory, fileName + ".class");
             IOUtils.write(out, data);
 
+        } catch (final FileNotFoundException e) {
+            if (src.endsWith("/")) {
+                log.log(Level.WARNING, "Failed to download class: {0}. File does not exist.", src + name);
+            } else {
+                log.log(Level.WARNING, "Failed to download class: {0}. File does not exist. Possibly add a '/' at the end of the source?", src + name);
+            }
+            e.printStackTrace();
         } catch (final IOException e) {
             log.log(Level.WARNING, "Failed to download class: " + name);
             e.printStackTrace();

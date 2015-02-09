@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 public class Configuration {
 
-    private static final Logger log = Logger.getLogger(Configuration.class.getCanonicalName());
+    private static final Logger log = Logger.getGlobal();
 
     public static final Image CLOSE_IMAGE;
     public static final Image COMPLETE_IMAGE;

@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 public class Splash extends DomainAccess implements Runnable {
 
-    private static final Logger log = Logger.getLogger(Splash.class.getCanonicalName());
+    private static final Logger log = Logger.getGlobal();
 
     private static final int WIDTH  = 600;
     private static final int HEIGHT = 200;

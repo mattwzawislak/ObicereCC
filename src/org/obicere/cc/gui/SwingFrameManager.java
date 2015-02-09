@@ -95,17 +95,19 @@ public class SwingFrameManager extends AbstractFrameManager {
         frame.setIconImage(Configuration.ICON);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.add(main);
-        frame.setVisible(true);
         frame.setMinimumSize(new Dimension(900, 600));
+
         final int state = hook.getPropertyAsInt(LayoutHook.PROPERTY_FRAME_STATE);
         frame.setExtendedState(state);
         if (state != JFrame.MAXIMIZED_BOTH) {
             final int width = hook.getPropertyAsInt(LayoutHook.PROPERTY_FRAME_WIDTH);
             final int height = hook.getPropertyAsInt(LayoutHook.PROPERTY_FRAME_HEIGHT);
             frame.setSize(width, height);
-            frame.setLocationRelativeTo(null);
+            frame.setLocationByPlatform(true);
         }
         access.getSplash().setStatus("Complete");
+
+        frame.setVisible(true);
     }
 
     @Override

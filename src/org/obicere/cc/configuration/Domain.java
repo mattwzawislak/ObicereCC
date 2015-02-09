@@ -1,8 +1,8 @@
 package org.obicere.cc.configuration;
 
 import org.obicere.cc.executor.language.LanguageManager;
-import org.obicere.cc.gui.AbstractFrameManager;
-import org.obicere.cc.gui.Splash;
+import org.obicere.cc.gui.swing.AbstractFrameManager;
+import org.obicere.cc.gui.swing.Splash;
 import org.obicere.cc.process.StartingProcess;
 import org.obicere.cc.shutdown.ShutDownHookManager;
 import org.obicere.cc.util.Updater;

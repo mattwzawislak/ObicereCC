@@ -1,8 +1,8 @@
-package org.obicere.cc.gui.projects;
+package org.obicere.cc.gui.swing.projects;
 
 import org.obicere.cc.configuration.Domain;
-import org.obicere.cc.gui.layout.VerticalFlowLayout;
-import org.obicere.cc.gui.layout.WrapLayout;
+import org.obicere.cc.gui.swing.layout.VerticalFlowLayout;
+import org.obicere.cc.gui.swing.layout.WrapLayout;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.ProjectComparator;
 import org.obicere.cc.projects.ProjectLoader;

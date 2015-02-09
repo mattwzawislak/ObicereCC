@@ -1,4 +1,4 @@
-package org.obicere.cc.gui.layout;
+package org.obicere.cc.gui.swing.layout;
 
 import java.awt.*;
 import javax.swing.JScrollPane;

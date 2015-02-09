@@ -1,6 +1,6 @@
 package org.obicere.cc.shutdown;
 
-import org.obicere.cc.gui.projects.ProjectSelector;
+import org.obicere.cc.gui.swing.projects.ProjectSelector;
 
 import java.util.HashMap;
 import java.util.Map;

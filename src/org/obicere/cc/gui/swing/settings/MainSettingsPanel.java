@@ -1,9 +1,9 @@
-package org.obicere.cc.gui.settings;
+package org.obicere.cc.gui.swing.settings;
 
 import org.obicere.cc.configuration.Domain;
-import org.obicere.cc.gui.MainTabPanel;
-import org.obicere.cc.gui.layout.VerticalFlowLayout;
-import org.obicere.cc.gui.layout.VerticalWrapLayout;
+import org.obicere.cc.gui.swing.MainTabPanel;
+import org.obicere.cc.gui.swing.layout.VerticalFlowLayout;
+import org.obicere.cc.gui.swing.layout.VerticalWrapLayout;
 import org.obicere.cc.shutdown.SettingsShutDownHook;
 import org.obicere.cc.shutdown.ShutDownHook;
 

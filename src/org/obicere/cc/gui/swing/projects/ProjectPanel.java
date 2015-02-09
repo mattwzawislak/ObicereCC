@@ -1,4 +1,4 @@
-package org.obicere.cc.gui.projects;
+package org.obicere.cc.gui.swing.projects;
 
 import org.obicere.cc.configuration.Configuration;
 import org.obicere.cc.configuration.Domain;

@@ -1,7 +1,7 @@
 package org.obicere.cc;
 
 import org.obicere.cc.configuration.Domain;
-import org.obicere.cc.gui.SwingFrameManager;
+import org.obicere.cc.gui.swing.SwingFrameManager;
 import org.obicere.cc.process.AbstractLauncher;
 import org.obicere.cc.process.SwingLauncher;
 import org.obicere.cc.util.Argument;

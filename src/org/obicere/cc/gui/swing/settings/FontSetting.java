@@ -1,4 +1,4 @@
-package org.obicere.cc.gui.settings;
+package org.obicere.cc.gui.swing.settings;
 
 import org.obicere.cc.util.FontUtils;
 import org.obicere.cc.shutdown.SettingsShutDownHook;

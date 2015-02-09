@@ -1,8 +1,8 @@
 package org.obicere.cc.shutdown;
 
 import org.obicere.cc.configuration.Paths;
-import org.obicere.cc.gui.settings.BooleanSetting;
-import org.obicere.cc.gui.settings.ButtonSetting;
+import org.obicere.cc.gui.swing.settings.BooleanSetting;
+import org.obicere.cc.gui.swing.settings.ButtonSetting;
 
 import javax.swing.JOptionPane;
 import java.awt.Desktop;

@@ -6,7 +6,7 @@ import org.obicere.cc.configuration.Paths;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.compiler.Command;
 import org.obicere.cc.executor.compiler.CommandExecutor;
-import org.obicere.cc.gui.projects.Editor;
+import org.obicere.cc.gui.swing.projects.Editor;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.util.StringSubstitute;
@@ -554,7 +554,7 @@ public abstract class Language extends DomainAccess {
      * used, once requested through {@link #requestStreamer()}.
      * <p>
      * The returned results may be <code>null</code>. This will signify an
-     * error has occurred to the {@link org.obicere.cc.gui.projects.Editor}
+     * error has occurred to the {@link org.obicere.cc.gui.swing.projects.Editor}
      * for this specific project.
      * <p>
      * It is also recommended that if the operation is lengthy, that a new

@@ -1,7 +1,7 @@
 package org.obicere.cc.shutdown;
 
-import org.obicere.cc.gui.settings.BooleanSetting;
-import org.obicere.cc.gui.settings.StringSetting;
+import org.obicere.cc.gui.swing.settings.BooleanSetting;
+import org.obicere.cc.gui.swing.settings.StringSetting;
 
 /**
  * @author Obicere

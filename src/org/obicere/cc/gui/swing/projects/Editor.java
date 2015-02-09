@@ -1,9 +1,9 @@
-package org.obicere.cc.gui.projects;
+package org.obicere.cc.gui.swing.projects;
 
 import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.executor.Result;
 import org.obicere.cc.executor.language.Language;
-import org.obicere.cc.gui.layout.WrapLayout;
+import org.obicere.cc.gui.swing.layout.WrapLayout;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.shutdown.LayoutHook;
 import org.obicere.cc.shutdown.SaveProgressHook;
@@ -32,7 +32,7 @@ import java.util.TimerTask;
  * file. This will contain the instruction information for how to solve the
  * current problem. It will show the results table for visualizing the
  * cases and what answer was generated. There is also the main {@link
- * org.obicere.cc.gui.projects.CodePane} for editing the code.
+ * org.obicere.cc.gui.swing.projects.CodePane} for editing the code.
  * <p>
  * The instructions pane will contain the basic information on how to solve
  * the problem. This is stored in the {@link org.obicere.cc.projects.Runner}

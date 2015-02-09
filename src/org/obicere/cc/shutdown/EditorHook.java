@@ -1,9 +1,9 @@
 package org.obicere.cc.shutdown;
 
-import org.obicere.cc.gui.settings.BooleanSetting;
-import org.obicere.cc.gui.settings.ColorSetting;
-import org.obicere.cc.gui.settings.FontSetting;
-import org.obicere.cc.gui.settings.IntegerSetting;
+import org.obicere.cc.gui.swing.settings.BooleanSetting;
+import org.obicere.cc.gui.swing.settings.ColorSetting;
+import org.obicere.cc.gui.swing.settings.FontSetting;
+import org.obicere.cc.gui.swing.settings.IntegerSetting;
 
 /**
  * @author Obicere

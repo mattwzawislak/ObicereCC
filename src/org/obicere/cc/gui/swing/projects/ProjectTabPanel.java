@@ -1,6 +1,6 @@
-package org.obicere.cc.gui.projects;
+package org.obicere.cc.gui.swing.projects;
 
-import org.obicere.cc.gui.MainTabPanel;
+import org.obicere.cc.gui.swing.MainTabPanel;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;

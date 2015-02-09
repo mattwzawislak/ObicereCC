@@ -1,4 +1,4 @@
-package org.obicere.cc.gui;
+package org.obicere.cc.gui.swing;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

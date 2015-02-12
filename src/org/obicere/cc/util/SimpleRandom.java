@@ -4,6 +4,7 @@ import java.util.Random;
 
 /**
  * @author Obicere
+ * @version 1.0
  */
 public class SimpleRandom {
 
@@ -12,6 +13,34 @@ public class SimpleRandom {
     public int nextInt(final int max) {
         return seed.nextInt(max);
     }
+
+    /**
+     * Returns a pseudo-random integer. The bounds depend on the values for
+     * <code>a</code> and <code>b</code>.
+     * <p>
+     * The bound is defined as:
+     * <pre>
+     * if a = b: [a, a]
+     * if a < b: [a, b)
+     * if a > b: [b, a)
+     * </pre>
+     * <p>
+     * So note should <code>a=3</code>, <code>b=5</code>, then the possible
+     * values are:
+     * <p>
+     * <code>[3, 4]</code>
+     * <p>
+     * However if we have <code>a=2</code>, <code>b=2</code>, then the
+     * possible values are:
+     * <p>
+     * <code>[2]</code>
+     * <p>
+     * As opposed to throwing an error.
+     *
+     * @param a
+     * @param b
+     * @return
+     */
 
     public int nextInt(final int a, final int b) {
         final int min = Math.min(a, b);

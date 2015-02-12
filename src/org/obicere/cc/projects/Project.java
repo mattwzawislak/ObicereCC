@@ -6,6 +6,7 @@ import org.obicere.cc.util.Reflection;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Project {
 
@@ -17,6 +18,8 @@ public class Project {
     private final Runner         runner;
 
     public Project(final Class<?> runnerClass, final String name) throws ClassNotFoundException {
+        Objects.requireNonNull(runnerClass);
+        Objects.requireNonNull(name);
         this.runnerClass = runnerClass;
         this.runner = (Runner) Reflection.newInstance(runnerClass);
         this.name = name;
@@ -83,7 +86,7 @@ public class Project {
 
     @Override
     public boolean equals(final Object o) {
-        return o instanceof Project && o.hashCode() == this.hashCode();
+        return o instanceof Project && ((Project) o).getName().equals(getName());
     }
 
     @Override

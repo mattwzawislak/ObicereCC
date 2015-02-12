@@ -64,17 +64,30 @@ public class Case {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof Case) {
-            final Case param = (Case) obj;
-            if (!Arrays.deepEquals(param.getParameters(), getParameters())) {
-                return false;
-            }
-            if (expectedResult.getClass().isArray()) {
-                return Arrays.deepEquals(new Object[]{param.getExpectedResult()}, new Object[]{getExpectedResult()});
-            }
-            return param.getExpectedResult().equals(getExpectedResult());
-        }
-        return false;
+        return obj instanceof Case && caseEquals((Case) obj);
     }
 
+    /**
+     * Checks the equality of a case by comparing elements. This is done
+     * first by checking the parameters. Since <i>most</i> of the cases
+     * should be functional, then parameter equality will translate to the
+     * equality of the result.
+     * <p>
+     * In case the problem is not functional, then the expected case and
+     * the expected case is compared.
+     *
+     * @param other The case to check equality with.
+     * @return <code>true</code> if and only if <code>this</code> equals
+     * <code>other</code>.
+     */
+
+    private boolean caseEquals(final Case other) {
+        if (!Arrays.deepEquals(other.getParameters(), getParameters())) {
+            return false;
+        }
+        if (expectedResult.getClass().isArray()) {
+            return Arrays.deepEquals(new Object[]{other.getExpectedResult()}, new Object[]{getExpectedResult()});
+        }
+        return other.getExpectedResult().equals(getExpectedResult());
+    }
 }

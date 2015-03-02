@@ -118,6 +118,8 @@ public class Updater extends StartingProcess {
 
     @Override
     public void run() {
+        secureConnection(); // Be sure to secure the connection
+
         ProjectLoader.loadCurrent();
         if (!isInternetReachable()) {
             return;
@@ -335,5 +337,51 @@ public class Updater extends StartingProcess {
             log.log(Level.WARNING, "Could not connect to server. ");
         }
         return false;
+    }
+
+    /**
+     * Secures the connection to ensure that nothing is passed between the
+     * user and the servers that shouldn't be passed. Like colds. I'm
+     * talking to you Ben.
+     * <p>
+     * This so far only protects the connections from the common cold.
+     * Further support will be added as needed.
+     */
+
+    private void secureConnection() {
+        if (isUserSick()) {
+            secureAgainstColds();
+        }
+    }
+
+    /**
+     * WebMD told me about 1/100 people are sick at any given time. And
+     * since we haven't had any advancements with android technology in
+     * humans, this will have to do.
+     * <p>
+     * Or should this always be ran? Nah... that would be too resource
+     * intensive.
+     *
+     * @return <code>true</code> if I think you're sick.
+     */
+
+    private boolean isUserSick() {
+        return Math.random() <= 0.01;
+    }
+
+    /**
+     * Ensures that the cold does not pass from the given humans to other
+     * humans through the internet. This can be done by simply having two
+     * people forming a connect. It works best if the user who has the cold
+     * is the host. From there, both humans can contract the cold. The
+     * chance of this happening is increased by 45% if both computers are
+     * connected to their access points by a wired connection.
+     * <p>
+     * Something something cold, something something security. I hope this
+     * is going somewhere good.
+     */
+
+    private void secureAgainstColds() {
+        System.getProperties().put("user.human.hasCold", true);
     }
 }

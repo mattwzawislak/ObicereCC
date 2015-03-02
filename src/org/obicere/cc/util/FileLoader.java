@@ -20,6 +20,8 @@ public class FileLoader {
     private static final HashSet<String> IGNORED_JARS = new HashSet<>();
 
     static {
+        // Ignore IntelliJ jar files.
+
         IGNORED_JARS.add("charsets.jar");
         IGNORED_JARS.add("deploy.jar");
         IGNORED_JARS.add("javaws.jar");
@@ -60,6 +62,14 @@ public class FileLoader {
     private FileLoader(final String prefix, final String extension) {
         this.extension = extension;
         this.prefix = prefix;
+    }
+
+    public static boolean addIgnoreJar(final String name) {
+        return IGNORED_JARS.add(name);
+    }
+
+    public static boolean removeIgnoreJar(final String name) {
+        return IGNORED_JARS.remove(name);
     }
 
     public static List<String> searchClassPath(final String path, final String extension) {

@@ -32,7 +32,7 @@ public class FileLoader {
         IGNORED_JARS.add("management-agent.jar");
         IGNORED_JARS.add("plugin.jar");
         IGNORED_JARS.add("resources.jar");
-        IGNORED_JARS.add("rt.jar");
+        IGNORED_JARS.add("rt.jar");  // Main Java jar for IntelliJ
         IGNORED_JARS.add("access-bridge-64.jar");
         IGNORED_JARS.add("cldrdata.jar");
         IGNORED_JARS.add("dnsns.jar");
@@ -117,10 +117,10 @@ public class FileLoader {
         }
         if (dir.isFile()) {
             final String name = dir.getName().toLowerCase();
-            if (IGNORED_JARS.contains(name)) {
-                return;
-            }
             if (name.endsWith(".zip") || name.endsWith(".jar")) {
+                if (IGNORED_JARS.contains(name)) {
+                    return;
+                }
                 this.lookInArchive(dir);
             }
         }

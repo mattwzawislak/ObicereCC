@@ -55,7 +55,7 @@ public class Reflection {
      * Should one wish for the <code>predicate</code> to follow the form:
      * <pre>
      * <code>
-     * final List<Class<?>> list = Reflection.where(e -> true);
+     * List&lt;Class&lt;?&gt;&gt; list = Reflection.where(e -&gt; true);
      * </code>
      * </pre>
      * <p>

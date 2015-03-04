@@ -382,6 +382,46 @@ public class FileLoader {
         }
     }
 
+    /**
+     * Recursively searches the directory for files that match the query.
+     * The ordering is in depth-first search. Files will be accessed in
+     * alphabetical order, or based off of the default {@link
+     * java.io.FileSystem} file listing preferences.
+     * <p>
+     * If the extension name is equal to <code>.class</code>, this will
+     * approximate the package of the class based on the value of
+     * <code>dir</code>. <code>dir</code> should contain the top-level
+     * package for the class to provide proper parsing. Since this utility
+     * merely loads the file locations, checking the package name to the
+     * actual class information is not manageable.
+     * <p>
+     * For example, given a class <code>org.example.Foo</code>, located in
+     * the directory <code>"/user/bin/"</code>:
+     * <p>
+     * <code>dir</code> should be equal to <code>"/user/bin/"</code>.
+     * <code>Foo</code> should be in the <code>/user/bin/org/example/</code>
+     * directory. This will provide the proper parsing evaluation of
+     * <code>org.example.Foo</code>.
+     * <p>
+     * Comparing to when <code>dir</code> equals <code>"/user/"</code>,
+     * which would provide the improper parse of <code>bin.org.example.Foo</code>.
+     * <p>
+     * The <code>.class</code> extension will also be dropped, allowing
+     * easy delegation to a class loader to load the found class.
+     * <p>
+     * For regular files, no changes to the file's location will take place
+     * and the extension will persist. All files will be headed with the
+     * found directory, which if specified through the {@link
+     * org.obicere.cc.util.FileLoader#searchPath(String, String)} method,
+     * is defined by the user. Otherwise it will be a directory found in
+     * the classpath.
+     *
+     * @param name The intermediate file. The current file being indexed is
+     *             therefore equal to <code>name + dir</code>, where
+     *             <code>+</code> is string concatenation.
+     * @param dir  The top level directory the search started from.
+     */
+
     private void lookInDirectory(final String name, final File dir) {
         final File[] files = dir.listFiles();
         Objects.requireNonNull(files);
@@ -401,6 +441,43 @@ public class FileLoader {
         }
 
     }
+
+    /**
+     * Flattens an archive and enumerates the contents searching for the
+     * values.
+     * <p>
+     * If the extension name is equal to <code>.class</code>, then the
+     * package name has to be approximated. However, compared to the
+     * directory search, this can be done with more certainty. Assuming
+     * most jars are packed properly, the first level of the jar should
+     * contain the top-level package of the class. For example, the class
+     * <code>org.example.Foo</code>
+     * <p>
+     * This should be located in the directory:
+     * <p>
+     * <pre>
+     * MyJar.jar
+     * |-- org
+     * |    |-- example
+     * |           |-- Foo.class
+     * </pre>
+     * <p>
+     * This will translate to the file directory, <code>/org/example/Foo.class</code>.
+     * The format will then convert the file to the class notation:
+     * <code>org.example.Foo</code>.
+     * <p>
+     * The <code>.class</code> extension will also be dropped, allowing
+     * easy delegation to a class loader to load the found class.
+     * <p>
+     * For regular files, no changes to the file's location will take place
+     * and the extension will persist. All files will be headed with the
+     * found directory, which if specified through the {@link
+     * org.obicere.cc.util.FileLoader#searchPath(String, String)} method,
+     * is defined by the user. Otherwise it will be a directory found in
+     * the classpath.
+     *
+     * @param archive The archive to enumerate.
+     */
 
     private void lookInArchive(final File archive) {
         final JarFile jarFile;

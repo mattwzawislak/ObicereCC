@@ -26,8 +26,8 @@ import java.util.jar.JarFile;
  * specification. By default, jars packed from the JVM, JDK and the
  * IntelliJ IDE are blocked.
  * <p>
- * These jars can be re-enabled through the {@link org.obicere.cc.util.FileLoader#removeIgnoreJar(String)},
- * and other jars can be disabled through the {@link
+ * These jars can be re-enabled through the {@link org.obicere.cc.util.FileLoader#removeIgnoreJar(
+ *String)}, and other jars can be disabled through the {@link
  * org.obicere.cc.util.FileLoader#addIgnoreJar(String)}.
  * <p>
  * Any class files loaded by this utility will be handled separately. When
@@ -71,8 +71,8 @@ import java.util.jar.JarFile;
  * package.
  * <p>
  * Once the package has been resolved, the <code>.class</code> extension is
- * dropped. Meaning that the {@link java.lang.String} representation of the
- * class loaded could be directly fed into a {@link java.lang.ClassLoader}.
+ * dropped. Meaning that the {@link String} representation of the class
+ * loaded could be directly fed into a {@link ClassLoader}.
  * <p>
  * For example: <code>
  * <pre>
@@ -430,7 +430,7 @@ public class FileLoader {
             if (file.isFile() && fileName.toLowerCase().endsWith(extension)) {
                 if (extension.equalsIgnoreCase(".class")) {
                     final String className = fileName.substring(0, fileName.length() - 6);
-                    list.add(name.replace(File.separatorChar, '.') + className);
+                    list.add(name.replaceAll("[\\\\/]", ".") + className);
                 } else {
                     list.add(name + fileName);
                 }
@@ -493,7 +493,7 @@ public class FileLoader {
             final String entryName = entry.getName();
             if (entryName.toLowerCase().endsWith(extension)) {
                 if (extension.equalsIgnoreCase(".class")) {
-                    final String className = entryName.substring(0, entryName.length() - 6).replace(File.separatorChar, '.');
+                    final String className = entryName.substring(0, entryName.length() - 6).replaceAll("[\\\\/]", ".");
                     list.add(className);
                 } else {
                     list.add(entryName);

@@ -34,14 +34,14 @@ import java.util.function.Predicate;
  * <li> Errors in the static initialization
  * <li> Missing resources in the classpath
  * <li> No definition of the class can be found: {@link
- * java.lang.NoClassDefFoundError}
+ * NoClassDefFoundError}
  * </pre>
  * <p>
  * As of <code>v1.0</code>, no verbose property has been added to notify of
  * failed class loading.
  *
  * @author Obicere
- * @see java.lang.ClassLoader
+ * @see ClassLoader
  */
 public class Reflection {
 
@@ -72,8 +72,8 @@ public class Reflection {
      * @param predicate The predicate to filter the classes by.
      * @return The filtered list of classes that were loaded and met the
      * <code>predicate</code>'s requirements.
-     * @throws java.lang.NullPointerException if the <code>predicate</code>
-     *                                        is <code>null</code>.
+     * @throws NullPointerException if the <code>predicate</code> is
+     *                              <code>null</code>.
      */
 
     public static List<Class<?>> where(final Predicate<Class<?>> predicate) {
@@ -100,12 +100,10 @@ public class Reflection {
      *             from this class will remain in the given list, assuming
      *             proper execution.
      * @param list The list of classes to filter.
-     * @throws java.lang.NullPointerException if the given <code>cls</code>
-     *                                        or <code>list</code> is
-     *                                        <code>null</code>. Both are
-     *                                        needed to provide the
-     *                                        functionality of this
-     *                                        method.
+     * @throws NullPointerException if the given <code>cls</code> or
+     *                              <code>list</code> is <code>null</code>.
+     *                              Both are needed to provide the
+     *                              functionality of this method.
      */
 
     public static void filterAsSubclassOf(final Class<?> cls, final List<Class<?>> list) {
@@ -137,8 +135,8 @@ public class Reflection {
      *            from this class will remain in the given list, assuming
      *            proper execution.
      * @return The list of filtered classes.
-     * @throws java.lang.NullPointerException if the given <code>cls</code>
-     *                                        is <code>null</code>.
+     * @throws NullPointerException if the given <code>cls</code> is
+     *                              <code>null</code>.
      * @see org.obicere.cc.util.Reflection#where(java.util.function.Predicate)
      * @see org.obicere.cc.util.Reflection#loadClasses()
      */
@@ -153,8 +151,7 @@ public class Reflection {
      * annotation of type <code>cls</code>.
      * <p>
      * Any classes in the resulting list can be asserted that: {@link
-     * java.lang.Class#getAnnotation(Class)} will not return
-     * <code>null</code>.
+     * Class#getAnnotation(Class)} will not return <code>null</code>.
      * <p>
      * The given class of <code>cls</code> must employ a {@link
      * java.lang.annotation.RetentionPolicy#RUNTIME} retention, so that
@@ -178,8 +175,8 @@ public class Reflection {
      *            annotation specified with the right retention will be
      *            considered.
      * @return The list of filtered classes.
-     * @throws java.lang.NullPointerException if the given <code>cls</code>
-     *                                        is <code>null</code>.
+     * @throws NullPointerException if the given <code>cls</code> is
+     *                              <code>null</code>.
      */
 
     public static List<Class<?>> hasAnnotation(final Class<? extends Annotation> cls) {
@@ -230,7 +227,7 @@ public class Reflection {
      * <pre>
      * <li>Error in static initialization
      * <li>Missing resources
-     * <li>Class definition failed to load {@link java.lang.NoClassDefFoundError}
+     * <li>Class definition failed to load {@link NoClassDefFoundError}
      * </pre>
      * <p>
      * Due to the way errors are controlled, no class present in the
@@ -245,8 +242,8 @@ public class Reflection {
      * @param directory The directory to recursively search for classes
      *                  in.
      * @return The list of all found classes.
-     * @throws java.lang.NullPointerException if the given <code>directory</code>
-     *                                        is <code>null</code>.
+     * @throws NullPointerException if the given <code>directory</code> is
+     *                              <code>null</code>.
      * @see org.obicere.cc.util.FileLoader#search(String)
      */
 
@@ -285,7 +282,7 @@ public class Reflection {
      * <pre>
      * <li>Error in static initialization
      * <li>Missing resources
-     * <li>Class definition failed to load {@link java.lang.NoClassDefFoundError}
+     * <li>Class definition failed to load {@link NoClassDefFoundError}
      * </pre>
      * <p>
      * Due to the way errors are controlled, no class present in the
@@ -340,7 +337,7 @@ public class Reflection {
 
     /**
      * Attempts to load a class by name, and if that fails - by file. This
-     * will call the system class loader's {@link java.lang.ClassLoader#loadClass(String)}
+     * will call the system class loader's {@link ClassLoader#loadClass(String)}
      * function, to check to see if the class loader can load the class
      * from the class path.
      * <p>
@@ -407,9 +404,9 @@ public class Reflection {
          * @param name      The name of the class attempting to load.
          * @return The loaded class if done successfully, otherwise
          * <code>null</code>.
-         * @throws java.lang.NullPointerException name is <code>null</code>.
-         * @see java.lang.ClassLoader#defineClass(String, byte[], int, int)
-         * @see java.lang.ClassLoader#findLoadedClass(String)
+         * @throws NullPointerException name is <code>null</code>.
+         * @see ClassLoader#defineClass(String, byte[], int, int)
+         * @see ClassLoader#findLoadedClass(String)
          */
 
         public Class<?> attemptDefine(final String directory, final String name) {

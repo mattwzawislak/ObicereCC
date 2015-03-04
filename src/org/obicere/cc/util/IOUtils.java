@@ -42,12 +42,11 @@ public class IOUtils {
      *
      * @param url The source to download from.
      * @return The bytes downloaded from the source.
-     * @throws IOException                    if opening the source,
-     *                                        streaming from the source or
-     *                                        closing the source results in
-     *                                        an error.
-     * @throws java.lang.NullPointerException if the given <code>source</code>
-     *                                        is <code>null</code>.
+     * @throws java.io.IOException  if opening the source, streaming from
+     *                              the source or closing the source
+     *                              results in an error.
+     * @throws NullPointerException if the given <code>source</code> is
+     *                              <code>null</code>.
      */
 
     public static byte[] download(final URL url) throws IOException {
@@ -64,12 +63,11 @@ public class IOUtils {
      *
      * @param file The file to read.
      * @return The bytes read from the file.
-     * @throws IOException                    if opening the file,
-     *                                        streaming from the file or
-     *                                        closing the file results in
-     *                                        an error.
-     * @throws java.lang.NullPointerException if the given <code>file</code>
-     *                                        is <code>null</code>.
+     * @throws java.io.IOException  if opening the file, streaming from the
+     *                              file or closing the file results in an
+     *                              error.
+     * @throws NullPointerException if the given <code>file</code> is
+     *                              <code>null</code>.
      */
 
     public static byte[] readData(final File file) throws IOException {
@@ -91,8 +89,8 @@ public class IOUtils {
      *
      * @param in The stream to read from.
      * @return The read bytes from the stream.
-     * @throws IOException Should reading from the stream or closing the
-     *                     stream result in an error.
+     * @throws java.io.IOException Should reading from the stream or
+     *                             closing the stream result in an error.
      */
 
     private static byte[] readData(final InputStream in) throws IOException {
@@ -120,10 +118,9 @@ public class IOUtils {
      *
      * @param file The file to write to.
      * @param data The contents of the file to write.
-     * @throws IOException
-     * @throws java.lang.NullPointerException if <code>file</code> or
-     *                                        <code>data</code> is
-     *                                        <code>null</code>.
+     * @throws java.io.IOException
+     * @throws NullPointerException if <code>file</code> or <code>data</code>
+     *                              is <code>null</code>.
      */
 
     public static void write(final File file, final byte[] data) throws IOException {
@@ -146,8 +143,9 @@ public class IOUtils {
      * @param properties The map of the current properties.
      * @param file       The properties file.
      * @return The <code>properties</code> map with the data added to it.
-     * @throws IOException When the <code>file</code> does not exist, or it
-     *                     does exist but cannot be read from.
+     * @throws java.io.IOException When the <code>file</code> does not
+     *                             exist, or it does exist but cannot be
+     *                             read from.
      */
 
     public static Properties readProperties(final Properties properties, final File file) throws IOException {
@@ -173,9 +171,9 @@ public class IOUtils {
      *
      * @param properties The properties to write.
      * @param file       The file to write the properties to.
-     * @throws IOException If the <code>file</code> does not exist, or if
-     *                     the <code>file</code> exists but cannot be
-     *                     written to.
+     * @throws java.io.IOException If the <code>file</code> does not exist,
+     *                             or if the <code>file</code> exists but
+     *                             cannot be written to.
      */
 
     public static void writeProperties(final Properties properties, final File file) throws IOException {

@@ -254,7 +254,7 @@ public class Reflection {
         Objects.requireNonNull(directory);
         final LinkedList<Class<?>> classes = new LinkedList<>();
         try {
-            final List<String> loader = FileLoader.searchClassPath(directory, ".class");
+            final List<String> loader = FileLoader.searchPath(directory, ".class");
             loader.forEach(path -> {
                 try {
                     final Class<?> cls = forName(directory, path);

@@ -74,9 +74,9 @@ import java.util.jar.JarFile;
  * dropped. Meaning that the {@link java.lang.String} representation of the
  * class loaded could be directly fed into a {@link java.lang.ClassLoader}.
  * <p>
- * For example:
+ * For example: <code>
  * <pre>
- * <code>// By using the .class extension,
+ * // By using the .class extension,
  * // all the files will be in the class form described above
  * final List&lt;String&gt; files = FileLoader.searchClassPath(".class");
  * final List&lt;Class&lt;?&gt;&gt; classes = new LinkedList&lt;&gt;();
@@ -87,8 +87,8 @@ import java.util.jar.JarFile;
  *         System.err.println("Could not load class: " + file);
  *     }
  * }
- * </code>
  * </pre>
+ * </code>
  * <p>
  * However, if the <code>.class</code> extension is <b>not</b> specified,
  * then classes loaded by this utility will <b>not</b> be in the class
@@ -153,22 +153,21 @@ public class FileLoader {
 
     /**
      * Constructs a new file loader to search for files with the given
-     * <code>extension</code> on the working directory. The working
-     * directory is defined as the {@link Class#getProtectionDomain()}.
-     * This will also search the classpath.
+     * <code>extension</code>. This will check each directory on the
+     * classpath iteratively.
      *
      * @param extension The extension of files to load.
+     * @see org.obicere.cc.util.FileLoader#getClassPath()
      */
 
     private FileLoader(final String extension) {
         this.extension = extension;
-        this.prefix = this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
+        this.prefix = null;
     }
 
     /**
      * Constructs a new file loader to search for files in the given
-     * directory/archive and subdirectories recursively. This will also
-     * search the classpath.
+     * directory/archive and subdirectories recursively.
      *
      * @param prefix    The directory or archive to search recursively.
      * @param extension The extension of files to load.
@@ -179,41 +178,136 @@ public class FileLoader {
         this.prefix = prefix;
     }
 
+    /**
+     * Registers a new archive to be ignored by the file loader utility.
+     * This is done by file name, not by file location and name. Ignoring
+     * an archive by name, but only in a specific directory is not possible
+     * as of <code>v1.0</code>.
+     *
+     * @param name The archive name to ignore.
+     * @return <code>true</code> if the archive was not already ignored.
+     */
+
     public static boolean addIgnoreJar(final String name) {
         return IGNORED_JARS.add(name);
     }
 
+    /**
+     * Specifies that the file loader utility should no longer be ignored,
+     * if it was ignored to begin with. This is done by file name, not by
+     * file location and name. Ignoring an archive by name, but only in a
+     * specific directory is not possible as of <code>v1.0</code>.
+     * <p>
+     * To allow access to the standard Java jar, calling this method with
+     * the jar name <code>"rt.jar"</code> will do so. This will however
+     * have an adverse affect on the running time.
+     *
+     * @param name The archive name to allow access to.
+     * @return <code>true</code> if the archive was being ignored and is no
+     * longer being ignored.
+     */
+
     public static boolean removeIgnoreJar(final String name) {
         return IGNORED_JARS.remove(name);
     }
+
+    /**
+     * Creates a new file loader query on the given <code>path</code>,
+     * searching for files with the given <code>extension</code>. This is
+     * done recursively, in alphabetical order using an in-order search.
+     * <p>
+     * Classes returned here, if searching for classes, will be in class
+     * notation.
+     *
+     * @param path      The path to search in. All files will be headed
+     *                  with this directory or archive.
+     * @param extension The extension of files to load. If the extension is
+     *                  <code>".class"</code>, then all classes found will
+     *                  be in a standard class notation: <code>org.example.Foo</code>,
+     *                  for example. Otherwise, standard file naming
+     *                  systems will be used: <code>/user/test/foo.txt</code>.
+     * @return The list of strings corresponding to files or classes loaded
+     * by this run.
+     */
 
     public static List<String> searchPath(final String path, final String extension) {
         final FileLoader loader = new FileLoader(path, extension);
         return loader.find();
     }
 
+    /**
+     * Creates a new file loader query on the classpath, searching for
+     * files with the given <code>extension</code>. The classpath is
+     * searched iteratively. The first directory in the path will be
+     * searched before the second, before the third and so on.
+     * <p>
+     * The classpath is modifiable by using the <code>java.class.path</code>
+     * system property. Unless, the main class loader has its own classpath
+     * defined, which is done by having a method such as:
+     * <p>
+     * <code>
+     * <pre>
+     * public String getClassPath(final Class&lt;?&gt; cls){
+     *     // Return custom classpath here.
+     * }
+     * </pre>
+     * </code>
+     * <p>
+     * The class loader's method will be checked first, then the system
+     * property will be polled.
+     *
+     * @param extension The extension of files to load. The extension of
+     *                  files to load. If the extension is <code>".class"</code>,
+     *                  then all classes found will be in a standard class
+     *                  notation: <code>org.example.Foo</code>, for
+     *                  example. Otherwise, standard file naming systems
+     *                  will be used: <code>/user/test/foo.txt</code>.
+     * @return The list of strings corresponding to files or classes loaded
+     * by this run.
+     */
+
     public static List<String> searchClassPath(final String extension) {
         final FileLoader loader = new FileLoader(extension);
         return loader.find();
     }
 
+    /**
+     * Runs the query on the given file loader properties. This is
+     * synchronized, so multiple queries won't clash. Should the loaders by
+     * multiple-use, query caching would be performed here.
+     * <p>
+     * The classpath is split by the {@link java.io.File#pathSeparator}. On
+     * UNIX this is commonly <code>':'</code>. On Windows this is commonly
+     * <code>';'</code>. This is modifiable through the
+     * <code>path.separator</code> system property.
+     *
+     * @return The list of all files loaded from this query.
+     * @see org.obicere.cc.util.FileLoader#getClassPath()
+     * @see org.obicere.cc.util.FileLoader#search(String)
+     */
+
     private List<String> find() {
-        if (!list.isEmpty()) {
-            return list;
-        }
-
-        final String classpath = getClassPath();
-
         if (prefix != null) {
+            // If we have a specified a directory to search.
             search(prefix);
+        } else {
+            // Otherwise we have to check the classpath.
+            final String classpath = getClassPath();
+            final StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
+            while (tokenizer.hasMoreTokens()) {
+                search(tokenizer.nextToken());
+            }
         }
-
-        final StringTokenizer tokenizer = new StringTokenizer(classpath, File.pathSeparator);
-        while (tokenizer.hasMoreTokens()) {
-            search(tokenizer.nextToken());
-        }
-        return this.list;
+        return list;
     }
+
+    /**
+     * Lazily evaluates the classpath. This will persist across the
+     * independent file loaders, since theoretically, the classpath should
+     * not change once the program has been started.
+     *
+     * @return The classpath for this JVM instance.
+     */
 
     private synchronized String getClassPath() {
         if (lazyClassPath == null) {
@@ -221,6 +315,29 @@ public class FileLoader {
         }
         return lazyClassPath;
     }
+
+    /**
+     * Attempts to load the classpath through two mutable sources. The
+     * first source is through the current system class loader. This is if
+     * the main class loader has its own classpath defined, which is done
+     * by having a method such as:
+     * <p>
+     * <code>
+     * <pre>
+     * public String getClassPath(final Class&lt;?&gt; cls){
+     *     // Return custom classpath here.
+     * }
+     * </pre>
+     * </code>
+     * <p>
+     * The classpath is modifiable by using the <code>java.class.path</code>
+     * system property otherwise.
+     * <p>
+     * The class loader's classpath will be called first, as it should take
+     * precedence.
+     *
+     * @return The class path for this JVM instance.
+     */
 
     private String loadClassPath() {
         try {
@@ -234,8 +351,23 @@ public class FileLoader {
         return System.getProperty("java.class.path");
     }
 
-    private void search(final String token) {
-        final File dir = new File(token);
+    /**
+     * Searches the given <code>file</code> recursively. This is
+     * accomplished based on the type of the file.
+     * <p>
+     * If it is a directory, {@link org.obicere.cc.util.FileLoader#lookInDirectory(String,
+     * java.io.File)} is called to recursively expand on the directories.
+     * <p>
+     * If it is an archive, {@link org.obicere.cc.util.FileLoader#lookInArchive(java.io.File)}
+     * is called to extract the archive and enumerate its elements. Then a
+     * recursive directory search takes over, but modified from the
+     * standard search, especially attuned for archives.
+     *
+     * @param file The file to start searching in.
+     */
+
+    private void search(final String file) {
+        final File dir = new File(file);
         if (dir.isDirectory()) {
             lookInDirectory("", dir);
         }
@@ -245,7 +377,7 @@ public class FileLoader {
                 if (IGNORED_JARS.contains(name)) {
                     return;
                 }
-                this.lookInArchive(dir);
+                lookInArchive(dir);
             }
         }
     }

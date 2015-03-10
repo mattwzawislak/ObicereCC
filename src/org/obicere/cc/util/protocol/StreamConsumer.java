@@ -896,6 +896,20 @@ public class StreamConsumer {
         return doubleC.readArray();
     }
 
+    /**
+     * Checks to see if there is a next available byte in the buffer. This
+     * can be used when buffering from a stream to ensure that errors are
+     * not thrown when data is not yet available. This checks the next
+     * available identifier to accomplish this task. The way this is done
+     * is by ensuring the next identifier, if there is one available is not
+     * equal to <code>0</code>. No identifier should match this preset
+     * value.
+     *
+     * @return <code>true</code> if and only if there is an identifier
+     * ready in the buffer.
+     * @see org.obicere.cc.util.protocol.BasicProtocol
+     */
+
     public synchronized boolean hasNext() {
         return buffer.peek() != 0;
     }

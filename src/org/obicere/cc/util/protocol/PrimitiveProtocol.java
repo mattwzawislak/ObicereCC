@@ -47,8 +47,8 @@ import java.util.Objects;
  * As of result, checking the state of individual bytes in the buffer can
  * be complicated. Since the buffer also has a limited size of 128MB, then
  * memory management might be of concern. To handle this, corresponding
- * methods have been added to free memory: {@link StreamConsumer#shouldClear()}
- * and {@link StreamConsumer#clearRead()}. Which check to see the size of
+ * methods have been added to free memory: {@link PrimitiveProtocol#shouldClear()}
+ * and {@link PrimitiveProtocol#clearRead()}. Which check to see the size of
  * unused bytes and to clear the unused bytes respectively.
  * <p>
  * Due to the limited set of data types, the header for each type only has
@@ -132,7 +132,7 @@ import java.util.Objects;
  *
  * @author Obicere
  */
-public class StreamConsumer {
+public class PrimitiveProtocol {
 
     /**
      * Used to define the buffer size of an identifier flag. Revision 1.0
@@ -241,7 +241,7 @@ public class StreamConsumer {
      * @see org.obicere.cc.util.protocol.Buffer#DEFAULT_SIZE
      * @see org.obicere.cc.util.protocol.Buffer#DEFAULT_GROWTH
      */
-    protected StreamConsumer() {
+    protected PrimitiveProtocol() {
         this(Buffer.DEFAULT_SIZE, Buffer.DEFAULT_GROWTH);
     }
 
@@ -257,7 +257,7 @@ public class StreamConsumer {
      * @see org.obicere.cc.util.protocol.Buffer#DEFAULT_GROWTH
      */
 
-    protected StreamConsumer(final int initialLength) {
+    protected PrimitiveProtocol(final int initialLength) {
         this(initialLength, Buffer.DEFAULT_GROWTH);
     }
 
@@ -273,7 +273,7 @@ public class StreamConsumer {
      *                      growth</tt>
      */
 
-    protected StreamConsumer(final int initialLength, final float growth) {
+    protected PrimitiveProtocol(final int initialLength, final float growth) {
         this.buffer = new Buffer(initialLength, growth);
 
         this.booleanC = new BooleanConsumer(buffer);
@@ -802,7 +802,7 @@ public class StreamConsumer {
 
     /**
      * Reads a primitive <code>boolean</code> array from the buffer. This
-     * is effectively the same as calling {@link org.obicere.cc.util.protocol.StreamConsumer#readArray(Class)}
+     * is effectively the same as calling {@link PrimitiveProtocol#readArray(Class)}
      * with the <code>boolean[].class</code> argument passed.
      *
      * @return The read boolean array.
@@ -814,7 +814,7 @@ public class StreamConsumer {
 
     /**
      * Reads a primitive <code>byte</code> array from the buffer. This is
-     * effectively the same as calling {@link org.obicere.cc.util.protocol.StreamConsumer#readArray(Class)}
+     * effectively the same as calling {@link PrimitiveProtocol#readArray(Class)}
      * with the <code>byte[].class</code> argument passed.
      *
      * @return The read byte array.
@@ -826,7 +826,7 @@ public class StreamConsumer {
 
     /**
      * Reads a primitive <code>short</code> array from the buffer. This is
-     * effectively the same as calling {@link org.obicere.cc.util.protocol.StreamConsumer#readArray(Class)}
+     * effectively the same as calling {@link PrimitiveProtocol#readArray(Class)}
      * with the <code>short[].class</code> argument passed.
      *
      * @return The read short array.
@@ -838,7 +838,7 @@ public class StreamConsumer {
 
     /**
      * Reads a primitive <code>char</code> array from the buffer. This is
-     * effectively the same as calling {@link org.obicere.cc.util.protocol.StreamConsumer#readArray(Class)}
+     * effectively the same as calling {@link PrimitiveProtocol#readArray(Class)}
      * with the <code>char[].class</code> argument passed.
      *
      * @return The read char array.
@@ -850,7 +850,7 @@ public class StreamConsumer {
 
     /**
      * Reads a primitive <code>int</code> array from the buffer. This is
-     * effectively the same as calling {@link org.obicere.cc.util.protocol.StreamConsumer#readArray(Class)}
+     * effectively the same as calling {@link PrimitiveProtocol#readArray(Class)}
      * with the <code>int[].class</code> argument passed.
      *
      * @return The read int array.
@@ -862,7 +862,7 @@ public class StreamConsumer {
 
     /**
      * Reads a primitive <code>float</code> array from the buffer. This is
-     * effectively the same as calling {@link org.obicere.cc.util.protocol.StreamConsumer#readArray(Class)}
+     * effectively the same as calling {@link PrimitiveProtocol#readArray(Class)}
      * with the <code>float[].class</code> argument passed.
      *
      * @return The read float array.
@@ -874,7 +874,7 @@ public class StreamConsumer {
 
     /**
      * Reads a primitive <code>long</code> array from the buffer. This is
-     * effectively the same as calling {@link org.obicere.cc.util.protocol.StreamConsumer#readArray(Class)}
+     * effectively the same as calling {@link PrimitiveProtocol#readArray(Class)}
      * with the <code>long[].class</code> argument passed.
      *
      * @return The read long array.
@@ -886,7 +886,7 @@ public class StreamConsumer {
 
     /**
      * Reads a primitive <code>boolean</code> array from the buffer. This
-     * is effectively the same as calling {@link org.obicere.cc.util.protocol.StreamConsumer#readArray(Class)}
+     * is effectively the same as calling {@link PrimitiveProtocol#readArray(Class)}
      * with the <code>boolean[].class</code> argument passed.
      *
      * @return The read boolean array.
@@ -897,58 +897,169 @@ public class StreamConsumer {
     }
 
     /**
-     * Checks to see if there is a next available byte in the buffer. This
-     * can be used when buffering from a stream to ensure that errors are
-     * not thrown when data is not yet available. This checks the next
-     * available identifier to accomplish this task. The way this is done
-     * is by ensuring the next identifier, if there is one available is not
-     * equal to <code>0</code>. No identifier should match this preset
-     * value.
+     * Checks to see if there is a next available identifier in the buffer.
+     * This can be used when buffering from a stream to ensure that errors
+     * are not thrown when data is not yet available. Data should only be
+     * written in whole chunks, so a single identifier <i>should</i> mark
+     * the presence of a following object. This checks the next available
+     * identifier to accomplish this task. The way this is done is by
+     * ensuring the next identifier, if there is one available is not equal
+     * to <code>0</code>. No identifier should match this preset value.
      *
      * @return <code>true</code> if and only if there is an identifier
      * ready in the buffer.
-     * @see org.obicere.cc.util.protocol.BasicProtocol
+     * @see PrimitiveSocketProtocol
      */
 
     public synchronized boolean hasNext() {
         return buffer.peek() != 0;
     }
 
+    /**
+     * Checks to see if the next identifier signifies the presence of a
+     * <code>boolean</code>. This does not guarantee the existence of the
+     * <code>boolean</code> data. This will not move forward the reading
+     * index.
+     *
+     * @return <code>true</code> if and only if the next identifier is a
+     * <code>boolean</code> identifier.
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_BOOLEAN
+     */
+
     public boolean hasBoolean() {
         return buffer.peek() == AbstractConsumer.IDENTIFIER_BOOLEAN;
     }
+
+    /**
+     * Checks to see if the next identifier signifies the presence of a
+     * <code>byte</code>. This does not guarantee the existence of the
+     * <code>byte</code> data. This will not move forward the reading
+     * index.
+     *
+     * @return <code>true</code> if and only if the next identifier is a
+     * <code>byte</code> identifier.
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_BYTE
+     */
 
     public boolean hasByte() {
         return buffer.peek() == AbstractConsumer.IDENTIFIER_BYTE;
     }
 
+    /**
+     * Checks to see if the next identifier signifies the presence of a
+     * <code>short</code>. This does not guarantee the existence of the
+     * <code>short</code> data. This will not move forward the reading
+     * index.
+     *
+     * @return <code>true</code> if and only if the next identifier is a
+     * <code>short</code> identifier.
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_SHORT
+     */
+
     public boolean hasShort() {
         return buffer.peek() == AbstractConsumer.IDENTIFIER_SHORT;
     }
+
+    /**
+     * Checks to see if the next identifier signifies the presence of a
+     * <code>char</code>. This does not guarantee the existence of the
+     * <code>char</code> data. This will not move forward the reading
+     * index.
+     *
+     * @return <code>true</code> if and only if the next identifier is a
+     * <code>char</code> identifier.
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_CHAR
+     */
 
     public boolean hasChar() {
         return buffer.peek() == AbstractConsumer.IDENTIFIER_CHAR;
     }
 
+    /**
+     * Checks to see if the next identifier signifies the presence of a
+     * <code>int</code>. This does not guarantee the existence of the
+     * <code>int</code> data. This will not move forward the reading
+     * index.
+     *
+     * @return <code>true</code> if and only if the next identifier is a
+     * <code>int</code> identifier.
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_INT
+     */
+
     public boolean hasInt() {
         return buffer.peek() == AbstractConsumer.IDENTIFIER_INT;
     }
+
+    /**
+     * Checks to see if the next identifier signifies the presence of a
+     * <code>float</code>. This does not guarantee the existence of the
+     * <code>float</code> data. This will not move forward the reading
+     * index.
+     *
+     * @return <code>true</code> if and only if the next identifier is a
+     * <code>float</code> identifier.
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_FLOAT
+     */
 
     public boolean hasFloat() {
         return buffer.peek() == AbstractConsumer.IDENTIFIER_FLOAT;
     }
 
+    /**
+     * Checks to see if the next identifier signifies the presence of a
+     * <code>long</code>. This does not guarantee the existence of the
+     * <code>long</code> data. This will not move forward the reading
+     * index.
+     *
+     * @return <code>true</code> if and only if the next identifier is a
+     * <code>long</code> identifier.
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_LONG
+     */
+
     public boolean hasLong() {
         return buffer.peek() == AbstractConsumer.IDENTIFIER_LONG;
     }
+
+    /**
+     * Checks to see if the next identifier signifies the presence of a
+     * <code>double</code>. This does not guarantee the existence of the
+     * <code>double</code> data. This will not move forward the reading
+     * index.
+     *
+     * @return <code>true</code> if and only if the next identifier is a
+     * <code>double</code> identifier.
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_DOUBLE
+     */
 
     public boolean hasDouble() {
         return buffer.peek() == AbstractConsumer.IDENTIFIER_DOUBLE;
     }
 
+    /**
+     * Checks to see if the next identifier signifies the presence of a
+     * <code>String</code>. This does not guarantee the existence of the
+     * <code>String</code> data. This will not move forward the reading
+     * index.
+     *
+     * @return <code>true</code> if and only if the next identifier is a
+     * <code>String</code> identifier.
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_STRING
+     */
+
     public boolean hasString() {
         return buffer.peek() == AbstractConsumer.IDENTIFIER_STRING;
     }
+
+    /**
+     * Checks to see if the next identifier signifies the presence of a
+     * <code>array</code>. This does not guarantee the existence of the
+     * <code>array</code> data. This will not move forward the reading
+     * index.
+     *
+     * @return <code>true</code> if and only if the next identifier is a
+     * <code>array</code> identifier.
+     * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_ARRAY
+     */
 
     public boolean hasArray() {
         return buffer.peek() == AbstractConsumer.IDENTIFIER_ARRAY;
@@ -1025,8 +1136,9 @@ public class StreamConsumer {
                 return stringC.readRaw();
             case AbstractConsumer.IDENTIFIER_ARRAY:
                 return readArray(component);
+            default:
+                throw new IllegalArgumentException("Unsupported identifier: " + id);
         }
-        return null;
     }
 
     private void writeFor(final Class<?> cls, final Object obj) {

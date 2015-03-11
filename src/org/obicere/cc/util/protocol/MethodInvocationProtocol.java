@@ -28,7 +28,7 @@ import java.util.Objects;
  *
  * @author Obicere
  */
-public class MethodInvocationProtocol extends BasicProtocol {
+public class MethodInvocationProtocol extends PrimitiveSocketProtocol {
 
     public MethodInvocationProtocol(final Socket socket, final boolean autoFlush) throws IOException {
         super(socket, autoFlush);
@@ -42,7 +42,7 @@ public class MethodInvocationProtocol extends BasicProtocol {
         Objects.requireNonNull(methodName);
         Objects.requireNonNull(returnClass);
         Objects.requireNonNull(paramClasses);
-        streamConsumer.write(methodName);
+        protocol.write(methodName);
         writeClass(returnClass);
         for (final Class<?> param : paramClasses) {
             writeClass(param);
@@ -50,20 +50,20 @@ public class MethodInvocationProtocol extends BasicProtocol {
     }
 
     private void writeClass(final Class<?> cls) {
-        final int id = streamConsumer.identifierFor(cls);
+        final int id = protocol.identifierFor(cls);
         if (id == -1) {
             throw new IllegalArgumentException("No valid identifier for class: " + cls + " found.");
         }
-        streamConsumer.writeIdentifier(id);
-        streamConsumer.writeIdentifier(dimension(cls));
+        protocol.writeIdentifier(id);
+        protocol.writeIdentifier(dimension(cls));
     }
 
     public void writeCases(final Case[] cases) {
         Objects.requireNonNull(cases);
         final int length = cases.length;
-        streamConsumer.writeLength(length);
+        protocol.writeLength(length);
         for (final Case c : cases) {
-            streamConsumer.write(c.getParameters());
+            protocol.write(c.getParameters());
         }
     }
 

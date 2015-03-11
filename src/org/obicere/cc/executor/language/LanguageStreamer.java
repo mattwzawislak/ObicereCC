@@ -7,7 +7,7 @@ import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.Runner;
 import org.obicere.cc.util.IOUtils;
-import org.obicere.cc.util.protocol.BasicProtocol;
+import org.obicere.cc.util.protocol.PrimitiveSocketProtocol;
 import org.obicere.cc.util.protocol.MethodInvocationProtocol;
 
 import java.io.File;
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Sets up the process for connecting the {@link org.obicere.cc.executor.language.Language}'s
  * Java implementation to its respective language implementation. This will
- * utilize the {@link org.obicere.cc.util.protocol.BasicProtocol} to
+ * utilize the {@link org.obicere.cc.util.protocol.PrimitiveSocketProtocol} to
  * transfer data from the program to the invoker for the language.
  * <p>
  * The invoker is a program that language-specific and usually written in
@@ -113,7 +113,7 @@ public class LanguageStreamer {
      * @see #RESPONSE_WAIT
      */
 
-    public void waitForResponse(final BasicProtocol protocol) throws IOException {
+    public void waitForResponse(final PrimitiveSocketProtocol protocol) throws IOException {
         final long start = System.currentTimeMillis();
         while (!protocol.hasNext()) {
             if (System.currentTimeMillis() - start > RESPONSE_WAIT) {
@@ -186,7 +186,7 @@ public class LanguageStreamer {
      * @throws IOException
      */
 
-    public Result[] getResults(final Case[] cases, final BasicProtocol protocol) throws IOException {
+    public Result[] getResults(final Case[] cases, final PrimitiveSocketProtocol protocol) throws IOException {
         final int length = cases.length;
 
         try {
@@ -217,7 +217,7 @@ public class LanguageStreamer {
      * @return The error if present, otherwise an empty array.
      */
 
-    public String[] readError(final BasicProtocol protocol) {
+    public String[] readError(final PrimitiveSocketProtocol protocol) {
         final List<String> error = new LinkedList<>();
         while (protocol.hasString()) {
             error.add(protocol.readString());

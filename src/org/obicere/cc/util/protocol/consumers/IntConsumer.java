@@ -26,6 +26,10 @@ public class IntConsumer extends AbstractConsumer {
 
     public int[] readArray() {
         checkArray();
+        return readRawArray();
+    }
+
+    public int[] readRawArray() {
         final int length = readRawInt();
         final int[] array = new int[length];
         for (int i = 0; i < length; i++) {

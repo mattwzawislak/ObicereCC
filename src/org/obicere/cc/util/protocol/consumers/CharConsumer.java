@@ -26,6 +26,10 @@ public class CharConsumer extends AbstractConsumer {
 
     public char[] readArray() {
         checkArray();
+        return readRawArray();
+    }
+
+    public char[] readRawArray() {
         final int length = readRawInt();
         final char[] array = new char[length];
         for (int i = 0; i < length; i++) {

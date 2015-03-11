@@ -27,6 +27,10 @@ public class ShortConsumer extends AbstractConsumer {
 
     public short[] readArray() {
         checkArray();
+        return readRawArray();
+    }
+
+    public short[] readRawArray() {
         final int length = readRawInt();
         final short[] array = new short[length];
         for (int i = 0; i < length; i++) {

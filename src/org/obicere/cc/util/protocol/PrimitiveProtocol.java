@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
+import java.util.InputMismatchException;
 import java.util.Objects;
 
 /**
@@ -48,8 +49,8 @@ import java.util.Objects;
  * be complicated. Since the buffer also has a limited size of 128MB, then
  * memory management might be of concern. To handle this, corresponding
  * methods have been added to free memory: {@link PrimitiveProtocol#shouldClear()}
- * and {@link PrimitiveProtocol#clearRead()}. Which check to see the size of
- * unused bytes and to clear the unused bytes respectively.
+ * and {@link PrimitiveProtocol#clearRead()}. Which check to see the size
+ * of unused bytes and to clear the unused bytes respectively.
  * <p>
  * Due to the limited set of data types, the header for each type only has
  * to be 1 byte in size. This helps reduce packet size compared to other
@@ -235,13 +236,34 @@ public class PrimitiveProtocol {
     private final Buffer buffer;
 
     /**
+     * Maximum size of a string available for input. If the length of the
+     * string exceeds this value, either another more suitable data
+     * structure, a buffered system or a shorter string is in order. This
+     * is defined as a 'magical constant', where this is the maximum size
+     * of the buffer (128MB) with room for an identifier.
+     * <p>
+     * Therefore, this value is then equal to the amount of bytes
+     * available:
+     * <p>
+     * <code>128 * 1024 * 1024 = 128 <<<< 20</code>
+     * <p>
+     * Divided by the bytes per character:
+     * <p>
+     * <code>(128 <<<< 20) / 2 = (64 <<<< 20)</code>
+     * <p>
+     * With room for an identifier and 1 extra byte left over.
+     */
+
+    private static final int MAX_STRING_LENGTH = (64 << 20) - 1;
+
+    /**
      * Constructs a new <tt>StreamConsumer</tt> with the default parameters
      * assigned to the basis {@link org.obicere.cc.util.protocol.Buffer}.
      *
      * @see org.obicere.cc.util.protocol.Buffer#DEFAULT_SIZE
      * @see org.obicere.cc.util.protocol.Buffer#DEFAULT_GROWTH
      */
-    protected PrimitiveProtocol() {
+    public PrimitiveProtocol() {
         this(Buffer.DEFAULT_SIZE, Buffer.DEFAULT_GROWTH);
     }
 
@@ -257,7 +279,7 @@ public class PrimitiveProtocol {
      * @see org.obicere.cc.util.protocol.Buffer#DEFAULT_GROWTH
      */
 
-    protected PrimitiveProtocol(final int initialLength) {
+    public PrimitiveProtocol(final int initialLength) {
         this(initialLength, Buffer.DEFAULT_GROWTH);
     }
 
@@ -273,7 +295,7 @@ public class PrimitiveProtocol {
      *                      growth</tt>
      */
 
-    protected PrimitiveProtocol(final int initialLength, final float growth) {
+    public PrimitiveProtocol(final int initialLength, final float growth) {
         this.buffer = new Buffer(initialLength, growth);
 
         this.booleanC = new BooleanConsumer(buffer);
@@ -533,14 +555,21 @@ public class PrimitiveProtocol {
      * Support for writing <code>null</code> strings is not supported.
      *
      * @param value The value to write.
-     * @throws java.lang.NullPointerException If the given <tt>String</tt>
-     *                                        is <code>null</code>.
+     * @throws java.lang.NullPointerException if the value of the string is
+     *                                        <code>null</code>. Null
+     *                                        values are not supported, and
+     *                                        instead should be replaced
+     *                                        with the string representation
+     *                                        or the empty string.
      * @see org.obicere.cc.util.protocol.consumers.StringConsumer
      * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_STRING
      */
 
     public synchronized void write(final String value) {
-        stringC.write(value);
+        Objects.requireNonNull(value);
+        if (value.length() > MAX_STRING_LENGTH) {
+            stringC.write(value);
+        }
     }
 
     /**
@@ -1065,13 +1094,89 @@ public class PrimitiveProtocol {
         return buffer.peek() == AbstractConsumer.IDENTIFIER_ARRAY;
     }
 
+    /**
+     * Allows writing of {@link Object} data types, including arrays,
+     * {@link java.lang.String}s and wrapper classes. Should the type be
+     * generic, an {@link java.lang.Object} type can be used, even though
+     * it is not supported by this protocol. As long as each component
+     * contained in the array is supported.
+     * <p>
+     * For example, say we have a class <code>Foo</code>:
+     * <p>
+     * <code>
+     * <pre>
+     * public class Foo {
+     *     int num;
+     *     String value;
+     *
+     *     public int getNum(){
+     *         return num;
+     *     }
+     *
+     *     public String getValue(){
+     *         return value;
+     *     }
+     * }
+     * </pre>
+     * </code>
+     * <p>
+     * This protocol will <b>not</b> support the writing of this object,
+     * however it will support the fields within <code>Foo</code>.
+     * Therefore those individual fields can be passed representing
+     * <code>Foo</code>:
+     * <p>
+     * <code>
+     * <pre>
+     * Foo foo = ...;
+     * PrimitiveProtocol protocol = ...;
+     *
+     * protocol.write(new Object[]{foo.getNum(), foo.getValue()});
+     * </pre>
+     * </code>
+     * <p>
+     * This allows persistence of objects through this protocol, so long as
+     * they can easily be represented through the supported data types.
+     * However, all serializing must be handled by the caller and the
+     * receiver.
+     * <p>
+     * That being said, the format for writing an array in this case
+     * deviates from the standard primitive approach. Whereas in the
+     * primitive arrays the type is asserted, there is no assertion about
+     * the type here. Therefore each element must specify its own type,
+     * increasing buffer size.
+     * <p>
+     * Therefore, if the size of a buffer is an issue, usage of the
+     * primitive types is preferred. Since using the wrapper classes will
+     * use this method and therefore pack extra data.
+     *
+     * @param value The array to write.
+     * @param <T>   The component type of the array to write. This can be
+     *              arrays, {@link String}s or a wrapper class. All
+     *              primitive array writing should be done through the
+     *              respective methods.
+     * @throws java.lang.NullPointerException if the given array is
+     *                                        <code>null</code> or elements
+     *                                        within the array are
+     *                                        <code>null</code>. This
+     *                                        protocol does not support
+     *                                        <code>null</code> types.
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#write(boolean[])
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#write(byte[])
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#write(short[])
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#write(char[])
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#write(int[])
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#write(float[])
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#write(long[])
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#write(double[])
+     */
+
     public synchronized <T> void write(final T[] value) {
         Objects.requireNonNull(value);
         final int length = value.length;
         writeIdentifier(AbstractConsumer.IDENTIFIER_ARRAY);
         intC.writeRaw(length);
         for (final Object t : value) {
-            final Class cls = t.getClass();
+            final Class<?> cls = t.getClass();
             final int identifier = identifierFor(t.getClass());
             final int size = sizeFor(cls);
             if (identifier == -1 || size == -1) {
@@ -1082,39 +1187,133 @@ public class PrimitiveProtocol {
         }
     }
 
+    /**
+     * Attempts to read an array from the buffer by the specified type. The
+     * specification of the type is useful for two purposes:
+     * <pre>
+     * 1) Allows the primitive array types to handle the optimized arrays.
+     * 2) Casting by the caller will already be specified, this handles
+     *    the cast instead and can assert type safety.
+     * </pre>
+     * Point <code>1)</code> also highlights a key component here about the
+     * type safety of primitive arrays. Since processing is handled off to
+     * them for this operation, the casting to the array wrapper classes
+     * will not work. For example, <code>int[]</code> is not directly
+     * assignable to <code>Integer[]</code>. And also due to the nature of
+     * Java generics, the array type can't just be used for the primitive
+     * types, since the component type needs to also be checked for nested
+     * arrays. This would also lead to an issue with the primitive cases.
+     * <p>
+     * Lastly, point <code>2)</code> is just for the sake of simplicity. It
+     * is the same reason the Java {@link java.util.List} allows specifying
+     * the type of the array to remove the cast. Passing the type checking
+     * here ensures that type checking need not be present in every usage.
+     * <p>
+     * Say we have <code>int[][]</code> array that was written to the
+     * protocol. To access this array, one must call this method - since
+     * <code>int[].class</code> is directly assignable from
+     * <code>Object</code>. <code>
+     * <pre>
+     * PrimitiveProtocol protocol = ...;
+     *
+     * int[][] array = protocol.readArray(int[][].class);
+     * </pre>
+     * </code>
+     * <p>
+     * Note that the type is required, so that type safety can be assured
+     * and to avoid the cast: <code>
+     * <pre>
+     * PrimitiveProtocol protocol = ...;
+     *
+     * {@literal @}SuppressWarnings("unchecked")
+     * int[][] array = (int[][]) protocol.readArray();
+     * </pre>
+     * </code>
+     * <p>
+     * For the sake of simplicity, the first example was the chosen path.
+     *
+     * @param cls The class instance of the array type to read. This will
+     *            be used for checking the component type and performing
+     *            proper casting.
+     * @param <T> The array type to read. This must be of type array. This
+     *            will support the primitive array types as well as the
+     *            wrapper, <code>String</code> and array types.
+     * @param <S> The component class of type <code>T</code>.
+     * @return The read array of type <code>T</code>.
+     * @throws java.lang.IllegalArgumentException if <code>T</code> is not
+     *                                            an array type.
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#readBooleanArray()
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#readByteArray()
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#readShortArray()
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#readCharArray()
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#readIntArray()
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#readFloatArray()
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#readLongArray()
+     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#readDoubleArray()
+     */
+
     @SuppressWarnings("unchecked")
     // This is all checked - not really though
     public synchronized <T, S> T readArray(final Class<T> cls) {
+        if (!hasArray()) {
+            throw new InputMismatchException("The next identifier is not for an array.");
+        }
+        nextIdentifier(); // array identifier.
         final Class<S> component = (Class<S>) cls.getComponentType();
+        if (component == null) {
+            throw new IllegalArgumentException("Type class must be an array.");
+        }
         if (component.isPrimitive()) {
             switch (component.getCanonicalName()) {
                 case "boolean":
-                    return (T) readBooleanArray();
+                    return (T) booleanC.readRawArray();
                 case "byte":
-                    return (T) readByteArray();
+                    return (T) byteC.readRawArray();
                 case "short":
-                    return (T) readShortArray();
+                    return (T) shortC.readRawArray();
                 case "char":
-                    return (T) readCharArray();
+                    return (T) charC.readRawArray();
                 case "int":
-                    return (T) readIntArray();
+                    return (T) intC.readRawArray();
                 case "float":
-                    return (T) readFloatArray();
+                    return (T) floatC.readRawArray();
                 case "long":
-                    return (T) readLongArray();
+                    return (T) longC.readRawArray();
                 case "double":
-                    return (T) readDoubleArray();
+                    return (T) doubleC.readRawArray();
             }
         }
         final int length = intC.readRaw();
         final S[] array = (S[]) Array.newInstance(component, length);
         for (int i = 0; i < length; i++) {
-            array[i] = (S) readMethodFor(component, nextIdentifier());
+            array[i] = (S) readMethodFor(component, nextIdentifier()); // Peek the next identifier
         }
+        // T <-> S[]
         return (T) array;
     }
 
-    private <T> Object readMethodFor(final Class<T> component, final int id) {
+    /**
+     * Provides the read method for the given class and the given
+     * identifier. The class is only needed during the operation of nested
+     * arrays. This is because the type of array needs to be referenced for
+     * a recursive load.
+     * <p>
+     * This assumes the identifier has already been read, since it is
+     * present in the method parameters. Therefore the raw methods will be
+     * used for parsing an array. This includes the array and type
+     * methods.
+     *
+     * @param component The component of the object - used only during an
+     *                  array read.
+     * @param id        The identifier of the object to read. This should
+     *                  have already been read.
+     * @param <S>       The type of the object to read. Should
+     *                  <code>S</code> be an array, then a recursive load
+     *                  is needed and therefore the type is needed.
+     * @return The read object based off of the identifier.
+     */
+
+    private <S> Object readMethodFor(final Class<S> component, final int id) {
         switch (id) {
             case AbstractConsumer.IDENTIFIER_BOOLEAN:
                 return booleanC.readRaw();
@@ -1140,6 +1339,34 @@ public class PrimitiveProtocol {
                 throw new IllegalArgumentException("Unsupported identifier: " + id);
         }
     }
+
+    /**
+     * Writes the specific object to the protocol. This should ideally only
+     * be used on arrays and as of <code>v1.0</code> is. But, support for
+     * the primitive types has already been added due to simplicity.
+     * <p>
+     * This will handle both arrays and standard types. This will delegate
+     * to the according write method. Either for the primitive types or the
+     * array types, as both can be accessed during the recursive writing of
+     * an array.
+     * <p>
+     * The actual definition of the class is not needed, but just examined.
+     * This is used to decide whether or not additional array calls are
+     * needed or we are just writing an object. Ideally the non-array
+     * methods will not be accessed here, but are added in the case of
+     * future changes or an unexpected fall-through.
+     *
+     * @param cls The class of the object to write.
+     * @param obj The object to write.
+     * @throws java.lang.AssertionError       if the given primitive array
+     *                                        type or primitive was
+     *                                        incorrectly parsed or failed
+     *                                        to write.
+     * @throws java.lang.NullPointerException if <code>obj</code> is
+     *                                        <code>null</code> or the
+     *                                        given <code>cls</code> is
+     *                                        <code>null</code>.
+     */
 
     private void writeFor(final Class<?> cls, final Object obj) {
         Objects.requireNonNull(cls);
@@ -1172,56 +1399,69 @@ public class PrimitiveProtocol {
                     case "double":
                         write((double[]) obj);
                         return;
+                    default:
+                        throw new AssertionError("Failed to properly write the primitive array.");
                 }
             } else {
                 write((Object[]) obj);
             }
-            return;
+        } else {
+            switch (cls.getCanonicalName()) {
+                case "boolean":
+                case "java.lang.Boolean":
+                    booleanC.write((boolean) obj);
+                    return;
+
+                case "byte":
+                case "java.lang.Byte":
+                    byteC.write((byte) obj);
+                    return;
+
+                case "short":
+                case "java.lang.Short":
+                    shortC.write((short) obj);
+
+                case "java.lang.Character":
+                case "char":
+                    charC.write((char) obj);
+                    return;
+
+                case "int":
+                case "java.lang.Integer":
+                    intC.write((int) obj);
+                    return;
+
+                case "long":
+                case "java.lang.Long":
+                    longC.write((long) obj);
+                    return;
+
+                case "float":
+                case "java.lang.Float":
+                    floatC.write((float) obj);
+                    return;
+
+                case "double":
+                case "java.lang.Double":
+                    doubleC.write((double) obj);
+                    return;
+
+                case "java.lang.String":
+                    stringC.write((String) obj);
+                    return;
+                default:
+                    throw new AssertionError("Could not write object for class: " + cls);
+            }
         }
-        switch (cls.getCanonicalName()) {
-            case "boolean":
-            case "java.lang.Boolean":
-                booleanC.writeRaw((boolean) obj);
-                return;
+    }
 
-            case "byte":
-            case "java.lang.Byte":
-                byteC.writeRaw((byte) obj);
-                return;
-
-            case "short":
-            case "char":
-            case "java.lang.Short":
-            case "java.lang.Character":
-                shortC.writeRaw((short) obj);
-                return;
-
-            case "int":
-            case "java.lang.Integer":
-                intC.writeRaw((int) obj);
-                return;
-
-            case "long":
-            case "java.lang.Long":
-                longC.write((long) obj);
-                return;
-
-            case "float":
-            case "java.lang.Float":
-                floatC.write((float) obj);
-                return;
-
-            case "double":
-            case "java.lang.Double":
-                doubleC.write((double) obj);
-                return;
-
-            case "java.lang.String":
-                stringC.writeRaw((String) obj);
-                return;
-            default:
-                throw new AssertionError("Could not write object for class: " + cls);
+    protected int componentIdentifier(final Class<?> cls) {
+        Class<?> comp = cls;
+        Class<?> tmp;
+        while ((tmp = comp.getComponentType()) != null) {
+            comp = tmp;
         }
+        return identifierFor(comp);
     }
 
     protected int identifierFor(final Class<?> cls) {

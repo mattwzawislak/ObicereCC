@@ -27,6 +27,10 @@ public class ByteConsumer extends AbstractConsumer {
 
     public byte[] readArray() {
         checkArray();
+        return readRawArray();
+    }
+
+    public byte[] readRawArray() {
         final int length = readRawInt();
         final byte[] array = new byte[length];
         for (int i = 0; i < length; i++) {

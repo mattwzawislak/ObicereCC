@@ -27,6 +27,10 @@ public class BooleanConsumer extends AbstractConsumer {
 
     public boolean[] readArray() {
         checkArray();
+        return readRawArray();
+    }
+
+    public boolean[] readRawArray() {
         final int length = readRawInt();
         final boolean[] array = new boolean[length];
         for (int i = 0; i < length; i++) {

@@ -3,6 +3,7 @@ package org.obicere.cc.util.protocol;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 /**
  * @author Obicere
@@ -111,9 +112,9 @@ public class Buffer {
         final int available = stream.available();
         if (available != 0) {
             final byte[] buffer = new byte[available];
-            stream.read(buffer);
-            for (final byte b : buffer) {
-                write(b);
+            final int read = stream.read(buffer);
+            for (int i = 0; i < read; i++) {
+                write(buffer[i]);
             }
         }
     }

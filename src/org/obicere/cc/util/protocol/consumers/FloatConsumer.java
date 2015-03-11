@@ -26,6 +26,10 @@ public class FloatConsumer extends AbstractConsumer {
 
     public float[] readArray() {
         checkArray();
+        return readRawArray();
+    }
+
+    public float[] readRawArray() {
         final int length = readRawInt();
         final float[] array = new float[length];
         for (int i = 0; i < length; i++) {

@@ -26,6 +26,10 @@ public class LongConsumer extends AbstractConsumer {
 
     public long[] readArray() {
         checkArray();
+        return readRawArray();
+    }
+
+    public long[] readRawArray() {
         final int length = readRawInt();
         final long[] array = new long[length];
         for (int i = 0; i < length; i++) {

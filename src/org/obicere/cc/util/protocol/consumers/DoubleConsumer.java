@@ -26,6 +26,10 @@ public class DoubleConsumer extends AbstractConsumer {
 
     public double[] readArray() {
         checkArray();
+        return readRawArray();
+    }
+
+    public double[] readRawArray() {
         final int length = readRawInt();
         final double[] array = new double[length];
         for (int i = 0; i < length; i++) {

@@ -1,6 +1,6 @@
 package org.obicere.cc.util.protocol.consumers;
 
-import org.obicere.cc.util.protocol.Buffer;
+import org.obicere.cc.util.protocol.ProtocolBuffer;
 
 import java.util.InputMismatchException;
 import java.util.Objects;
@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public class BooleanConsumer extends AbstractConsumer {
 
-    public BooleanConsumer(final Buffer buffer) {
+    public BooleanConsumer(final ProtocolBuffer buffer) {
         super(buffer);
     }
 

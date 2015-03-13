@@ -1,6 +1,6 @@
 package org.obicere.cc.util.protocol.consumers;
 
-import org.obicere.cc.util.protocol.Buffer;
+import org.obicere.cc.util.protocol.ProtocolBuffer;
 
 import java.util.InputMismatchException;
 import java.util.Objects;
@@ -9,7 +9,7 @@ import java.util.Objects;
  * @author Obicere
  */
 public class StringConsumer extends AbstractConsumer {
-    public StringConsumer(final Buffer buffer) {
+    public StringConsumer(final ProtocolBuffer buffer) {
         super(buffer);
     }
 

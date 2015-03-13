@@ -21,8 +21,8 @@ import java.util.List;
 /**
  * Sets up the process for connecting the {@link org.obicere.cc.executor.language.Language}'s
  * Java implementation to its respective language implementation. This will
- * utilize the {@link org.obicere.cc.util.protocol.PrimitiveSocketProtocol} to
- * transfer data from the program to the invoker for the language.
+ * utilize the {@link org.obicere.cc.util.protocol.PrimitiveSocketProtocol}
+ * to transfer data from the program to the invoker for the language.
  * <p>
  * The invoker is a program that language-specific and usually written in
  * the target language. It receives the server information through its
@@ -149,7 +149,7 @@ public class LanguageStreamer {
      * @param protocol The protocol to write the invocation instructions
      *                 for.
      * @see org.obicere.cc.util.protocol.MethodInvocationProtocol#writeInvocation(String,
-     * Class, Class[])
+     * String, Class, Class[])
      * @see org.obicere.cc.util.protocol.MethodInvocationProtocol#writeCases(org.obicere.cc.executor.Case[])
      */
 
@@ -158,6 +158,7 @@ public class LanguageStreamer {
         final Parameter[] params = runner.getParameters();
         final int paramLength = params.length;
 
+        final String className = project.getName();
         final String methodName = runner.getMethodName();
         final Class<?> returnClass = runner.getReturnType();
         final Class<?>[] paramClasses = new Class<?>[paramLength];
@@ -165,7 +166,7 @@ public class LanguageStreamer {
             paramClasses[i] = params[i].getType();
         }
 
-        protocol.writeInvocation(methodName, returnClass, paramClasses);
+        protocol.writeInvocation(className, methodName, returnClass, paramClasses);
         protocol.writeCases(runner.getCases());
     }
 

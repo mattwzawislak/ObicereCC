@@ -1,6 +1,6 @@
 package org.obicere.cc.util.protocol.consumers;
 
-import org.obicere.cc.util.protocol.Buffer;
+import org.obicere.cc.util.protocol.ProtocolBuffer;
 
 import java.util.InputMismatchException;
 
@@ -101,9 +101,9 @@ public abstract class AbstractConsumer {
      */
     public static final int IDENTIFIER_ARRAY = 0x10;
 
-    protected final Buffer buffer;
+    protected final ProtocolBuffer buffer;
 
-    public AbstractConsumer(final Buffer buffer) {
+    public AbstractConsumer(final ProtocolBuffer buffer) {
         this.buffer = buffer;
     }
 

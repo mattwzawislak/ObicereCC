@@ -41,16 +41,16 @@ import java.util.Objects;
  * This will handle the individual implementation of how to handle reading
  * and writing.
  * <p>
- * Each consumer will also delegate to a single {@link
- * org.obicere.cc.util.protocol.Buffer} type, which handles the actual
- * storage and management of data.
+ * Each consumer will also delegate to a single {@link ProtocolBuffer}
+ * type, which handles the actual storage and management of data.
  * <p>
  * As of result, checking the state of individual bytes in the buffer can
- * be complicated. Since the buffer also has a limited size of 128MB, then
- * memory management might be of concern. To handle this, corresponding
- * methods have been added to free memory: {@link PrimitiveProtocol#shouldClear()}
- * and {@link PrimitiveProtocol#clearRead()}. Which check to see the size
- * of unused bytes and to clear the unused bytes respectively.
+ * be complicated. Since the buffer also has a limited size of 1GiB
+ * (1,073,741,824 bytes), then memory management might be of concern. To
+ * handle this, corresponding methods have been added to free memory:
+ * {@link PrimitiveProtocol#shouldClear()} and {@link
+ * PrimitiveProtocol#clearRead()}. Which check to see the size of unused
+ * bytes and to clear the unused bytes respectively.
  * <p>
  * Due to the limited set of data types, the header for each type only has
  * to be 1 byte in size. This helps reduce packet size compared to other
@@ -230,57 +230,55 @@ public class PrimitiveProtocol {
      * The storage of all objects written to the stream. All reading and
      * writing will be done through the appropriate {@link
      * org.obicere.cc.util.protocol.consumers.AbstractConsumer} and the
-     * methods.provided in the {@link org.obicere.cc.util.protocol.Buffer}
-     * instance.
+     * methods.provided in the {@link ProtocolBuffer} instance.
      */
-    private final Buffer buffer;
+    private final ProtocolBuffer buffer;
 
     /**
      * Maximum size of a string available for input. If the length of the
      * string exceeds this value, either another more suitable data
      * structure, a buffered system or a shorter string is in order. This
      * is defined as a 'magical constant', where this is the maximum size
-     * of the buffer (128MB) with room for an identifier.
+     * of the buffer (1GiB) with room for an identifier.
      * <p>
      * Therefore, this value is then equal to the amount of bytes
      * available:
      * <p>
-     * <code>128 * 1024 * 1024 = 128 <<<< 20</code>
+     * <code>1024 * 1024 * 1024 = 1 <<<< 30</code>
      * <p>
      * Divided by the bytes per character:
      * <p>
-     * <code>(128 <<<< 20) / 2 = (64 <<<< 20)</code>
+     * <code>(1 <<<< 30) / 2 = (1 <<<< 29)</code>
      * <p>
      * With room for an identifier and 1 extra byte left over.
      */
 
-    private static final int MAX_STRING_LENGTH = (64 << 20) - 1;
+    private static final int MAX_STRING_LENGTH = (1 << 29) - 1;
 
     /**
      * Constructs a new <tt>StreamConsumer</tt> with the default parameters
-     * assigned to the basis {@link org.obicere.cc.util.protocol.Buffer}.
+     * assigned to the basis {@link ProtocolBuffer}.
      *
-     * @see org.obicere.cc.util.protocol.Buffer#DEFAULT_SIZE
-     * @see org.obicere.cc.util.protocol.Buffer#DEFAULT_GROWTH
+     * @see ProtocolBuffer#DEFAULT_SIZE
+     * @see ProtocolBuffer#DEFAULT_GROWTH
      */
     public PrimitiveProtocol() {
-        this(Buffer.DEFAULT_SIZE, Buffer.DEFAULT_GROWTH);
+        this(ProtocolBuffer.DEFAULT_SIZE, ProtocolBuffer.DEFAULT_GROWTH);
     }
 
     /**
      * Constructs a new <tt>StreamConsumer</tt> with the allocated length.
      * This can help reduce the running time of the writing it a large
-     * amount of items are being written to the {@link
-     * org.obicere.cc.util.protocol.Buffer} instance. The growth will
-     * remain default.
+     * amount of items are being written to the {@link ProtocolBuffer}
+     * instance. The growth will remain default.
      *
      * @param initialLength The initial length of the buffer. <tt>0 <
      *                      initialLength</tt>
-     * @see org.obicere.cc.util.protocol.Buffer#DEFAULT_GROWTH
+     * @see ProtocolBuffer#DEFAULT_GROWTH
      */
 
     public PrimitiveProtocol(final int initialLength) {
-        this(initialLength, Buffer.DEFAULT_GROWTH);
+        this(initialLength, ProtocolBuffer.DEFAULT_GROWTH);
     }
 
     /**
@@ -296,7 +294,7 @@ public class PrimitiveProtocol {
      */
 
     public PrimitiveProtocol(final int initialLength, final float growth) {
-        this.buffer = new Buffer(initialLength, growth);
+        this.buffer = new ProtocolBuffer(initialLength, growth);
 
         this.booleanC = new BooleanConsumer(buffer);
         this.byteC = new ByteConsumer(buffer);
@@ -310,11 +308,10 @@ public class PrimitiveProtocol {
     }
 
     /**
-     * Frees up the bytes in the {@link org.obicere.cc.util.protocol.Buffer}
-     * that have already been read by the consumer. This will not happen
-     * automatically, so the buffer may overflow if not cleared. Note that
-     * for the buffer to fill, 128MB of data must be written to it, so this
-     * is unlikely.
+     * Frees up the bytes in the {@link ProtocolBuffer} that have already
+     * been read by the consumer. This will not happen automatically, so
+     * the buffer may overflow if not cleared. Note that for the buffer to
+     * fill, 1GiB of data must be written to it, so this is unlikely.
      * <p>
      * This method will also not resize the array, so the growth is
      * effectively finalized. An example is this as follows:
@@ -350,25 +347,24 @@ public class PrimitiveProtocol {
     }
 
     /**
-     * Checks whether or not the {@link org.obicere.cc.util.protocol.Buffer}
-     * should be cleared to free up memory. This is done by checking to see
-     * if the buffer's current length is equal to the {@link
-     * org.obicere.cc.util.protocol.Buffer#MAXIMUM_BUFFER_SIZE maximum
-     * buffer size}. This method does not check if the amount of items
-     * written requires a clear. So with a single item written, with a
-     * minimal initial size and a very large growth factor: this method may
-     * flag the buffer as eligible for a clear.
+     * Checks whether or not the {@link ProtocolBuffer} should be cleared
+     * to free up memory. This is done by checking to see if the buffer's
+     * current length is equal to the {@link ProtocolBuffer#MAXIMUM_BUFFER_SIZE
+     * maximum buffer size}. This method does not check if the amount of
+     * items written requires a clear. So with a single item written, with
+     * a minimal initial size and a very large growth factor: this method
+     * may flag the buffer as eligible for a clear.
      * <p>
      * This method merely works as just a recommendation and is perfectly
      * suited for the default arguments for the buffer.
      *
      * @return <code>true</code> if the buffer should clear.
-     * @see org.obicere.cc.util.protocol.Buffer#MAXIMUM_BUFFER_SIZE
-     * @see org.obicere.cc.util.protocol.Buffer#length()
+     * @see ProtocolBuffer#MAXIMUM_BUFFER_SIZE
+     * @see ProtocolBuffer#size()
      */
 
     public synchronized boolean shouldClear() {
-        return buffer.length() == Buffer.MAXIMUM_BUFFER_SIZE;
+        return buffer.size() == ProtocolBuffer.MAXIMUM_BUFFER_SIZE;
     }
 
     /**
@@ -381,13 +377,13 @@ public class PrimitiveProtocol {
      * @param stream The stream to write all available data to the given
      *               <tt>stream</tt>.
      * @throws IOException If the stream has been closed, is full or the
-     *                     {@link org.obicere.cc.util.protocol.Buffer}
-     *                     failed to write to the stream for any reason.
-     *                     The full specifications for what can throw this
-     *                     error is dependent on the {@link java.io.OutputStream}'s
+     *                     {@link ProtocolBuffer} failed to write to the
+     *                     stream for any reason. The full specifications
+     *                     for what can throw this error is dependent on
+     *                     the {@link java.io.OutputStream}'s
      *                     implementation
      * @see java.io.OutputStream#write(byte[])
-     * @see org.obicere.cc.util.protocol.Buffer#writeAvailable(java.io.OutputStream)
+     * @see ProtocolBuffer#writeAvailable(java.io.OutputStream)
      */
 
     public synchronized void writeAvailable(final OutputStream stream) throws IOException {
@@ -396,11 +392,11 @@ public class PrimitiveProtocol {
 
     /**
      * Reads all the data from the given {@link java.io.InputStream} to the
-     * {@link org.obicere.cc.util.protocol.Buffer}. This is particularly
-     * useful when creating a pipe-system, as the data values read are not
-     * checked for their validity. So even though any IO system can connect
-     * to the <tt>StreamConsumer</tt>, it is recommended to only connect
-     * another <tt>StreamConsumer</tt> for this reason.
+     * {@link ProtocolBuffer}. This is particularly useful when creating a
+     * pipe-system, as the data values read are not checked for their
+     * validity. So even though any IO system can connect to the
+     * <tt>StreamConsumer</tt>, it is recommended to only connect another
+     * <tt>StreamConsumer</tt> for this reason.
      *
      * @param stream The stream to read all data - even if not part of the
      *               valid protocol.
@@ -409,7 +405,7 @@ public class PrimitiveProtocol {
      *                     dependent on the {@link java.io.InputStream}'s
      *                     implementation.
      * @see java.io.InputStream#read(byte[])
-     * @see org.obicere.cc.util.protocol.Buffer#readAvailable(java.io.InputStream)
+     * @see ProtocolBuffer#readAvailable(java.io.InputStream)
      */
 
     public synchronized void readAvailable(final InputStream stream) throws IOException {
@@ -434,8 +430,8 @@ public class PrimitiveProtocol {
     }
 
     /**
-     * Writes a <code>boolean</code> to the {@link org.obicere.cc.util.protocol.Buffer}
-     * signaled first by the identifier, then the value.
+     * Writes a <code>boolean</code> to the {@link ProtocolBuffer} signaled
+     * first by the identifier, then the value.
      *
      * @param value The value to write.
      * @see org.obicere.cc.util.protocol.consumers.BooleanConsumer
@@ -447,8 +443,8 @@ public class PrimitiveProtocol {
     }
 
     /**
-     * Writes a <code>byte</code> to the {@link org.obicere.cc.util.protocol.Buffer}
-     * signaled first by the identifier, then the value.
+     * Writes a <code>byte</code> to the {@link ProtocolBuffer} signaled
+     * first by the identifier, then the value.
      *
      * @param value The value to write.
      * @see org.obicere.cc.util.protocol.consumers.ByteConsumer
@@ -460,9 +456,8 @@ public class PrimitiveProtocol {
     }
 
     /**
-     * Writes a <code>char</code> to the {@link org.obicere.cc.util.protocol.Buffer}
-     * signaled first by the identifier, then the value spread across 2
-     * bytes.
+     * Writes a <code>char</code> to the {@link ProtocolBuffer} signaled
+     * first by the identifier, then the value spread across 2 bytes.
      *
      * @param value The value to write.
      * @see org.obicere.cc.util.protocol.consumers.CharConsumer
@@ -474,10 +469,10 @@ public class PrimitiveProtocol {
     }
 
     /**
-     * Writes a <code>short</code> to the {@link org.obicere.cc.util.protocol.Buffer}
-     * signaled first by the identifier, then the value spread across 2
-     * bytes. This is effectively equal to the {@link #write(char)} method,
-     * but is merely provided to avoid casting.
+     * Writes a <code>short</code> to the {@link ProtocolBuffer} signaled
+     * first by the identifier, then the value spread across 2 bytes. This
+     * is effectively equal to the {@link #write(char)} method, but is
+     * merely provided to avoid casting.
      *
      * @param value The value to write.
      * @see org.obicere.cc.util.protocol.consumers.ShortConsumer
@@ -489,9 +484,8 @@ public class PrimitiveProtocol {
     }
 
     /**
-     * Writes a <code>int</code> to the {@link org.obicere.cc.util.protocol.Buffer}
-     * signaled first by the identifier, then the value spread across 4
-     * bytes.
+     * Writes a <code>int</code> to the {@link ProtocolBuffer} signaled
+     * first by the identifier, then the value spread across 4 bytes.
      *
      * @param value The value to write.
      * @see org.obicere.cc.util.protocol.consumers.IntConsumer
@@ -503,9 +497,8 @@ public class PrimitiveProtocol {
     }
 
     /**
-     * Writes a <code>long</code> to the {@link org.obicere.cc.util.protocol.Buffer}
-     * signaled first by the identifier, then the value spread across 8
-     * bytes.
+     * Writes a <code>long</code> to the {@link ProtocolBuffer} signaled
+     * first by the identifier, then the value spread across 8 bytes.
      *
      * @param value The value to write.
      * @see org.obicere.cc.util.protocol.consumers.LongConsumer
@@ -517,9 +510,8 @@ public class PrimitiveProtocol {
     }
 
     /**
-     * Writes a <code>float</code> to the {@link org.obicere.cc.util.protocol.Buffer}
-     * signaled first by the identifier, then the value spread across 4
-     * bytes.
+     * Writes a <code>float</code> to the {@link ProtocolBuffer} signaled
+     * first by the identifier, then the value spread across 4 bytes.
      *
      * @param value The value to write.
      * @see org.obicere.cc.util.protocol.consumers.FloatConsumer
@@ -531,9 +523,8 @@ public class PrimitiveProtocol {
     }
 
     /**
-     * Writes a <code>double</code> to the {@link org.obicere.cc.util.protocol.Buffer}
-     * signaled first by the identifier, then the value spread across 8
-     * bytes.
+     * Writes a <code>double</code> to the {@link ProtocolBuffer} signaled
+     * first by the identifier, then the value spread across 8 bytes.
      *
      * @param value The value to write.
      * @see org.obicere.cc.util.protocol.consumers.DoubleConsumer
@@ -546,11 +537,10 @@ public class PrimitiveProtocol {
 
     /**
      * Writes a <code>java.lang.String</code> of length <tt>n</tt> to the
-     * {@link org.obicere.cc.util.protocol.Buffer} signaled first by the
-     * identifier, then the length (4 bytes), followed by <tt>n</tt> chars
-     * each with a byte-length of 2 bytes - as the identifiers are
-     * excluded. This results in <tt>2n + 5</tt> bytes written to the
-     * stream.
+     * {@link ProtocolBuffer} signaled first by the identifier, then the
+     * length (4 bytes), followed by <tt>n</tt> chars each with a
+     * byte-length of 2 bytes - as the identifiers are excluded. This
+     * results in <tt>2n + 5</tt> bytes written to the stream.
      * <p>
      * Support for writing <code>null</code> strings is not supported.
      *
@@ -561,22 +551,27 @@ public class PrimitiveProtocol {
      *                                        instead should be replaced
      *                                        with the string representation
      *                                        or the empty string.
+     * @throws java.lang.OutOfMemoryError     if the given string's length
+     *                                        exceeds that of {@link
+     *                                        org.obicere.cc.util.protocol.PrimitiveProtocol#MAX_STRING_LENGTH}
      * @see org.obicere.cc.util.protocol.consumers.StringConsumer
      * @see org.obicere.cc.util.protocol.consumers.AbstractConsumer#IDENTIFIER_STRING
      */
 
     public synchronized void write(final String value) {
         Objects.requireNonNull(value);
-        if (value.length() > MAX_STRING_LENGTH) {
-            stringC.write(value);
+        final int length = value.length();
+        if (length > MAX_STRING_LENGTH) {
+            throw new OutOfMemoryError("Not enough available memory for this string of length: " + length);
         }
+        stringC.write(value);
     }
 
     /**
      * Writes a <code>boolean</code> array of length <code>n</code> to the
-     * {@link org.obicere.cc.util.protocol.Buffer} signaled first by the
-     * identifier, then the length (4 bytes), followed by the
-     * <code>n</code> elements. Headers are excluded.
+     * {@link ProtocolBuffer} signaled first by the identifier, then the
+     * length (4 bytes), followed by the <code>n</code> elements. Headers
+     * are excluded.
      *
      * @param value The value to write.
      * @throws java.lang.NullPointerException if the given array is
@@ -591,9 +586,9 @@ public class PrimitiveProtocol {
 
     /**
      * Writes a <code>byte</code> array of length <code>n</code> to the
-     * {@link org.obicere.cc.util.protocol.Buffer} signaled first by the
-     * identifier, then the length (4 bytes), followed by the
-     * <code>n</code> elements. Headers are excluded.
+     * {@link ProtocolBuffer} signaled first by the identifier, then the
+     * length (4 bytes), followed by the <code>n</code> elements. Headers
+     * are excluded.
      *
      * @param value The value to write.
      * @throws java.lang.NullPointerException if the given array is
@@ -608,9 +603,9 @@ public class PrimitiveProtocol {
 
     /**
      * Writes a <code>char</code> array of length <code>n</code> to the
-     * {@link org.obicere.cc.util.protocol.Buffer} signaled first by the
-     * identifier, then the length (4 bytes), followed by the
-     * <code>n</code> elements. Headers are excluded.
+     * {@link ProtocolBuffer} signaled first by the identifier, then the
+     * length (4 bytes), followed by the <code>n</code> elements. Headers
+     * are excluded.
      * <p>
      * This will only write characters in the UTF-16 encoding.
      *
@@ -627,9 +622,9 @@ public class PrimitiveProtocol {
 
     /**
      * Writes a <code>short</code> array of length <code>n</code> to the
-     * {@link org.obicere.cc.util.protocol.Buffer} signaled first by the
-     * identifier, then the length (4 bytes), followed by the
-     * <code>n</code> elements. Headers are excluded.
+     * {@link ProtocolBuffer} signaled first by the identifier, then the
+     * length (4 bytes), followed by the <code>n</code> elements. Headers
+     * are excluded.
      *
      * @param value The value to write.
      * @throws java.lang.NullPointerException if the given array is
@@ -644,9 +639,9 @@ public class PrimitiveProtocol {
 
     /**
      * Writes a <code>int</code> array of length <code>n</code> to the
-     * {@link org.obicere.cc.util.protocol.Buffer} signaled first by the
-     * identifier, then the length (4 bytes), followed by the
-     * <code>n</code> elements. Headers are excluded.
+     * {@link ProtocolBuffer} signaled first by the identifier, then the
+     * length (4 bytes), followed by the <code>n</code> elements. Headers
+     * are excluded.
      *
      * @param value The value to write.
      * @throws java.lang.NullPointerException if the given array is
@@ -661,9 +656,9 @@ public class PrimitiveProtocol {
 
     /**
      * Writes a <code>long</code> array of length <code>n</code> to the
-     * {@link org.obicere.cc.util.protocol.Buffer} signaled first by the
-     * identifier, then the length (4 bytes), followed by the
-     * <code>n</code> elements. Headers are excluded.
+     * {@link ProtocolBuffer} signaled first by the identifier, then the
+     * length (4 bytes), followed by the <code>n</code> elements. Headers
+     * are excluded.
      *
      * @param value The value to write.
      * @throws java.lang.NullPointerException if the given array is
@@ -678,9 +673,9 @@ public class PrimitiveProtocol {
 
     /**
      * Writes a <code>float</code> array of length <code>n</code> to the
-     * {@link org.obicere.cc.util.protocol.Buffer} signaled first by the
-     * identifier, then the length (4 bytes), followed by the
-     * <code>n</code> elements. Headers are excluded.
+     * {@link ProtocolBuffer} signaled first by the identifier, then the
+     * length (4 bytes), followed by the <code>n</code> elements. Headers
+     * are excluded.
      *
      * @param value The value to write.
      * @throws java.lang.NullPointerException if the given array is
@@ -695,9 +690,9 @@ public class PrimitiveProtocol {
 
     /**
      * Writes a <code>double</code> array of length <code>n</code> to the
-     * {@link org.obicere.cc.util.protocol.Buffer} signaled first by the
-     * identifier, then the length (4 bytes), followed by the
-     * <code>n</code> elements. Headers are excluded.
+     * {@link ProtocolBuffer} signaled first by the identifier, then the
+     * length (4 bytes), followed by the <code>n</code> elements. Headers
+     * are excluded.
      *
      * @param value The value to write.
      * @throws java.lang.NullPointerException if the given array is

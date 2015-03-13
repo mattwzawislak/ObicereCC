@@ -400,7 +400,7 @@ public class MethodInvocationProtocol extends PrimitiveSocketProtocol {
      * dimension(T)         = 0
      * dimension(T[])       = dimension(T)      + 1 = 0 + 1 = 1
      * dimension(T[][])     = dimension(T[])    + 1 = 1 + 1 = 2
-     * dimension(T[][][])   = dimension(T[][])  + 1 = 2 + 1 = 1
+     * dimension(T[][][])   = dimension(T[][])  + 1 = 2 + 1 = 3
      * ...
      * </pre>
      * </code>

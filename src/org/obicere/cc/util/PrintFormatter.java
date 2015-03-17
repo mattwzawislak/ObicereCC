@@ -23,7 +23,7 @@ import java.util.logging.LogRecord;
  * <p>
  * <code>01/01/1970 00:00:00 INFO: Unix timestamp starting!</code>
  *
- * @author Matt Zawislak
+ * @author Obicere
  */
 public class PrintFormatter extends Formatter {
 

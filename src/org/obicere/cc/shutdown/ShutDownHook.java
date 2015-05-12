@@ -1,7 +1,7 @@
 package org.obicere.cc.shutdown;
 
 import org.obicere.cc.configuration.Paths;
-import org.obicere.cc.util.IOUtils;
+import org.obicere.utility.io.IOUtils;
 
 import java.awt.Color;
 import java.io.File;

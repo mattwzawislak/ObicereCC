@@ -1,10 +1,11 @@
 package org.obicere.cc.projects;
 
 import org.obicere.cc.configuration.Paths;
-import org.obicere.cc.util.Reflection;
+import org.obicere.utility.reflect.Reflection;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Obicere
@@ -25,10 +26,9 @@ public class ProjectLoader {
         if (!DATA.isEmpty()) {
             resetData();
         }
-        final List<Class<?>> list = Reflection.loadClassesFrom(Paths.FOLDER_SOURCES);
-        final Class<Runner> cls = Runner.class;
-        Reflection.filterAsSubclassOf(cls, list);
-        list.forEach(ProjectLoader::add);
+        final Set<Class<?>> loaded = Reflection.loadClassesFrom(Paths.FOLDER_SOURCES);
+        Reflection.filterAsSubclassOf(Runner.class, loaded);
+        loaded.forEach(ProjectLoader::add);
         return DATA;
     }
 

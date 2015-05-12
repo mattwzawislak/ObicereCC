@@ -6,9 +6,9 @@ import org.obicere.cc.executor.compiler.CommandExecutor;
 import org.obicere.cc.projects.Parameter;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.projects.Runner;
-import org.obicere.cc.util.IOUtils;
-import org.obicere.cc.util.protocol.PrimitiveSocketProtocol;
-import org.obicere.cc.util.protocol.MethodInvocationProtocol;
+import org.obicere.cc.util.MethodInvocationProtocol;
+import org.obicere.utility.io.IOUtils;
+import org.obicere.utility.protocol.PrimitiveSocketProtocol;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Sets up the process for connecting the {@link org.obicere.cc.executor.language.Language}'s
  * Java implementation to its respective language implementation. This will
- * utilize the {@link org.obicere.cc.util.protocol.PrimitiveSocketProtocol}
+ * utilize the {@link org.obicere.utility.protocol.PrimitiveSocketProtocol}
  * to transfer data from the program to the invoker for the language.
  * <p>
  * The invoker is a program that language-specific and usually written in
@@ -84,7 +84,7 @@ public class LanguageStreamer {
     }
 
     /**
-     * Creates a new {@link org.obicere.cc.util.protocol.MethodInvocationProtocol}
+     * Creates a new {@link org.obicere.cc.util.MethodInvocationProtocol}
      * for the given server. This waits for a connection to be established
      * from the invoker, then establishes the protocol.
      *
@@ -148,9 +148,9 @@ public class LanguageStreamer {
      *                 for.
      * @param protocol The protocol to write the invocation instructions
      *                 for.
-     * @see org.obicere.cc.util.protocol.MethodInvocationProtocol#writeInvocation(String,
+     * @see org.obicere.cc.util.MethodInvocationProtocol#writeInvocation(String,
      * String, Class, Class[])
-     * @see org.obicere.cc.util.protocol.MethodInvocationProtocol#writeCases(org.obicere.cc.executor.Case[])
+     * @see org.obicere.cc.util.MethodInvocationProtocol#writeCases(org.obicere.cc.executor.Case[])
      */
 
     public void writeInvocationParameters(final Project project, final MethodInvocationProtocol protocol) {

@@ -2,12 +2,11 @@ package org.obicere.cc.executor.language;
 
 import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.process.StartingProcess;
-import org.obicere.cc.util.Reflection;
+import org.obicere.utility.reflect.Reflection;
 
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -15,7 +14,7 @@ import java.util.logging.Level;
 /**
  * Loads all the classes that directly extend the {@link
  * org.obicere.cc.executor.language.Language} class. This works through the
- * {@link org.obicere.cc.util.Reflection} utility on every class in the
+ * {@link org.obicere.utility.reflect.Reflection} utility on every class in the
  * class path.
  * <p>
  * This will look for a <code>Language(Domain)</code> constructor. The
@@ -92,11 +91,11 @@ public class LanguageManager extends StartingProcess {
     @Override
     public void run() {
         try {
-            final List<Class<?>> languageClasses = Reflection.subclassOf(Language.class);
+            final Set<Class<Language>> languageClasses = Reflection.subclassOf(Language.class);
             languageClasses.forEach(cls -> {
                 try {
-                    final Constructor<?> constructor = cls.getConstructor(Domain.class);
-                    final Language language = (Language) constructor.newInstance(access);
+                    final Constructor<Language> constructor = cls.getConstructor(Domain.class);
+                    final Language language = constructor.newInstance(access);
                     final String name = language.getName();
                     supported.put(name, language);
 

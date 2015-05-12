@@ -2,12 +2,13 @@ package org.obicere.cc.shutdown;
 
 import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.process.StartingProcess;
-import org.obicere.cc.util.Reflection;
+import org.obicere.utility.reflect.Reflection;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class ShutDownHookManager extends StartingProcess {
@@ -16,7 +17,7 @@ public class ShutDownHookManager extends StartingProcess {
 
     public ShutDownHookManager(final Domain access) {
         super(access);
-        final List<Class<?>> hooks = Reflection.where(c -> ShutDownHook.class.isAssignableFrom(c) && !ShutDownHook.class.equals(c) && !SettingsShutDownHook.class.equals(c));
+        final Set<Class<?>> hooks = Reflection.where(c -> ShutDownHook.class.isAssignableFrom(c) && !ShutDownHook.class.equals(c) && !SettingsShutDownHook.class.equals(c));
         final List<ShutDownHook> goodHooks = new LinkedList<>();
         hooks.forEach(e -> {
             if (e != null) {

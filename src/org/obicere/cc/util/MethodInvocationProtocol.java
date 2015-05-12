@@ -1,9 +1,9 @@
-package org.obicere.cc.util.protocol;
+package org.obicere.cc.util;
 
-import org.obicere.cc.executor.Case;
+import org.obicere.cc.executor.Case;import org.obicere.utility.protocol.PrimitiveSocketProtocol;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.lang.Class;import java.lang.IllegalArgumentException;import java.lang.Object;import java.lang.String;import java.net.Socket;
 import java.util.Objects;
 
 /**
@@ -31,7 +31,7 @@ import java.util.Objects;
  * <p>
  * The first step for the invocation will be passing the information to
  * locate the method. We can assume we won't have to deal with return types
- * or parameters not supported by the {@link org.obicere.cc.util.protocol.PrimitiveProtocol}
+ * or parameters not supported by the {@link org.obicere.utility.protocol.PrimitiveProtocol}
  * and therefore the application. We can also assume there is no clauses
  * for exceptions, such as the Java <code>throws</code> keyword does.
  * <p>
@@ -206,9 +206,9 @@ import java.util.Objects;
  * Good luck.
  *
  * @author Obicere
- * @see org.obicere.cc.util.protocol.PrimitiveSocketProtocol
- * @see org.obicere.cc.util.protocol.MethodInvocationProtocol#MAGIC_NUMBER_START
- * @see org.obicere.cc.util.protocol.MethodInvocationProtocol#MAGIC_NUMBER_CALL
+ * @see org.obicere.utility.protocol.PrimitiveSocketProtocol
+ * @see org.obicere.cc.util.MethodInvocationProtocol#MAGIC_NUMBER_START
+ * @see org.obicere.cc.util.MethodInvocationProtocol#MAGIC_NUMBER_CALL
  */
 public class MethodInvocationProtocol extends PrimitiveSocketProtocol {
 
@@ -300,7 +300,7 @@ public class MethodInvocationProtocol extends PrimitiveSocketProtocol {
      * @param methodName   The name of the method to invoke.
      * @param returnClass  The return type of the method.
      * @param paramClasses The classes of each of the parameters.
-     * @see org.obicere.cc.util.protocol.MethodInvocationProtocol#MAGIC_NUMBER_START
+     * @see org.obicere.cc.util.MethodInvocationProtocol#MAGIC_NUMBER_START
      */
 
     public void writeInvocation(final String className, final String methodName, final Class<?> returnClass, final Class<?>... paramClasses) {
@@ -330,13 +330,13 @@ public class MethodInvocationProtocol extends PrimitiveSocketProtocol {
      * </code>
      *
      * @param cls The class to write to the stream.
-     * @see org.obicere.cc.util.protocol.MethodInvocationProtocol#dimension(Class)
-     * @see org.obicere.cc.util.protocol.PrimitiveProtocol#componentIdentifier(Class)
+     * @see org.obicere.cc.util.MethodInvocationProtocol#dimension(Class)
+     * @see org.obicere.utility.protocol.PrimitiveProtocol#getIdentifierFor(Class)
      */
 
     private void writeClass(final Class<?> cls) {
         Objects.requireNonNull(cls, "Parameter class cannot be null.");
-        final int id = protocol.componentIdentifier(cls);
+        final int id = protocol.getIdentifierFor(cls);
         if (id == -1) {
             throw new IllegalArgumentException("No valid identifier for class: " + cls + " found.");
         }

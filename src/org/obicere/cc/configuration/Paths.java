@@ -29,7 +29,7 @@ import java.util.logging.Level;
 public class Paths extends StartingProcess {
 
     // Site
-    public static final String SITE_HOME = "http://www.obicere.uni.me";
+    public static final String SITE_HOME = "http://www.obicere.org";
     public static final String SITE_BIN  = SITE_HOME + "/ccbin/";
 
     // Working directory/jar

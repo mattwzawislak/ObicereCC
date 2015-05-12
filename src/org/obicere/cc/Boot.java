@@ -7,7 +7,7 @@ import org.obicere.cc.process.SwingLauncher;
 import org.obicere.cc.util.Argument;
 import org.obicere.cc.util.ArgumentParser;
 import org.obicere.cc.util.PrintFormatter;
-import org.obicere.cc.util.protocol.PrimitiveProtocol;
+import org.obicere.utility.protocol.PrimitiveProtocol;
 
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;

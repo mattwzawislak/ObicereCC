@@ -5,10 +5,10 @@ import org.obicere.cc.configuration.Domain;
 import org.obicere.cc.executor.language.Language;
 import org.obicere.cc.gui.AbstractFrameManager;
 import org.obicere.cc.gui.swing.projects.Editor;
-import org.obicere.cc.shutdown.ShutDownHook;
-import org.obicere.cc.util.Reflection;
 import org.obicere.cc.projects.Project;
 import org.obicere.cc.shutdown.LayoutHook;
+import org.obicere.cc.shutdown.ShutDownHook;
+import org.obicere.utility.reflect.Reflection;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;

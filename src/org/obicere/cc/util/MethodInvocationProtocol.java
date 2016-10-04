@@ -1,9 +1,14 @@
 package org.obicere.cc.util;
 
-import org.obicere.cc.executor.Case;import org.obicere.utility.protocol.PrimitiveSocketProtocol;
+import org.obicere.cc.executor.Case;
+import org.obicere.utility.protocol.PrimitiveSocketProtocol;
 
 import java.io.IOException;
-import java.lang.Class;import java.lang.IllegalArgumentException;import java.lang.Object;import java.lang.String;import java.net.Socket;
+import java.lang.Class;
+import java.lang.IllegalArgumentException;
+import java.lang.Object;
+import java.lang.String;
+import java.net.Socket;
 import java.util.Objects;
 
 /**
